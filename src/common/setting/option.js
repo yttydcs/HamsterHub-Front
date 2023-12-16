@@ -1,4 +1,6 @@
 import { reactive } from "vue";
+import {deviceConfig} from "@/common/curd/deviceConfig";
+import {strategyConfig} from "@/common/curd/strategyConfig";
 
 /*  用于自动生成setting界面
 *
@@ -62,30 +64,23 @@ export const optionList = reactive([
     },
     {
         type: "group",
-        title : "个人设置",
+        title : "存储",
         description: "",
         list:[
             {
                 type: "item",
-                title: "个人选项",
-                description: "asd",
-                key: "settingKey",
-                valueType: "boolean",
-                value: "",
-            },{
-                type: "item",
-                title: "个人选项2",
-                description: "asd",
-                key: "settingKey",
-                valueType: "input",
-                value: "",
-            },{
-                type: "item",
-                title: "个人选项3",
-                description: "asd",
+                title: "设备",
+                description: "进入存储设备管理界面",
                 key: "settingKey",
                 valueType: "curd",
-                value: "",
+                value: deviceConfig,
+            },{
+                type: "item",
+                title: "策略",
+                description: "进入存储策略管理界面",
+                key: "settingKey",
+                valueType: "curd",
+                value: strategyConfig,
             },
         ]
     },

@@ -35,7 +35,8 @@ const formModel = [
   },{
     title: "type",
     key: "type",
-    type: "text",
+    type: "enum",
+    typeValue:["本地","阿里云盘","OneDrive"],
     show: true,
     create: true,
     modify: true,
@@ -46,8 +47,17 @@ const formModel = [
     show: false,
     create: true,
     modify: true,
+  },{
+    title: "strategy",
+    key: "strategyId",
+    type: "text",
+    show: true,
+    create: false,
+    modify: false,
   },
 ]
+
+
 
 
 // 表单对应的方法
@@ -64,6 +74,11 @@ export default {
   },
   components: {
     CommonCURD
+  },
+  mounted() {
+    // device.getDeviceType().then(res=>{
+    //   console.log(res)
+    // })
   },
   setup() {
     return {

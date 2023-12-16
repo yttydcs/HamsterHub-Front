@@ -32,13 +32,46 @@
         :bordered="false"
     >
       <n-form :model="formData" v-for="(item,index) in tableData.addModel" :key="index">
-        <n-form-item-row :label="item.title">
+        <!--    textBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='text'">
           <n-input v-model:value="formData[item.key]"/>
         </n-form-item-row>
+
+        <!--    enumBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='enum'">
+          <n-select
+              placeholder=""
+              v-model:value="formData[item.key]"
+              :options="item.typeValue"
+              @update:value="handleUpdateValue"
+          />
+        </n-form-item-row>
+
+        <!--    arrayBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='array'">
+          <n-select
+              multiple
+              placeholder=""
+              v-model:value="formData[item.key]"
+              :options="arrayBox.option"
+              @update:value="handleUpdateValue"
+              :loading="arrayBox.loading"
+              @update:show="show=> arraySelectHandle(show,item.typeValue)"
+          />
+        </n-form-item-row>
+
+
       </n-form>
-      <n-button class="sendBtn" type="primary" block secondary strong @click="createHandle">
-        新增
-      </n-button>
+
+      <n-space align="stretch" justify="end">
+        <n-button class="sendBtn" type="primary" block secondary strong @click="createHandle">
+          新增
+        </n-button>
+        <n-button class="sendBtn" type="primary" block secondary strong @click="cancelHandle">
+          取消
+        </n-button>
+      </n-space>
+
     </n-modal>
 
     <!--    modifyBox    -->
@@ -51,13 +84,43 @@
         :bordered="false"
     >
       <n-form :model="formData" v-for="(item,index) in tableData.modifyModel" :key="index">
-        <n-form-item-row :label="item.title" v-show="!item.modifyHide">
+        <!--    textBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='text'">
           <n-input v-model:value="formData[item.key]"/>
         </n-form-item-row>
+
+        <!--    enumBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='enum'">
+          <n-select
+              placeholder=""
+              v-model:value="formData[item.key]"
+              :options="item.typeValue"
+              @update:value="handleUpdateValue"
+          />
+        </n-form-item-row>
+
+        <!--    arrayBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='array'">
+          <n-select
+              multiple
+              placeholder=""
+              v-model:value="formData[item.key]"
+              :options="arrayBox.option"
+              @update:value="handleUpdateValue"
+              :loading="arrayBox.loading"
+              @update:show="show=> arraySelectHandle(show,item.typeValue)"
+          />
+        </n-form-item-row>
       </n-form>
-      <n-button class="sendBtn" type="primary" block secondary strong @click="modifyHandle" >
-        修改
-      </n-button>
+
+      <n-space align="stretch" justify="end">
+        <n-button class="sendBtn" type="primary" block secondary strong @click="modifyHandle" >
+          修改
+        </n-button>
+        <n-button class="sendBtn" type="primary" block secondary strong @click="cancelHandle">
+          取消
+        </n-button>
+      </n-space>
     </n-modal>
 
   </div>
@@ -65,13 +128,22 @@
 
 <script>
 import {h, defineComponent, ref, watch, reactive} from "vue";
-import {NIcon, NAvatar, NButton, NSpace, NInput, NDataTable, NModal, NForm, NFormItemRow } from "naive-ui";
+import {
+  NIcon,
+  NAvatar,
+  NButton,
+  NSpace,
+  NInput,
+  NDataTable,
+  NModal,
+  NForm,
+  NFormItemRow,
+  NSelect,
+  NTag
+} from "naive-ui";
 
 
-
-
-
-// 从formModel中构建出表格，增加表单和删除表单的数据
+// 从formModel中构建出表格的数据
 const createListByModel = (model,checkIndex="show")=>{
   let res = []
   if(checkIndex==="show"){
@@ -87,26 +159,112 @@ const createListByModel = (model,checkIndex="show")=>{
       key: '_indexKey',
       width: 40,
     })
-  }
 
+  }
 
   for (let i = 0; i < model.length; i++) {
     if(model[i][checkIndex]){
-      res.push({
+
+      let o = {
         title: model[i].title,
         key: model[i].key,
         resizable: true,
-        modifyHide: model[i]["modifyHide"]
-      })
+      }
+
+      // 渲染枚举的显示方式
+      if(model[i]["type"]==="enum"){
+        o["render"] = (row)=> {
+          return `${model[i]["typeValue"][row.type]}`
+        }
+      }
+
+      // 渲染数组的显示方式
+      if(model[i]["type"]==="array"){
+        o["render"] = (row) => {
+          return row[model[i].key].map((tagKey) => {
+            return h(
+                NTag,
+                {
+                  style: {
+                    marginRight: "6px"
+                  },
+                  type: "info",
+                  bordered: false
+                },
+                {
+                  default: () => tagKey
+                }
+            );
+          });
+        }
+
+      }
+
+
+
+
+      res.push(o)
     }
   }
 
   return res;
 };
 
+// 从formModel中构建出增加表单和删除表单的数据
+const createFormByModel = (model,checkIndex="show")=>{
+  let res = []
 
+  for (let i = 0; i < model.length; i++) {
+    if(model[i][checkIndex]){
 
+      let o = {
+        title: model[i].title,
+        key: model[i].key,
+        modifyHide: model[i]["modifyHide"],
+        type: model[i]["type"],
+      }
 
+      // 如果是"enum" 构建 option
+      if(model[i]["type"] === "enum" || model[i]["type"] === "array"){
+        if(model[i]["typeValue"] instanceof Array ){
+          o["typeValue"] = createOptionByArray(model[i]["typeValue"])
+        }else{
+          o["typeValue"] = model[i]["typeValue"]
+        }
+      }
+
+      res.push(o)
+    }
+  }
+
+  return res;
+};
+
+const createOptionByArray= (arr) => {
+  let options = []
+
+  for (let i = 0; i < arr.length; i++) {
+    options.push({
+      label: arr[i],
+      value: i,
+    })
+  }
+
+  return options
+}
+
+const createOptionByArrayValue= (arr) => {
+  let options = []
+
+  for (let i = 0; i < arr.length; i++) {
+    options.push({
+      label: arr[i],
+      value: arr[i],
+    })
+  }
+
+  return options
+}
 
 
 export default {
@@ -119,6 +277,7 @@ export default {
     NSpace,
     NButton,
     NModal,
+    NSelect,
   },
   methods:{
     openCreateBox(){
@@ -156,6 +315,7 @@ export default {
     },
     modifyHandle(){
       let that = this
+      console.log(this.formData)
       this.formFun.update(this.formData).then(res => {
         this.modifyBox = false;
         that.getData();
@@ -168,25 +328,41 @@ export default {
         that.getData();
       })
     },
+    cancelHandle(){
+      this.createBox = false;
+      this.modifyBox = false;
+    },
     handleCheck(rowKeys) {
       this.curRow = rowKeys[0]
     },
-    rowKey: (row) => {
+    rowKey(row){
       return row["_indexKey"]
     },
-  },
-  created() {
+    handleUpdateValue(value, option){
+      // to do
+    },
+    async arraySelectHandle(show, fetchFun) {
+      if (!show) {
+        return
+      }
+
+      this.arrayBox.loading = true
+      let option = await fetchFun()
+      this.arrayBox.option = createOptionByArrayValue(option)
+      this.arrayBox.loading = false
+    }
 
   },
   mounted() {
+
     // 构建表头
     this.tableData.headers = createListByModel(this.formModel)
 
     // 构建增加表单model
-    this.tableData.addModel = createListByModel(this.formModel,"create")
+    this.tableData.addModel = createFormByModel(this.formModel,"create")
 
     // 构建修改表单model
-    this.tableData.modifyModel = createListByModel(this.formModel,"modify")
+    this.tableData.modifyModel = createFormByModel(this.formModel,"modify")
 
     // 首次获取数据
     this.getData();
@@ -196,7 +372,6 @@ export default {
     formFun: Object
   },
   setup(){
-
     return{
       tableData: reactive({
         headers:[],
@@ -209,7 +384,12 @@ export default {
       createBox: ref(false),
       modifyBox: ref(false),
       curRow: ref(1),
-      checkedRowKeys:ref([1])
+      checkedRowKeys:ref([1]),
+      arrayBox: reactive({
+        loading:false,
+        option:[]
+      })
+
     }
   }
 }
