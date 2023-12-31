@@ -108,7 +108,7 @@
               :options="arrayBox.option"
               @update:value="handleUpdateValue"
               :loading="arrayBox.loading"
-              @update:show="show=> arraySelectHandle(show,item.typeValue)"
+              @update:show="show=> arraySelectHandle(show,item.typeValue,item.key)"
           />
         </n-form-item-row>
       </n-form>
@@ -315,7 +315,6 @@ export default {
     },
     modifyHandle(){
       let that = this
-      console.log(this.formData)
       this.formFun.update(this.formData).then(res => {
         this.modifyBox = false;
         that.getData();
@@ -341,13 +340,15 @@ export default {
     handleUpdateValue(value, option){
       // to do
     },
-    async arraySelectHandle(show, fetchFun) {
+    async arraySelectHandle(show, fetchFun, key) {
       if (!show) {
         return
       }
 
       this.arrayBox.loading = true
-      let option = await fetchFun()
+      console.log(this.formData[key])
+      let option = await fetchFun(this.formData[key])
+      console.log(option)
       this.arrayBox.option = createOptionByArrayValue(option)
       this.arrayBox.loading = false
     }

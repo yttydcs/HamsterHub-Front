@@ -58,6 +58,8 @@ import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import { fileList as fileData } from "@/common/fileList"
 import file from "@/api/file"
 
+
+
 import {
   ArrowClockwise24Regular,
   AppsListDetail24Regular,
@@ -66,7 +68,7 @@ import {
 } from "@vicons/fluent";
 
 
-import hamster from "@/common/adapter/alist";
+import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
 const _adapters = [hamster, alist];
 
@@ -98,14 +100,30 @@ export default {
       this.getFileData()
     },
     getFileData(){
-      const adapterOption = 1;
+      const adapterOption = 0;
       const that = this;
-      file.getFile("/"+fileData.path.join("/"),undefined,undefined,undefined,undefined,1)
+      if(adapterOption === 0){
+        file[adapterOption].getFile("1","0")
+          .then(function (res) {
+            if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
+              console.log("----")
+              console.log(that.adapters[adapterOption].setFileData)
+              console.log(res)
+
+              that.adapters[adapterOption].setFileData(res)
+          }
+        })
+      }else if(adapterOption === 1){
+        file[adapterOption].getFile("/"+fileData.path.join("/"),undefined,undefined,undefined,undefined,1)
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
               that.adapters[adapterOption].setFileData(res)
             }
           })
+      }
+
+
+
     },
   },
   mounted() {

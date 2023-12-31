@@ -5,13 +5,15 @@ let enumStrategyMode = (await strategy.getStrategyMode()).data
 let enumStrategyType = (await strategy.getStrategyType()).data
 
 // 实时获取选项的方法
-async function deviceIdsFetch(){
-    return (await device.query()).data.map((item) =>{
-            if(!item.configured){
-                return item.id
-            }
+async function deviceIdsFetch(selected=[]){
+    let items = (await device.query()).data
+    let res = []
+    for (let i = 0; i < items.length; i++) {
+        if(!items[i].configured || selected.indexOf(items[i].id)>=0){
+            res.push(items[i].id)
         }
-    )
+    }
+    return res
 }
 
 
