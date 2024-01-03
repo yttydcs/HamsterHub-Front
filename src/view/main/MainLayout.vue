@@ -59,22 +59,22 @@ const MenuOption = reactive(
     {
       label: curLang.lang.leftMenuFile,
       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'hear-the-wind-sing',
+      key: 'file',
       icon: renderIcon(FolderOpenOutline),
     },  {
       label: curLang.lang.leftMenuShare,
       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'hear-the-wind-sing',
+      key: 'share',
       icon: renderIcon(ShareSocialOutline),
     },{
       label: curLang.lang.leftMenuFavorite,
       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'hear-the-wind-sing',
+      key: 'favorite',
       icon: renderIcon(Collections24Regular),
     },{
       label: curLang.lang.leftMenuRecycle,
       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'hear-the-wind-sing',
+      key: 'recycle',
       icon: renderIcon(Recycle),
     },{
       label: curLang.lang.leftMenuShortcut,
@@ -84,7 +84,7 @@ const MenuOption = reactive(
         {
           label: curLang.lang.leftMenuAdd,
           href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-          key: 'hear-the-wind-sing',
+          key: 'shortcut',
           icon: renderIcon(AddCircleOutline),
         }
       ]

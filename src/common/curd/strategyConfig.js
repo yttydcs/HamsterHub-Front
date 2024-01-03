@@ -3,16 +3,40 @@ import strategy from "@/api/strategy";
 
 let enumStrategyMode = (await strategy.getStrategyMode()).data
 let enumStrategyType = (await strategy.getStrategyType()).data
-
+// let enumPermissionType = []
 // 实时获取选项的方法
 async function deviceIdsFetch(selected=[]){
     let items = (await device.query()).data
     let res = []
     for (let i = 0; i < items.length; i++) {
         if(!items[i].configured || selected.indexOf(items[i].id)>=0){
-            res.push(items[i].id)
+            res.push({
+                label: items[i].id,
+                value: items[i].id,
+            })
         }
     }
+    return res
+}
+
+
+
+
+
+
+async function permissionFetch(selected=[]){
+
+    let res = [
+        {
+            label: "普通用户",
+            value: "0",
+        },{
+            label: "管理员",
+            value: "1",
+        },
+
+    ]
+
     return res
 }
 
@@ -54,9 +78,10 @@ const formModel = [
         create: true,
         modify: true,
     },{
-        title: "permission",
-        key: "permission",
-        type: "text",
+        title: "permissions",
+        key: "permissions",
+        type: "array",
+        typeValue:permissionFetch,
         show: true,
         create: true,
         modify: true,

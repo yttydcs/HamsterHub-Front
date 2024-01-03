@@ -25,7 +25,7 @@ const source = CancelToken.source();
 let cancel;
 service.interceptors.request.use(
     config => {
-        config.headers.set("token",loginData.loginKey.loginKeyValue);
+        config.headers.set("Authorization",loginData.loginKey.loginKeyValue);
         // config.headers.set("Content-Type","application/x-www-form-urlencoded");
         return config
     }, error => {

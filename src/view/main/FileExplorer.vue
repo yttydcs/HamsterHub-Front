@@ -106,10 +106,6 @@ export default {
         file[adapterOption].getFile("1","0")
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
-              console.log("----")
-              console.log(that.adapters[adapterOption].setFileData)
-              console.log(res)
-
               that.adapters[adapterOption].setFileData(res)
           }
         })

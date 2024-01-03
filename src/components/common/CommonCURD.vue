@@ -346,10 +346,11 @@ export default {
       }
 
       this.arrayBox.loading = true
-      console.log(this.formData[key])
-      let option = await fetchFun(this.formData[key])
-      console.log(option)
-      this.arrayBox.option = createOptionByArrayValue(option)
+      let option
+      if(fetchFun){
+        option = await fetchFun(this.formData[key])
+      }
+      this.arrayBox.option = option
       this.arrayBox.loading = false
     }
 
