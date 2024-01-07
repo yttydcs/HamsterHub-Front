@@ -17,16 +17,12 @@
             :collapsed-icon-size="22"
             :options="menuOptions"
             class="menu-left"
-
+            :on-update:value="handleMenuSelect"
         />
 
       </n-layout-sider>
       <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
-
-        <FileExplorer>
-
-        </FileExplorer>
-
+        <FileExplorer />
       </n-layout>
     </n-layout>
 
@@ -47,11 +43,11 @@ import { HomeOutline,
   } from "@vicons/ionicons5";
 import { Recycle } from "@vicons/tabler";
 import { Collections24Regular } from "@vicons/fluent";
-
 import FileExplorer from "@/view/main/FileExplorer.vue";
+import {fileList as fileData} from "@/common/fileList";
 
 import curLang from "@/common/lang";
-
+import strategy from "@/api/strategy";
 
 
 const MenuOption = reactive(
@@ -78,13 +74,13 @@ const MenuOption = reactive(
       icon: renderIcon(Recycle),
     },{
       label: curLang.lang.leftMenuShortcut,
-      key: 'people',
+      key: 'shortcut',
       icon: renderIcon(BookmarkOutline),
       children: [
         {
           label: curLang.lang.leftMenuAdd,
           href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-          key: 'shortcut',
+          key: 'add',
           icon: renderIcon(AddCircleOutline),
         }
       ]
@@ -105,6 +101,43 @@ export default {
     NMenu,
     FileExplorer
   },
+  methods:{
+    // 获取可用的根目录
+    fetchRoot(){
+      let that = this
+      strategy.query().then(res =>{
+        let arr = res.data
+
+        if(arr===undefined || arr.length<=0){
+          return
+        }
+
+        that.curRoot = arr[0].root
+        MenuOption[0].children = []
+
+        for (let i = 0; i < arr.length; i++) {
+          MenuOption[0].children.push({
+            label: arr[i].name,
+            href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+            key: 'root-'+arr[i].root,
+            data: arr[i].root
+          })
+        }
+
+      })
+    },
+    handleMenuSelect(key,ob){
+      if(key.substr(0,4)==="root"){
+        this.fileData.root = ob.data
+      }
+    },
+  },
+  mounted() {
+    this.fetchRoot()
+  },
+  activated() {
+    this.fetchRoot()
+  },
   setup(){
     // 响应语言变化
     watch(curLang, () => {
@@ -119,7 +152,8 @@ export default {
     return{
       collapsed: ref(false),
       menuOptions: MenuOption,
-      curLang
+      curLang,
+      fileData,
     }
   }
 }

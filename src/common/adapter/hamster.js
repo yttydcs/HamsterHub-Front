@@ -8,8 +8,6 @@ const successCode = 0; // 表示成功
 
 export default {
     judgeLoginCode(code){
-        console.log(code === successCode)
-
         return code === successCode;
     },
     setLoginDate(name,res){
@@ -52,8 +50,6 @@ export default {
             fileList.file[i].other["rfileId"] = content[i]["rfileId"]
 
         }
-        console.log("h")
-        console.log(fileList)
     }
 
 }

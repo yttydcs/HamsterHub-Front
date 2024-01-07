@@ -19,6 +19,7 @@ const service = axios.create(config)
 
 service.defaults.headers["Content-Type"] = "application/x-www-form-urlencoded"
 service.defaults.headers.common["Content-Type"] = "application/x-www-form-urlencoded"
+// service.defaults.headers["Authorization"] = loginData.loginKey.loginKeyValue
 
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();

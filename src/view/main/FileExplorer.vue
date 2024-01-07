@@ -1,5 +1,5 @@
 <template>
-  <div class="explorer-box" ref="containerRef">
+  <div class="explorer-box" ref="containerRef" @dragover.prevent @drop.prevent="handleDrop">
     <div class="file-path">
 
         <n-breadcrumb class="path-breadcrumb" >
@@ -51,7 +51,7 @@
 
 <script>
 import {NBreadcrumb, NBreadcrumbItem, NLayout, NIcon, NSpace, useThemeVars, NButton} from "naive-ui";
-import {ref, computed} from "vue";
+import {ref, computed, watch} from "vue";
 
 import FileList from "@/view/main/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
@@ -70,6 +70,7 @@ import {
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
+import curLang from "@/common/lang";
 const _adapters = [hamster, alist];
 
 export default {
@@ -103,7 +104,7 @@ export default {
       const adapterOption = 0;
       const that = this;
       if(adapterOption === 0){
-        file[adapterOption].getFile("1","0")
+        file[adapterOption].getFile(fileData.root,"0")
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
               that.adapters[adapterOption].setFileData(res)
@@ -121,6 +122,28 @@ export default {
 
 
     },
+    async handleDrop(event){
+
+      event.preventDefault();
+      console.log(event.dataTransfer.files)
+      const  files = event.dataTransfer.files;
+      for (let i = 0; i < files.length; i++) {
+        await file[0].uploadFile(this.fileData.root,this.curParent,"",files[i])
+      }
+
+
+    },
+  },
+  watch:{
+    fileData:{
+      handler(val,oldVal){
+        if(val.root !== this.curRoot){
+          this.getFileData()
+          this.curRoot = val.root
+        }
+      },
+      deep: true
+    }
   },
   mounted() {
     this.getFileData()
@@ -137,7 +160,9 @@ export default {
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
       fileData,
-      adapters:_adapters
+      adapters:_adapters,
+      curRoot:"0",
+      curParent:"0"
     }
   }
 }

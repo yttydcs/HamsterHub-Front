@@ -21,6 +21,7 @@ import { reactive } from "vue";
 export const fileList = reactive({
     device: 1, // 描述访问的是哪个后台，如hamster或者alist
     writable:false,
+    root: "1",
     path: [],
     file: []
 });
