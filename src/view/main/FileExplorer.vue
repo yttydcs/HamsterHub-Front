@@ -5,7 +5,7 @@
         <n-breadcrumb class="path-breadcrumb" >
           <n-breadcrumb-item>
             <n-icon :component="HomeOutline" @click="pathClick(-1)" /> </n-breadcrumb-item>
-          <n-breadcrumb-item v-for="(path,index) in fileData.path" :key="index" @click="pathClick(index)">{{ path }}</n-breadcrumb-item>
+          <n-breadcrumb-item v-for="(path,index) in fileData.path" :key="index" @click="pathClick(index)">{{ path["label"] }}</n-breadcrumb-item>
         </n-breadcrumb>
 
       <div class="path-control">
@@ -34,7 +34,7 @@
 
 
 
-    <div class="file-list-p">
+    <div class="file-list-p" @contextmenu="handleContextMenuShow">
       <n-layout :native-scrollbar="false" style="height: 100%">
         <file-list
             style="padding-right: 24px"
@@ -43,6 +43,28 @@
 
       </n-layout>
     </div>
+
+    <!--  文件列表的右键菜单  -->
+
+    <n-dropdown
+        placement="bottom-start"
+        trigger="manual"
+        :x="contextMenu.x"
+        :y="contextMenu.y"
+        :options="contextMenu.options"
+        :show="contextMenu.isShow"
+        :on-clickoutside="handleClickOutside"
+        @select="handleContextMenuSelect"
+    />
+
+    <!--  新建文件夹  -->
+    <InputBox
+        title="新建文件夹"
+        v-model:show="inputShow"
+        :confirm-func="handleNewDir"
+        :cancel-func="() =>{this.inputShow=false}"
+    />
+
   </div>
 
 
@@ -50,12 +72,12 @@
 </template>
 
 <script>
-import {NBreadcrumb, NBreadcrumbItem, NLayout, NIcon, NSpace, useThemeVars, NButton} from "naive-ui";
-import {ref, computed, watch} from "vue";
+import {NBreadcrumb, NBreadcrumbItem, NLayout, NIcon, NSpace, useThemeVars, NButton, NDropdown} from "naive-ui";
+import {ref, computed, watch, reactive, nextTick } from "vue";
 
 import FileList from "@/view/main/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
-import { fileList as fileData } from "@/common/fileList"
+import {fileList as fileData, getCurPathNode, getPathString, getCurRoot, popPathTo} from "@/common/fileList"
 import file from "@/api/file"
 
 
@@ -70,8 +92,14 @@ import {
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
+
 import curLang from "@/common/lang";
 const _adapters = [hamster, alist];
+
+import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "@/common/fileContextMenuOption";
+
+import InputBox from "@/components/common/InputBox.vue";
+
 
 export default {
   name: 'mainLayout',
@@ -93,7 +121,9 @@ export default {
     NSpace,
     ArrowClockwise24Regular,
     AppsListDetail24Regular,
-    AppFolder24Regular
+    AppFolder24Regular,
+    NDropdown,
+    InputBox,
   },
   methods:{
     pathClick(index){
@@ -101,38 +131,83 @@ export default {
       this.getFileData()
     },
     getFileData(){
-      const adapterOption = 0;
+      const adapterOption = fileData.device;
       const that = this;
       if(adapterOption === 0){
-        file[adapterOption].getFile(fileData.root,"0")
+        this.curParent = getCurPathNode().id
+        file[adapterOption].getFile(getCurRoot(),this.curParent)
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
               that.adapters[adapterOption].setFileData(res)
           }
         })
       }else if(adapterOption === 1){
-        file[adapterOption].getFile("/"+fileData.path.join("/"),undefined,undefined,undefined,undefined,1)
+        file[adapterOption].getFile(getPathString(),undefined,undefined,undefined,undefined,1)
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
               that.adapters[adapterOption].setFileData(res)
             }
           })
       }
-
-
-
     },
     async handleDrop(event){
-
       event.preventDefault();
-      console.log(event.dataTransfer.files)
       const  files = event.dataTransfer.files;
       for (let i = 0; i < files.length; i++) {
         await file[0].uploadFile(this.fileData.root,this.curParent,"",files[i])
       }
-
-
     },
+    handleContextMenuShow(event){
+      // 阻止默认行为
+      event.preventDefault();
+
+      // 仅打开部分，其他选项需要选中文件。
+      openMenuByCondition(0)
+
+      // 使其具备一定的关闭效果
+      this.contextMenu.isShow = false
+      nextTick().then(() => {
+        this.contextMenu.isShow = true
+        this.contextMenu.x = event.clientX;
+        this.contextMenu.y = event.clientY;
+      });
+    },
+    handleContextMenuSelect(key){
+      this.closeContextMenu()
+      this.invokeMenuHandle(key)
+    },
+    handleClickOutside() {
+      this.closeContextMenu()
+    },
+    closeContextMenu(){
+      this.contextMenu.isShow = false;
+      closeAllMenu()
+    },
+    invokeMenuHandle(key){
+      console.log(key)
+      switch(key){
+        case "newDir":
+          this.inputShow = true
+          break;
+        case "delete":
+          this.handleDelete(key)
+          break;
+
+      }
+    },
+    async handleNewDir(value){ // 执行文件夹创建
+      this.inputShow = false
+      console.log(fileData.root,this.curRoot)
+      await file[0].mkDir(fileData.root,this.curParent,value)
+      this.getFileData()
+    },
+    async handleDelete(key){ // 执行文件删除
+      let aim = fileContextMenuOption[findByKey(key)].data;
+      let vFile = fileData.file[aim];
+      let fileId = vFile.other.id
+      await file[0].delete(fileId)
+      this.getFileData()
+    }
   },
   watch:{
     fileData:{
@@ -162,7 +237,14 @@ export default {
       fileData,
       adapters:_adapters,
       curRoot:"0",
-      curParent:"0"
+      curParent:"0",
+      contextMenu:reactive({
+        isShow:false,
+        options:fileContextMenuOption,
+        x:0,
+        y:0,
+      }),
+      inputShow:ref(false),
     }
   }
 }

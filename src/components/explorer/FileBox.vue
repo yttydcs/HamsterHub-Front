@@ -3,10 +3,12 @@
        :class="[fileSelect? 'file-selected' : 'file-unselected']"
        @click="fileClick(fileIndex)"
        @dblclick="dbClick(fileIndex)"
+       @contextmenu="e=>handleContextMenuShow(e,fileIndex)"
   >
 
     <div class="file-img ">
-      <img :src=fileImgUrl alt="">
+<!--      <img src={{ fileImgUrl===""?"45454":fileImgUrl }} alt="">-->
+      <img class="iconColor" src="/static/img/file/文件.svg" alt="">
     </div>
 
     <div class="file-name switchTheme">
@@ -33,9 +35,9 @@
 
 <script>
 import {NLayout, NLayoutSider, NH2, NMenu, NIcon, NButton, useThemeVars} from "naive-ui";
-import {computed, h, ref} from "vue";
+import {computed, h, nextTick, ref} from "vue";
 import {PersonOutline,Menu as DetailIcon} from "@vicons/ionicons5";
-
+import {fileContextMenuOption,openMenuByCondition} from "@/common/fileContextMenuOption";
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
@@ -55,11 +57,15 @@ export default {
     fileClick: Function,
     dbClick: Function,
   },
+  methods:{
+    handleContextMenuShow(event,data){
+      // 阻止默认事件
+      event.preventDefault();
+      openMenuByCondition(1,data)
+    },
+  },
   setup(){
     let theme = useThemeVars();
-    // let borderColor = computed(() => theme.value.borderColor);
-    // console.log(this.fileSelect)
-
     return{
       borderColor : computed(() => theme.value.borderColor),
       borderHover : computed(() => theme.value.primaryColorHover),
@@ -145,6 +151,10 @@ export default {
 
 .switchTheme{
   transition:border 0.3s v-bind(cubicBezierEaseInOut);
+}
+
+.iconColor{
+  fill: #2c3e50;
 }
 
 </style>

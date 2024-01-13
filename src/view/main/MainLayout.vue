@@ -118,7 +118,6 @@ export default {
         for (let i = 0; i < arr.length; i++) {
           MenuOption[0].children.push({
             label: arr[i].name,
-            href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
             key: 'root-'+arr[i].root,
             data: arr[i].root
           })

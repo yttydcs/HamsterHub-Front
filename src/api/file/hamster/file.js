@@ -14,7 +14,7 @@ export default {
             root:root,
             parentId:parentId,
             page:page,
-            per_page:pageLimit,
+            limit:pageLimit,
             refresh:refresh
         }
 
@@ -46,6 +46,39 @@ export default {
             headers: {'Content-Type': 'multipart/form-data'}
         })
 
+    },
+
+    mkDir(root="0",parentId="0",name=""){
+        let u = "/api/mkdir"
+
+        // 构造提交数据
+        let d = {
+            root:root,
+            parentId:parentId,
+            name:name
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
+    },
+
+
+    delete(aim){
+        let u = "/api/delete"
+
+        // 构造提交数据
+        let d = {
+            vFileId:aim,
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
     }
 
 }

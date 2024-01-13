@@ -35,7 +35,7 @@ export default {
         for (let i = 0; i < content.length; i++) {
             fileList.file[i] = {}
             fileList.file[i].name = content[i].name
-            fileList.file[i].is_dir = (content[i].is_dir===1)
+            fileList.file[i].is_dir = (content[i]["type"]===0)
             fileList.file[i].selected = false
             fileList.file[i].modified = content[i].modified
             fileList.file[i].size = content[i].size

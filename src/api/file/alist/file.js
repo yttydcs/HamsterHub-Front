@@ -23,6 +23,8 @@ export default {
             url:u,
             data:d
         })
-    }
+    },
+
+
 
 }
