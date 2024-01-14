@@ -3,7 +3,8 @@ import axios from "axios";
 import loginData,{ saveLoginData } from "@/common/loginData";
 
 let config = {
-    baseURL: "http://127.0.0.1:8080/",
+
+    baseURL: process.env.VUE_APP_URL,
     // 请求超时时间
     timeout: 10000,
     // 每次请求携带cookie
@@ -24,6 +25,7 @@ service.defaults.headers.common["Content-Type"] = "application/x-www-form-urlenc
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 let cancel;
+
 service.interceptors.request.use(
     config => {
         config.headers.set("Authorization",loginData.loginKey.loginKeyValue);

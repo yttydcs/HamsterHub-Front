@@ -9,6 +9,7 @@
                  :file-select="file.selected"
                  :file-click="fileClick"
                  :db-click="openFile"
+                 :isDir="fileList.file[index].is_dir"
         />
       </n-grid-item>
     </n-grid>

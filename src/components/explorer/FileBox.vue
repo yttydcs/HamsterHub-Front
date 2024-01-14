@@ -7,8 +7,7 @@
   >
 
     <div class="file-img ">
-<!--      <img src={{ fileImgUrl===""?"45454":fileImgUrl }} alt="">-->
-      <img class="iconColor" src="/static/img/file/文件.svg" alt="">
+      <fileIcon :file-type="iconType" />
     </div>
 
     <div class="file-name switchTheme">
@@ -38,8 +37,13 @@ import {NLayout, NLayoutSider, NH2, NMenu, NIcon, NButton, useThemeVars} from "n
 import {computed, h, nextTick, ref} from "vue";
 import {PersonOutline,Menu as DetailIcon} from "@vicons/ionicons5";
 import {fileContextMenuOption,openMenuByCondition} from "@/common/fileContextMenuOption";
+import fileIcon from "@/components/explorer/FileIcon.vue";
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
+}
+
+const iconTypeIndex = {
+  txt:"text"
 }
 
 export default {
@@ -47,7 +51,8 @@ export default {
   components: {
     NButton,
     DetailIcon,
-    NIcon
+    NIcon,
+    fileIcon
   },
   props:{
     fileIndex:Number,
@@ -56,6 +61,7 @@ export default {
     fileSelect:Boolean,
     fileClick: Function,
     dbClick: Function,
+    isDir: Boolean
   },
   methods:{
     handleContextMenuShow(event,data){
@@ -63,6 +69,25 @@ export default {
       event.preventDefault();
       openMenuByCondition(1,data)
     },
+    getIconTypeByName(name){
+      let arr = name.split(".");
+      if(arr.length <= 1){
+        return "file"
+      }
+
+      let suffix = arr.pop()
+
+      if(iconTypeIndex.hasOwnProperty(suffix)){
+        return iconTypeIndex[suffix]
+      }
+
+      return "file"
+    }
+  },
+  computed: {
+    iconType: function () {
+      return this.isDir?"dir":this.getIconTypeByName(this.fileName);
+    }
   },
   setup(){
     let theme = useThemeVars();
@@ -70,7 +95,7 @@ export default {
       borderColor : computed(() => theme.value.borderColor),
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut
+      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
     }
   }
 }
@@ -151,10 +176,6 @@ export default {
 
 .switchTheme{
   transition:border 0.3s v-bind(cubicBezierEaseInOut);
-}
-
-.iconColor{
-  fill: #2c3e50;
 }
 
 </style>

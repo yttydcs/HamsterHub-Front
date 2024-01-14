@@ -192,6 +192,9 @@ export default {
         case "delete":
           this.handleDelete(key)
           break;
+        case "download":
+          this.handleDownload(key)
+          break;
 
       }
     },
@@ -207,6 +210,16 @@ export default {
       let fileId = vFile.other.id
       await file[0].delete(fileId)
       this.getFileData()
+    },
+    async handleDownload(key){ // 执行文件删除
+      let aim = fileContextMenuOption[findByKey(key)].data;
+      let vFile = fileData.file[aim];
+      let fileId = vFile.other.id
+      // download
+      // console.log(vFile)
+      // console.log(process.env["VUE_APP_URL"]+"api/download?vFileId="+fileId)
+      console.log(file[0].download(fileId,vFile.name))
+
     }
   },
   watch:{

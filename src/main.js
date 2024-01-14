@@ -8,6 +8,7 @@ const app = createApp(App)
 app.use(router).mount('#app')
 
 
+console.log(process.env,'process.env')
 
 
 // // 指定全局引入的组件
