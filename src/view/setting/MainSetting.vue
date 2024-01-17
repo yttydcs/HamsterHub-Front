@@ -10,8 +10,13 @@
         <n-list-item v-for="(item,itemIndex) in group.list" :key="itemIndex">
           <n-thing :title="item.title" :description="item.description" />
           <template #suffix>
-            <n-switch :round="false" v-if="item.valueType === 'boolean' " />
+            <n-switch :round="false"
+                      v-if="item.valueType === 'boolean'"
+                      @update:value="item.handle"
+                      v-model:value="item.data"
 
+            />
+            <!--                      -->
             <n-button v-if="item.type === 'group' ">
               Setting
             </n-button>

@@ -9,21 +9,15 @@
 
 <script>
 import navTop from "@/components/nav/NavTop.vue";
-import {NLayout, NLayoutHeader, darkTheme, useMessage} from "naive-ui";
-import {theme} from "@/common/theme";
+import {NLayout, NLayoutHeader} from "naive-ui";
+import {switchTheme} from "@/common/theme";
 
 
 
 export default {
   name: 'mainPage',
   methods:{
-    switchTheme: function (){
-      if(this.theme.data !== null){
-        this.theme.data = null;
-      }else{
-        this.theme.data = darkTheme;
-      }
-    }
+    switchTheme: switchTheme
   },
   components: {
     navTop,
@@ -34,8 +28,6 @@ export default {
     // 设置message对象
     // window.$message = useMessage()
     return{
-      darkTheme,
-      theme
     }
   }
 }

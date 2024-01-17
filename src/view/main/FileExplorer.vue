@@ -45,7 +45,6 @@
     </div>
 
     <!--  文件列表的右键菜单  -->
-
     <n-dropdown
         placement="bottom-start"
         trigger="manual"
@@ -65,6 +64,37 @@
         :cancel-func="() =>{this.inputShow=false}"
     />
 
+    <!--  新建分享  -->
+
+    <n-modal
+        v-model:show="shareBoxShow"
+        class="alertBox"
+        preset="card"
+        :title="'分享 '+ shareModel.name"
+        size="medium"
+    >
+      <n-form v-model:model="shareModel" label-placement="left">
+        <n-form-item path="key" label="提取码">
+          <n-input  v-model:value="shareModel.key" type="text" />
+        </n-form-item>
+
+        <n-form-item path="key" label="过期时间">
+          <n-input  v-model:value="shareModel.key" type="text" />
+        </n-form-item>
+      </n-form>
+
+      <n-space class="=control-btn" align="stretch" justify="end">
+
+        <n-button type="primary" block secondary strong @click="confirmShare" >
+          确定
+        </n-button>
+        <n-button  type="primary" block secondary strong @click="()=>{shareBoxShow = false}">
+          取消
+        </n-button>
+      </n-space>
+
+    </n-modal>
+
   </div>
 
 
@@ -72,14 +102,25 @@
 </template>
 
 <script>
-import {NBreadcrumb, NBreadcrumbItem, NLayout, NIcon, NSpace, useThemeVars, NButton, NDropdown} from "naive-ui";
+import {
+  NBreadcrumb,
+  NBreadcrumbItem,
+  NLayout,
+  NIcon,
+  NSpace,
+  useThemeVars,
+  NButton,
+  NDropdown,
+  NInput,
+  NForm, NFormItem, NModal
+} from "naive-ui";
 import {ref, computed, watch, reactive, nextTick } from "vue";
 
 import FileList from "@/view/main/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import {fileList as fileData, getCurPathNode, getPathString, getCurRoot, popPathTo} from "@/common/fileList"
 import file from "@/api/file"
-
+import share from "@/api/share";
 
 
 import {
@@ -112,6 +153,7 @@ export default {
     }
   },
   components: {
+    NModal, NFormItem, NForm, NInput,
     NButton,
     NLayout,
     FileList,
@@ -187,40 +229,63 @@ export default {
       console.log(key)
       switch(key){
         case "newDir":
-          this.inputShow = true
+          this.inputShow = true;
           break;
         case "delete":
-          this.handleDelete(key)
+          this.handleDelete(key);
           break;
         case "download":
-          this.handleDownload(key)
+          this.handleDownload(key);
           break;
+        case "share":
+          this.handleShare(key);
+          break;
+
 
       }
     },
+    getFileByKey(key){
+      let aim = fileContextMenuOption[findByKey(key)].data;
+      return fileData.file[aim];
+    },
     async handleNewDir(value){ // 执行文件夹创建
-      this.inputShow = false
-      console.log(fileData.root,this.curRoot)
-      await file[0].mkDir(fileData.root,this.curParent,value)
-      this.getFileData()
+      this.inputShow = false;
+      console.log(fileData.root,this.curRoot);
+      await file[0].mkDir(fileData.root,this.curParent,value);
+      this.getFileData();
     },
     async handleDelete(key){ // 执行文件删除
-      let aim = fileContextMenuOption[findByKey(key)].data;
-      let vFile = fileData.file[aim];
-      let fileId = vFile.other.id
-      await file[0].delete(fileId)
-      this.getFileData()
+      let vFile = this.getFileByKey(key);
+      let fileId = vFile.other.id;
+      await file[0].delete(fileId);
+      this.getFileData();
     },
     async handleDownload(key){ // 执行文件删除
-      let aim = fileContextMenuOption[findByKey(key)].data;
-      let vFile = fileData.file[aim];
-      let fileId = vFile.other.id
+      let vFile = this.getFileByKey(key);
+      let fileId = vFile.other.id;
       // download
       // console.log(vFile)
       // console.log(process.env["VUE_APP_URL"]+"api/download?vFileId="+fileId)
       console.log(file[0].download(fileId,vFile.name))
 
-    }
+    },
+
+    async handleShare(key){ // 执行文件删除
+      let vFile = this.getFileByKey(key);
+      this.shareModel.name = vFile.name;
+      this.shareModel.vFileId = vFile.other.id;
+      this.shareBoxShow = true;
+      // console.log(file[0].download(fileId,vFile.name))
+
+    },
+
+    async confirmShare(){
+      console.log(this.shareModel);
+      await share.create(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
+      this.shareModel.key = "";
+      this.shareModel.expiry = "";
+      this.shareBoxShow = false;
+    },
   },
   watch:{
     fileData:{
@@ -258,6 +323,13 @@ export default {
         y:0,
       }),
       inputShow:ref(false),
+      shareBoxShow:ref(false),
+      shareModel:reactive({
+        name:"",
+        vFileId:"",
+        key:"",
+        expiry:""
+      })
     }
   }
 }

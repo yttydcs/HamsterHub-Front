@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import {deviceConfig} from "@/common/curd/deviceConfig";
 import {strategyConfig} from "@/common/curd/strategyConfig";
+import {setDark} from "@/common/theme";
 
 /*  用于自动生成setting界面
 *
@@ -30,8 +31,6 @@ import {strategyConfig} from "@/common/curd/strategyConfig";
  */
 
 
-
-
 export const optionList = reactive([
     {
         type: "group",
@@ -40,26 +39,29 @@ export const optionList = reactive([
         list:[
             {
                 type: "item",
-                title: "个人选项",
-                description: "asd",
+                title: "黑暗模式",
+                description: "黑黑黑",
                 key: "settingKey",
                 valueType: "boolean",
                 value: "",
-            },{
-                type: "item",
-                title: "个人选项2",
-                description: "asd",
-                key: "settingKey",
-                valueType: "input",
-                value: "",
-            },{
-                type: "item",
-                title: "个人选项3",
-                description: "asd",
-                key: "settingKey",
-                valueType: "curd",
-                value: "",
-            },
+                data: false,
+                handle:setDark,
+            }
+            // ,{
+            //     type: "item",
+            //     title: "个人选项2",
+            //     description: "asd",
+            //     key: "settingKey",
+            //     valueType: "input",
+            //     value: "",
+            // },{
+            //     type: "item",
+            //     title: "个人选项3",
+            //     description: "asd",
+            //     key: "settingKey",
+            //     valueType: "curd",
+            //     value: "",
+            // },
         ]
     },
     {
