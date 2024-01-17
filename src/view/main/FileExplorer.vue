@@ -240,8 +240,9 @@ export default {
         case "share":
           this.handleShare(key);
           break;
-
-
+        case "copyAddress":
+          this.handleCopyUrl(key);
+          break;
       }
     },
     getFileByKey(key){
@@ -260,23 +261,24 @@ export default {
       await file[0].delete(fileId);
       this.getFileData();
     },
-    async handleDownload(key){ // 执行文件删除
+    async handleDownload(key){ // 执行文件下载
       let vFile = this.getFileByKey(key);
       let fileId = vFile.other.id;
-      // download
-      // console.log(vFile)
-      // console.log(process.env["VUE_APP_URL"]+"api/download?vFileId="+fileId)
-      console.log(file[0].download(fileId,vFile.name))
+
+
+      await file[0].download(fileId,vFile.name)
 
     },
-
+    async handleCopyUrl(key){ // 执行文件下载
+      let vFile = this.getFileByKey(key);
+      let fileId = vFile.other.id;
+      await file[0].copyUrl(fileId)
+    },
     async handleShare(key){ // 执行文件删除
       let vFile = this.getFileByKey(key);
       this.shareModel.name = vFile.name;
       this.shareModel.vFileId = vFile.other.id;
       this.shareBoxShow = true;
-      // console.log(file[0].download(fileId,vFile.name))
-
     },
 
     async confirmShare(){
