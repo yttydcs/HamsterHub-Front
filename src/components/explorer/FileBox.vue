@@ -101,7 +101,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .file-unselected{
   border-color: v-bind(borderColor);

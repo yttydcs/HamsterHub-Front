@@ -117,12 +117,12 @@ import {
 import {ref, computed, watch, reactive, nextTick } from "vue";
 
 import FileList from "@/view/main/FileList.vue";
-import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
+
 import {fileList as fileData, getCurPathNode, getPathString, getCurRoot, popPathTo} from "@/common/fileList"
 import file from "@/api/file"
 import share from "@/api/share";
 
-
+import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import {
   ArrowClockwise24Regular,
   AppsListDetail24Regular,
