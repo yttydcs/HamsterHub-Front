@@ -35,7 +35,15 @@
 
         <n-divider vertical />
 
-        <router-link to="/">
+        <router-link to="/share" v-if="loginData.loginState">
+          <n-button text style="font-size: 24px" >
+            <n-icon>
+              <ShareSocialOutline />
+            </n-icon>
+          </n-button>
+        </router-link>
+
+        <router-link to="/" v-if="loginData.loginState">
           <n-button text style="font-size: 24px" >
             <n-icon>
               <FolderOpenOutline />
@@ -78,6 +86,7 @@ import {
   SearchOutline,
   LanguageOutline,
   FolderOpenOutline,
+  ShareSocialOutline,
 } from "@vicons/ionicons5";
 
 import  loginData  from "@/common/loginData"
@@ -99,6 +108,7 @@ export default defineComponent({
     PersonOutline,
     LanguageOutline,
     FolderOpenOutline,
+    ShareSocialOutline,
   },
   props: {
     switchThemeFunc: Function

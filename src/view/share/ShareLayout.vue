@@ -8,7 +8,8 @@
       >
         <!--    todo:icon    -->
         <div class="item-name">name</div>
-        <div class="action">do</div>
+        <div class="item-ticket">ticket</div>
+        <div class="item-action">do</div>
       </div>
     </div>
 
@@ -19,8 +20,8 @@
 
 <script>
 import {NDataTable, useThemeVars} from "naive-ui";
-import {computed, ref} from "vue";
-
+import {computed, reactive, ref} from "vue";
+import share from "@/api/share";
 
 
 
@@ -33,9 +34,20 @@ export default {
 
   },
   methods:{
+    flushData(){
+      let that = this
+      share.query().then((res)=>{
+        console.log(res)
 
+      })
+    },
   },
-
+  mounted() {
+    this.flushData()
+  },
+  activated() {
+    this.flushData()
+  },
   setup(){
     let theme = useThemeVars();
     return{
@@ -44,12 +56,28 @@ export default {
       borderSelected : computed(() => theme.value.primaryColorSuppl),
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
       fileSelect: false,
+      shareListData:reactive({
+        data:{},
+      }),
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.shareLayout{
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+@media only screen and (max-width: 900px){
+  .shareLayout{
+    padding: 0 0;
+    width: 100%;
+  }
+}
+
 .item{
 
 }
@@ -72,25 +100,39 @@ export default {
 }
 
 .item-box{
-  display: inline-block;
+  //display: inline-block;
   border-width: 1px;
   border-style: solid;
-  //color:rgba(255, 255, 255, 0.82);
   border-radius: 5px;
   width: 100%;
-
   height: 40px;
   line-height: 40px;
   text-align: left;
-  overflow: hidden;
+  //overflow: hidden;
   position: relative;
-}
-
-.item-name{
-  margin-left: 5px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .switchTheme{
   transition:border 0.3s v-bind(cubicBezierEaseInOut);
 }
+
+.item-name{
+  margin-left: 5px;
+  flex:1 1 100px
+}
+
+.item-ticket{
+  margin-left: 5px;
+  flex:1 1 100px
+}
+
+.item-action{
+  margin-left: 5px;
+  flex:0 0 150px
+
+}
+
+
 </style>

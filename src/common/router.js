@@ -4,6 +4,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main/MainLayout.vue";
 import MainSetting from "@/view/setting/MainSetting.vue";
+import ShareLayout from "@/view/share/ShareLayout.vue";
 import Test from "@/view/test/test.vue"
 
 
@@ -24,6 +25,10 @@ const routes = [
             {
                 path: 'setting',
                 component: MainSetting
+            },
+            {
+                path: 'share',
+                component: ShareLayout
             },
             {
                 path: 'test',
