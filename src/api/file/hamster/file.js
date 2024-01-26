@@ -1,5 +1,5 @@
 import axois from "@/axios"
-
+import download from "@/common/download";
 // 用于复制
 function copyText(str){
     const input = document.createElement('input');
@@ -110,63 +110,17 @@ export default {
             return ""
         }
 
-        return process.env["VUE_APP_URL"]+"api" + data
+        return  data
     },
 
     async download(id){
-
         let url =await this.getDownloadUrl(id);
-
-        if(url === ""){
-            return;
-        }
-
-        let iframe = document.createElement('iframe')
-
-        // 防止影响页面，并设置属性
-        iframe.style.display = 'none'
-        iframe.style.height = 0
-        iframe.src = url
-
-        // 加入dom树
-        document.body.appendChild(iframe)
-        setTimeout(function () {
-            document.body.removeChild(iframe)
-        }, 100);
-
-
-
-
-        // axois[type]({
-        //     responseType: 'blob',
-        //     method:"get",
-        //     url:u,
-        //     params:d,
-        //     headers: {'Content-Type': 'application/octet-stream'}
-        // }).then(res =>{
-        //     // console.log(res)
-        //     // if(!res.data){
-        //     //     return
-        //     // }
-        //
-        //     let url = window.URL.createObjectURL(res)
-        //     let a = document.createElement('a')
-        //     a.style.display = 'none'
-        //     a.href = url
-        //     a.setAttribute('download',name)
-        //     document.body.appendChild(a)
-        //     a.click() //执行下载
-        //     window.URL.revokeObjectURL(a.href) //释放url
-        //     document.body.removeChild(a) //释放标签
-        //
-        // })
+        download.url(url)
     },
-
-
 
     async copyUrl(id){
         let url =await this.getDownloadUrl(id);
-        copyText(url);
+        copyText(download.toAbsolute(url));
     }
 
 }

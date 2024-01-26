@@ -1,4 +1,5 @@
 import axois from "@/axios"
+import download from "@/common/download";
 
 let type = 0;
 export default {
@@ -74,6 +75,34 @@ export default {
             data:d,
         })
 
+    },
+
+    async getDownloadUrl(ticket,key){
+        let u = "/api/downloadShare"
+
+        // 构造提交数据
+        let d = {
+            "ticket": ticket,
+
+        }
+
+        if(key){
+            d.key = key
+        }
+
+        let data = (await axois[type]({
+            method:"get",
+            url:u,
+            params:d,
+        })).data
+
+        return data
+
+    },
+
+    async download(ticket,key){
+        let url = await this.getDownloadUrl(ticket,key);
+        download.url(url)
     },
 
 

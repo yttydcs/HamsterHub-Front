@@ -79,7 +79,7 @@
         </n-form-item>
 
         <n-form-item path="key" label="过期时间">
-          <n-input  v-model:value="shareModel.key" type="text" />
+          <n-input  v-model:value="shareModel.expiry" type="text" />
         </n-form-item>
       </n-form>
 
@@ -192,11 +192,12 @@ export default {
           })
       }
     },
-    async handleDrop(event){
+    async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  files = event.dataTransfer.files;
       for (let i = 0; i < files.length; i++) {
         await file[0].uploadFile(this.fileData.root,this.curParent,"",files[i])
+        this.getFileData()
       }
     },
     handleContextMenuShow(event){
@@ -264,17 +265,14 @@ export default {
     async handleDownload(key){ // 执行文件下载
       let vFile = this.getFileByKey(key);
       let fileId = vFile.other.id;
-
-
       await file[0].download(fileId,vFile.name)
-
     },
-    async handleCopyUrl(key){ // 执行文件下载
+    async handleCopyUrl(key){ // 执行复制url
       let vFile = this.getFileByKey(key);
       let fileId = vFile.other.id;
       await file[0].copyUrl(fileId)
     },
-    async handleShare(key){ // 执行文件删除
+    async handleShare(key){ // 打开分享窗口
       let vFile = this.getFileByKey(key);
       this.shareModel.name = vFile.name;
       this.shareModel.vFileId = vFile.other.id;
