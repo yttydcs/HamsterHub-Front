@@ -115,6 +115,7 @@ export default {
   width: 300px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .msg{
