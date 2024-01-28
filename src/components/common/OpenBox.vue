@@ -78,8 +78,6 @@ export default {
   }
 }
 
-
-
 .file-body{
   border-width: 1px;
   border-style: solid;
@@ -89,17 +87,15 @@ export default {
 }
 
 .top{
-  display: flex; /* 使用 Flexbox 布局 */
-  align-items: center; /* 垂直居中对齐 */
-  justify-content: space-between; /* 两侧对齐 */
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid v-bind(borderColor);
   height: 40px;
-  line-height: 40px;
+  /* line-height: 40px; 会导致flex居中异常 */
   padding-left: 20px;
   background-color: rgba(255,255,255,0.1);
   overflow: hidden;
-
 }
 
 .preview{
@@ -115,10 +111,14 @@ export default {
   margin: 0 auto;
 }
 
+.title{
+  width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .msg{
   padding-left: 20px;
-/*display: inline-block;
-width: calc(100% - 307px);*/
   flex: 1;
   opacity: v-bind(opacity2);
 }
@@ -126,10 +126,5 @@ width: calc(100% - 307px);*/
 .action{
   margin-right: 3px;
 }
-
-.btn{
-  vertical-align: middle;
-}
-
 
 </style>
