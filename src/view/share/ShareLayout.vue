@@ -36,6 +36,15 @@
               </n-icon>
             </n-button>
 
+            <router-link :to="`/s/`+item.ticket+`?key=`+item.key">
+              <n-button class="button" text >
+                <n-icon>
+                  <OpenOutline />
+                </n-icon>
+              </n-button>
+            </router-link>
+
+
           </n-space>
 
 
@@ -52,7 +61,7 @@
 import {NButton, NDataTable, NIcon, NSpace, useThemeVars} from "naive-ui";
 import {computed, reactive, ref} from "vue";
 import share from "@/api/share";
-import {BanOutline, CloudDownloadOutline} from "@vicons/ionicons5";
+import {BanOutline, CloudDownloadOutline, OpenOutline} from "@vicons/ionicons5";
 
 
 
@@ -67,7 +76,7 @@ export default {
     NIcon,
     BanOutline,
     CloudDownloadOutline,
-
+    OpenOutline,
   },
   methods:{
     flushData(){

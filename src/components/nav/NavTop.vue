@@ -139,6 +139,7 @@ export default defineComponent({
   height: 60px;
   line-height: 60px;
   text-align: left;
+  overflow: hidden;
 }
 
 .nav-logo,.nav-left,.nav-right {

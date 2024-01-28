@@ -5,6 +5,7 @@ import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main/MainLayout.vue";
 import MainSetting from "@/view/setting/MainSetting.vue";
 import ShareLayout from "@/view/share/ShareLayout.vue";
+import SharePage from "@/view/share/SharePage.vue";
 import Test from "@/view/test/test.vue"
 
 
@@ -29,6 +30,10 @@ const routes = [
             {
                 path: 'share',
                 component: ShareLayout
+            },
+            {
+                path: 's/:ticket',
+                component: SharePage
             },
             {
                 path: 'test',

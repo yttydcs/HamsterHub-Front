@@ -101,7 +101,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .file-unselected{
   border-color: v-bind(borderColor);
@@ -140,6 +140,13 @@ export default {
   overflow: hidden;
   margin: 0;
 }
+
+.file-img svg{
+  transform: translate(50%,50%);
+  width: 50%;
+  height: 50%;
+}
+
 
 .file-img img{
   width: 100%;

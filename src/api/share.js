@@ -22,12 +22,15 @@ export default {
     },
 
     getShare(ticket,key){
-        let u = "/api/queryShares"
+        let u = "/api/queryShare"
 
         // 构造提交数据
         let d = {
             ticket:ticket,
-            key:key
+        }
+
+        if(!key){
+            d["key"]="";
         }
 
         return axois[type]({
