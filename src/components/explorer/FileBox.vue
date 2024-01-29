@@ -6,7 +6,7 @@
        @contextmenu="e=>handleContextMenuShow(e,fileIndex)"
   >
 
-    <div class="file-img ">
+    <div class="file-img switchTheme">
       <fileIcon :file-type="iconType" />
     </div>
 

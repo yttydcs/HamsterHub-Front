@@ -9,7 +9,7 @@
           {{msg}}
         </div>
         <div class="action">
-          <n-button quaternary class="btn">
+          <n-button quaternary class="btn" @click="handleDownload(url)">
             <template #icon>
               <n-icon>
                 <CloudDownloadOutline />
@@ -25,8 +25,23 @@
       </div>
       <div class="preview">
         <!--    当没有可用的预览时    -->
-        <div class="file-img">
+        <div class="file-img" v-if="previewType === 'file'">
           <fileIcon file-type="file" />
+        </div>
+
+        <!--    普通文本的预览    -->
+        <div class="file-text" v-if="previewType === 'text'">
+          {{text}}
+        </div>
+
+        <!--    todo:md文本的预览    -->
+<!--        <div class="file-text" v-if="previewType === 'text'">-->
+<!--          {{text}}-->
+<!--        </div>-->
+
+        <!--    普通视频的预览    -->
+        <div class="file-text" v-if="previewType === 'video'">
+          <video :src="url" controls style="width: 100%"></video>
         </div>
 
       </div>
@@ -43,7 +58,14 @@ import {useThemeVars} from "naive-ui";
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import { NButton, NIcon } from "naive-ui";
 import { CloudDownloadOutline } from "@vicons/ionicons5";
-import calc from "@/common/calc";
+import download from "@/common/download"
+
+const openTypeIndex = {
+  txt:"text",
+  md:"md",
+  mp4:"video",
+}
+
 export default {
   name: 'OpenBox',
   components: {
@@ -55,13 +77,67 @@ export default {
   props: {
     title:String,
     msg:String,
+    url:String,
+  },
+  computed:{
+    previewType(){
+      let openType = this.getOpenTypeByName(this.title)
+      this.handlePreviewIndex(openType)
+      return openType;
+    },
+  },
+  methods:{
+    handleDownload(url){
+      console.log(url)
+      download.url(url)
+    },
+    getOpenTypeByName(name){
+      if(!name){
+        return "file"
+      }
 
+      let arr = name.split(".");
+      if(arr.length <= 1){
+        return "file"
+      }
+
+      let suffix = arr.pop()
+
+      if(openTypeIndex.hasOwnProperty(suffix)){
+        return openTypeIndex[suffix]
+      }
+
+      return "file"
+    },
+    handlePreviewIndex(openType){
+      switch (openType) {
+        case "text":
+          this.textPreview();
+          break;
+
+      }
+    },
+
+    textPreview(){
+      let that = this
+      download.getText(this.url).then(res=>{
+        if(res){
+          that.text = res;
+        }else{
+          that.text = "";
+        }
+
+      }).catch(err=>{
+        that.text = "";
+      })
+    },
   },
   setup(){
     let theme = useThemeVars();
     return {
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
+      text: ref(""),
     }
   }
 }
@@ -72,7 +148,7 @@ export default {
   width: 100%;
 }
 
-@media only screen and (max-width: 560px) {
+@media only screen and (max-width: 650px) {
   #msg {
     display: none;
   }
@@ -106,9 +182,14 @@ export default {
 .file-img{
   width: 100%;
   height: calc(100% - 40px);
-  max-width: 300px;
+  max-width: 250px;
   overflow: hidden;
   margin: 0 auto;
+}
+
+.file-img svg{
+  width: 100%;
+  height: 100%;
 }
 
 .title{
@@ -119,7 +200,8 @@ export default {
 }
 
 .msg{
-  padding-left: 20px;
+  text-align: right;
+  padding-right: 10px;
   flex: 1;
   opacity: v-bind(opacity2);
 }

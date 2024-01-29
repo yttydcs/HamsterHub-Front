@@ -1,3 +1,4 @@
+import axois from "@/axios";
 
 export default {
     toAbsolute(url){
@@ -15,7 +16,11 @@ export default {
             return;
         }
 
-        let target = this.toAbsolute(url)
+        let target = url
+        if(!url.startsWith("h")){// 如果不是绝对地址需要转为绝对地址
+            target = this.toAbsolute(url)
+        }
+
         let iframe = document.createElement('iframe')
 
         // 防止影响页面，并设置属性
@@ -29,4 +34,21 @@ export default {
             document.body.removeChild(iframe)
         }, 300);
     },
+
+    getText(url){
+
+        let u = url
+
+        // 构造提交数据
+        // let d = {
+        //     vFileId:aim,
+        // }
+
+        return axois[0]({
+            method:"get",
+            url:u,
+            responseType: 'text',
+            withCredentials: true
+        })
+    }
 }

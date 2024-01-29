@@ -1,6 +1,6 @@
 
 import mainLogin from "@/view/login/MainLogin.vue";
-import { createRouter, createWebHashHistory } from 'vue-router';
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main/MainLayout.vue";
 import MainSetting from "@/view/setting/MainSetting.vue";
@@ -49,7 +49,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 })
 export default router

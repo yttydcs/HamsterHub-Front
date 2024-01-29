@@ -22,16 +22,20 @@ export default {
     },
 
     getShare(ticket,key){
-        let u = "/api/queryShare"
+        let u = "/api/queryShareFile"
 
         // 构造提交数据
         let d = {
             ticket:ticket,
         }
 
-        if(!key){
-            d["key"]="";
+        console.log("key",key)
+
+        if(key){
+            d["key"]=key;
         }
+
+        console.log("d",d)
 
         return axois[type]({
             method:"get",
@@ -43,7 +47,7 @@ export default {
 
     create(id,key=null,expiry=""){
 
-        let u = "/api/shareFile"
+        let u = "/api/share"
 
         if(!expiry){
             expiry = 10000
@@ -80,8 +84,8 @@ export default {
 
     },
 
-    async getDownloadUrl(ticket,key){
-        let u = "/api/downloadShare"
+    async getDownloadUrl(ticket,key,vFileId){
+        let u = "/api/getShareDownloadUrl"
 
         // 构造提交数据
         let d = {
@@ -91,6 +95,10 @@ export default {
 
         if(key){
             d.key = key
+        }
+
+        if(vFileId){
+            d.vFileId = vFileId
         }
 
         let data = (await axois[type]({

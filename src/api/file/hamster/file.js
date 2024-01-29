@@ -121,6 +121,8 @@ export default {
     async copyUrl(id){
         let url =await this.getDownloadUrl(id);
         copyText(download.toAbsolute(url));
-    }
+    },
+
+
 
 }

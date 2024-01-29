@@ -3,16 +3,18 @@
     <div class="main">
 <!--      {{ dataRoute.params }}-->
 <!--      {{ shareData.data  }}-->
-      <div class="file">
+      <div class="file" v-if="isExist && unlock">
         <OpenBox
-            v-if="isExist"
             :title="shareData.data.name"
-            :msg="shareData.data.size + ` - ` + shareData.data.created"
+            :msg="shareData.data.size + ` · ` + shareData.data.created"
+            :url="url"
         />
-
       </div>
       <div class="list"></div>
-      <div class="person"></div>
+      <div class="person">
+
+
+      </div>
     </div>
 
 
@@ -30,9 +32,12 @@ import share from "@/api/share";
 import OpenBox from "@/components/common/OpenBox.vue";
 import {BanOutline, CloudDownloadOutline} from "@vicons/ionicons5";
 import calc from "@/common/calc";
+import download from "@/common/download"
 
 
 
+const NONE_KEY = 600008;
+const INCORRECT_KEY = 600009;
 
 
 export default {
@@ -51,14 +56,32 @@ export default {
       console.log(ticket,key);
       let that = this;
       share.getShare(ticket,key).then((res)=>{
-        console.log(res);
-        res.data.size = calc.toSizeString(res.data.size);
-        res.data.created = res.data.created.replace("T","");
-        that.shareData.data = res.data
-        that.isExist=true
+        console.log("res",res);
+        if("data" in res){
+          res.data.size = calc.toSizeString(res.data.size);
+          res.data.created = res.data.created.replace("T"," ");
+          that.shareData.data = res.data
+          that.isExist = true
+          that.unlock = true
+          that.handleUrl(ticket,key)
+        }else{
+          let data = res.response.data;
+          console.log("ddd",data)
+          if(data.code === INCORRECT_KEY || data.code === NONE_KEY){// 验证码错误
+            that.unlock = false;
+          }
+
+        }
       }).catch((err)=>{
         that.isExist=false
-        console.log(err)
+        let data = err;
+        console.log("err",data)
+      })
+    },
+    handleUrl(ticket,key,vFileId){
+      let that = this
+      share.getDownloadUrl(ticket,key,vFileId).then(res=>{
+        that.url = download.toAbsolute(res);
       })
     },
 
@@ -93,7 +116,8 @@ export default {
       }),
       dataRoute: useRoute(),
       isExist:ref(true),
-
+      unlock:ref(true),
+      url:ref("")
     }
   }
 }
