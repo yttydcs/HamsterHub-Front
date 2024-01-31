@@ -138,6 +138,22 @@ export default {
             url:u,
             params:d,
         })
+    },
+
+    moveFile(vFileId,parentId){
+        let u = "/api/move"
+
+        // 构造提交数据
+        let d = {
+            vFileId:vFileId,
+            parentId:parentId
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
     }
 
 

@@ -49,8 +49,6 @@ export async function getCurPathNode(){
     if(fileList.path[fileList.path.length-1].id === "-1"){
         let data = await file.getDetail(fileList.root,getPathStringNoneLast());
 
-
-
         if("data" in data &&"type" in data.data && "id" in data.data &&data.data.type === 0){
             fileList.path[fileList.path.length-1].id = data.data.id
         }

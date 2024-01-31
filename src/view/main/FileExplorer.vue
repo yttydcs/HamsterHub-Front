@@ -65,7 +65,6 @@
     />
 
     <!--  新建分享  -->
-
     <n-modal
         v-model:show="shareBoxShow"
         class="alertBox"
@@ -94,6 +93,16 @@
       </n-space>
 
     </n-modal>
+
+
+    <!--  移动  -->
+    <FolderSelect
+        v-model:show="moveBoxShow"
+        title="移动"
+        :data="moveModel"
+        :cancelFunc="() =>{this.moveBoxShow=false;}"
+        :confirm-func="confirmMove"
+    />
 
   </div>
 
@@ -135,7 +144,6 @@ import {
   ArrowClockwise24Regular,
   AppsListDetail24Regular,
   AppFolder24Regular,
-
 } from "@vicons/fluent";
 
 
@@ -148,6 +156,7 @@ const _adapters = [hamster, alist];
 import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "@/common/fileContextMenuOption";
 
 import InputBox from "@/components/common/InputBox.vue";
+import FolderSelect from "@/components/explorer/FolderSelect.vue";
 
 
 export default {
@@ -161,7 +170,10 @@ export default {
     }
   },
   components: {
-    NModal, NFormItem, NForm, NInput,
+    NModal,
+    NFormItem,
+    NForm,
+    NInput,
     NButton,
     NLayout,
     FileList,
@@ -174,6 +186,7 @@ export default {
     AppFolder24Regular,
     NDropdown,
     InputBox,
+    FolderSelect,
   },
   methods:{
     pathClick(index){
@@ -226,9 +239,11 @@ export default {
       fileData.path.length = num
     },
     async getFileData(){
+      window.history.pushState({ path: getUrlString() }, '', getUrlString());
+
       const adapterOption = fileData.device;
       const that = this;
-      window.history.pushState({ path: getUrlString() }, '', getUrlString());
+
       if(adapterOption === 0){
         this.curParent = (await getCurPathNode()).id
         // 目录可能已经不存在
@@ -302,6 +317,9 @@ export default {
         case "copyAddress":
           this.handleCopyUrl(key);
           break;
+        case "move":
+          this.handleMove (key);
+          break;
       }
     },
     getFileByKey(key){
@@ -336,12 +354,33 @@ export default {
       this.shareModel.vFileId = vFile.other.id;
       this.shareBoxShow = true;
     },
+    async handleMove(key){ // 打开移动窗口
+      let vFile = this.getFileByKey(key);
+      this.moveModel.name = vFile.name;
+      this.moveModel.vFileId = vFile.other.id;
+      this.moveBoxShow = true;
+    },
     async confirmShare(){
-      console.log(this.shareModel);
       await share.create(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
       this.shareModel.key = "";
       this.shareModel.expiry = "";
       this.shareBoxShow = false;
+    },
+    async confirmMove(isSelect,root,parentId){
+      this.moveBoxShow = false;
+      if(!isSelect){
+        return;
+      }
+      if(this.moveModel.vFileId === parentId){
+        window.$message.info("不能自己向自己移动哦")
+        return;
+      }
+
+      await file[0].moveFile(this.moveModel.vFileId,parentId)
+
+      this.getFileData()
+
+
     },
   },
   watch:{
@@ -385,13 +424,10 @@ export default {
       }),
       inputShow:ref(false),
       shareBoxShow:ref(false),
-      shareModel:reactive({
-        name:"",
-        vFileId:"",
-        key:"",
-        expiry:""
-      }),
-      // dataRoute:useRoute(),
+      shareModel:reactive({name:"",vFileId:"",key:"",expiry:""}),
+      moveBoxShow:ref(false),
+      moveModel:reactive({name:"",vFileId:"",}),
+
     }
   }
 }
