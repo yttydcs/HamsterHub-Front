@@ -118,10 +118,18 @@ import {ref, computed, watch, reactive, nextTick } from "vue";
 
 import FileList from "@/view/main/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
-import {fileList as fileData, getCurPathNode, getPathString, getCurRoot, popPathTo} from "@/common/fileList"
+import {
+  fileList as fileData,
+  getCurPathNode,
+  getPathString,
+  getCurRoot,
+  getUrlString,
+  addPath,
+  getPathStringNoneLast
+} from "@/common/fileList"
 import file from "@/api/file"
 import share from "@/api/share";
-
+import {useRoute} from "vue-router";
 
 import {
   ArrowClockwise24Regular,
@@ -172,11 +180,61 @@ export default {
       fileData.path.length = index+1;
       this.getFileData()
     },
-    getFileData(){
+    handleFlush(){
+      this.handleRoute()
+      this.getFileData()
+    },
+    async handleRoute(){
+      if(this.fileData.device!==0){
+        return;
+      }
+
+      let path = useRoute().fullPath
+      let arr = path.split("/");
+
+      // 如果是根目录不处理
+      if(arr.length === 1 || (arr.length === 2)&& arr[1]===""){
+        return;
+      }
+
+      // 如果指定了root
+      if (arr[1]){
+        this.fileData.root = arr[1];
+      }
+
+      // 如果指定了后续目录
+      let num = 0
+      for (let i = 2; i < arr.length; i++) {
+        // 必须不为空
+        if(!arr[i]){
+          break;
+        }
+
+        num = num+1;
+
+        if(fileData.path.length < i-1){
+          addPath("","-1")
+        }
+
+        if(arr[i] !== fileData.path[i-2]){
+          fileData.path[i-2].label = arr[i];
+          fileData.path[i-2].id = "-1";
+        }
+
+      }
+
+      fileData.path.length = num
+    },
+    async getFileData(){
       const adapterOption = fileData.device;
       const that = this;
+      window.history.pushState({ path: getUrlString() }, '', getUrlString());
       if(adapterOption === 0){
-        this.curParent = getCurPathNode().id
+        this.curParent = (await getCurPathNode()).id
+        // 目录可能已经不存在
+        if(this.curParent === "-1"){
+          return
+        }
         file[adapterOption].getFile(getCurRoot(),this.curParent)
           .then(function (res) {
             if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
@@ -197,7 +255,7 @@ export default {
       const  files = event.dataTransfer.files;
       for (let i = 0; i < files.length; i++) {
         await file[0].uploadFile(this.fileData.root,this.curParent,"",files[i])
-        this.getFileData()
+        await this.getFileData()
       }
     },
     handleContextMenuShow(event){
@@ -278,7 +336,6 @@ export default {
       this.shareModel.vFileId = vFile.other.id;
       this.shareBoxShow = true;
     },
-
     async confirmShare(){
       console.log(this.shareModel);
       await share.create(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
@@ -291,7 +348,10 @@ export default {
     fileData:{
       handler(val,oldVal){
         if(val.root !== this.curRoot){
-          this.getFileData()
+          // 防止首次使用执行多个getFileData
+          if(this.curRoot !== null){
+            this.getFileData()
+          }
           this.curRoot = val.root
         }
       },
@@ -299,22 +359,23 @@ export default {
     }
   },
   mounted() {
-    this.getFileData()
+    this.handleFlush()
   },
   activated() {
-    this.getFileData()
+    this.handleFlush()
   },
+  // ex
   setup(){
     let theme = useThemeVars();
     let borderColor = computed(() => theme.value.borderColor);
-
+    // defineExpose()
     return{
       collapsed: ref(false),
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
       fileData,
       adapters:_adapters,
-      curRoot:"0",
+      curRoot:null,
       curParent:"0",
       contextMenu:reactive({
         isShow:false,
@@ -329,7 +390,8 @@ export default {
         vFileId:"",
         key:"",
         expiry:""
-      })
+      }),
+      // dataRoute:useRoute(),
     }
   }
 }

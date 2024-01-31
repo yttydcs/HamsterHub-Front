@@ -124,5 +124,22 @@ export default {
     },
 
 
+    getDetail(root,url){
+        let u = "/api/queryFile"
+
+        // 构造提交数据
+        let d = {
+            root:root,
+            url:url
+        }
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d,
+        })
+    }
+
+
 
 }

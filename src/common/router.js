@@ -16,7 +16,7 @@ const routes = [
         component: MainPage,
         children:[
             {
-                path: '/',
+                path: '',
                 component: MainLayout
             },
             {
@@ -38,6 +38,10 @@ const routes = [
             {
                 path: 'test',
                 component: Test
+            },
+            {
+                path: '/:file*',
+                component: MainLayout
             },
 
 

@@ -22,7 +22,7 @@
 
       </n-layout-sider>
       <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
-        <FileExplorer />
+        <FileExplorer ref="explorer" />
       </n-layout>
     </n-layout>
 
@@ -48,6 +48,7 @@ import {fileList as fileData} from "@/common/fileList";
 
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
+
 
 
 const MenuOption = reactive(
@@ -128,6 +129,7 @@ export default {
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
         this.fileData.root = ob.data
+        this.fileData.path.length = 0
       }
     },
   },
@@ -136,6 +138,15 @@ export default {
   },
   activated() {
     this.fetchRoot()
+  },
+  beforeRouteUpdate(to, from, next){
+    // console.log('Route changed from', from, 'to', to);
+    // console.log("aaaa")
+    // console.log(to)
+    // this.flushData()
+    this.$refs.explorer.handleFlush()
+    next();
+
   },
   setup(){
     // 响应语言变化
