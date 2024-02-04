@@ -9,7 +9,7 @@
           {{msg}}
         </div>
         <div class="action">
-          <n-button quaternary class="btn" @click="handleDownload(url)">
+          <n-button v-if="url" quaternary class="btn" @click="handleDownload(url)">
             <template #icon>
               <n-icon>
                 <CloudDownloadOutline />
@@ -24,6 +24,11 @@
 
       </div>
       <div class="preview">
+        <!--    文件夹的预览时    -->
+        <div class="file-img" v-if="previewType === 'dir'">
+          <fileIcon file-type="dir" />
+        </div>
+
         <!--    当没有可用的预览时    -->
         <div class="file-img" v-if="previewType === 'file'">
           <fileIcon file-type="file" />
@@ -78,10 +83,17 @@ export default {
     title:String,
     msg:String,
     url:String,
+    isFolder:Boolean
   },
   computed:{
     previewType(){
-      let openType = this.getOpenTypeByName(this.title)
+      let openType
+      if(this.isFolder){
+        openType = "dir"
+      }else{
+        openType = this.getOpenTypeByName(this.title)
+      }
+
       this.handlePreviewIndex(openType)
       return openType;
     },

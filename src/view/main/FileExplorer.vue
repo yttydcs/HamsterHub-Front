@@ -403,11 +403,9 @@ export default {
   activated() {
     this.handleFlush()
   },
-  // ex
   setup(){
     let theme = useThemeVars();
     let borderColor = computed(() => theme.value.borderColor);
-    // defineExpose()
     return{
       collapsed: ref(false),
       borderColor,
