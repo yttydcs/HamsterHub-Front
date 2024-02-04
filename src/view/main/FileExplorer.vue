@@ -320,6 +320,9 @@ export default {
         case "move":
           this.handleMove (key);
           break;
+        case "detail":
+          this.handleDetail (key);
+          break;
       }
     },
     getFileByKey(key){
@@ -375,12 +378,14 @@ export default {
         window.$message.info("不能自己向自己移动哦")
         return;
       }
-
       await file[0].moveFile(this.moveModel.vFileId,parentId)
-
       this.getFileData()
-
-
+    },
+    async handleDetail(key){
+      let vFile = this.getFileByKey(key);
+      let root = getCurRoot();
+      let path = getPathString()+vFile.name;
+      window.open("/detail?root="+root+"&path="+path);
     },
   },
   watch:{
