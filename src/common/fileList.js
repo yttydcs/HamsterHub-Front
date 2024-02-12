@@ -5,6 +5,12 @@ import file from "@/api/file/hamster/file";
 *
 *   device: 1, // 描述访问的是哪个后台，如hamster或者alist
 *   writable:false,
+*   history:{
+*       value:{
+*           id:[],
+*           version:0
+*       }
+*   },
 *   path: [{label:"a",id:"0"}],
 *   file: [{
 *      name:"文件1",
@@ -96,6 +102,7 @@ export const fileList = reactive({
     device: 0, // 描述访问的是哪个后台，如hamster或者alist
     writable:false,
     root: "1",
+    history:{},
     path: [],
     file: []
 });

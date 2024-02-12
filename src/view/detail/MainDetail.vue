@@ -63,8 +63,6 @@ export default {
     async handleItem(data){
       this.detailData.other.length = 0;
 
-      console.log(data)
-
       this.detailData.other.push({
         key:"name",
         value:data.name
