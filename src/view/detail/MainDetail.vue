@@ -1,32 +1,39 @@
 <template>
+
   <div class="mainDetail">
-    <div class="detailPanel">
-      <OpenBox
-        :title="detailData.title"
-        :msg="detailData.msg"
-        :url="detailData.url"
-        :is-folder = "detailData.isFolder"
-      />
+    <div class="version">
+      <n-select v-model:value="version" :options="versionOptions" />
     </div>
-    <div class="otherPanel">
-      <div class="item" v-for="(item,index) in detailData.other" :key="index">
-        <div class="key">
-          {{item.key}}:
-        </div>
-        <div class="value">
-          {{item.value}}
+    <div class="mainBox">
+      <div class="detailPanel">
+        <OpenBox
+            :title="detailData[version].title"
+            :msg="detailData[version].msg"
+            :url="detailData[version].url"
+            :is-folder = "detailData[version].isFolder"
+        />
+      </div>
+      <div class="otherPanel">
+        <div class="item" v-for="(item,index) in detailData[version].other" :key="index">
+          <div class="key">
+            {{item.key}}:
+          </div>
+          <div class="value">
+            {{item.value}}
+          </div>
         </div>
       </div>
-
     </div>
+
   </div>
 
 
 </template>
 
 <script>
-import {computed, reactive} from "vue";
+import {computed, reactive, ref} from "vue";
 import {useRoute} from "vue-router";
+import {NSelect} from "naive-ui";
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
@@ -43,52 +50,73 @@ export default {
   methods: {
     async flushData(){
       let data = (await file.getDetail(this.routeData.query.root,this.routeData.query.path)).data;
-      console.log(data)
-      this.detailData.title = data.name;
 
-      data.created = data.created.replace("T"," ")
-      data.modified = data.modified.replace("T"," ")
+      for (let i = 0; i < data.length; i++) {
+        console.log(this.detailData[i])
 
-      if(data.type === 0){
-        this.detailData.isFolder = true;
-        this.detailData.url = "";
-        this.detailData.msg = data.created.replace("T"," ")
-      }else{
-        this.detailData.url = await this.handleUrl(data.id)
-        data.size = calc.toSizeString(data.size)
-        this.detailData.msg = data.size + ` · ` + data.created.replace("T"," ")
+        this.detailData[i]={};
+
+        this.detailData[i]["title"] = data[i].name;
+
+        data[i].created = data[i].created.replace("T"," ");
+        data[i].modified = data[i].modified.replace("T"," ");
+
+        this.detailData[i].version = data[i].version;
+
+        if(data[i].type === 0){
+          this.detailData[i].isFolder = true;
+          this.detailData[i].url = "";
+          this.detailData[i].msg = data[i].created.replace("T"," ");
+        }else{
+          this.detailData[i].url = await this.handleUrl(data[i].id);
+          data[i].size = calc.toSizeString(data[i].size);
+          this.detailData[i].msg = data[i].size + ` · ` + data[i].created.replace("T"," ");
+        }
+
+        await this.handleItem(data[i],i);
       }
-      await this.handleItem(data);
+      this.createOption();
     },
-    async handleItem(data){
-      this.detailData.other.length = 0;
+    createOption(){
+      console.log("d",this.detailData)
+      this.versionOptions.length = 0;
+      for (let i = 0; i <this.detailData.length; i++) {
+        this.versionOptions.push({
+          label: "version:"+this.detailData[i].version,
+          value: i,
+        })
+      }
+      console.log(this.versionOptions)
+    },
+    async handleItem(data,p){
+      this.detailData[p].other = []
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"name",
         value:data.name
       })
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"size",
         value:data.size
       })
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"type",
         value: data.type===1?"file":"folder"
       })
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"version",
         value: data.version
       })
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"created",
         value: data.created
       })
 
-      this.detailData.other.push({
+      this.detailData[p].other.push({
         key:"modified",
         value: data.modified
       })
@@ -100,8 +128,8 @@ export default {
     },
   },
   components: {
-    OpenBox
-    // NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm
+    OpenBox,
+    NSelect,
   },
   computed:{
     routeData(){
@@ -119,13 +147,16 @@ export default {
     return {
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
-      detailData:reactive({
+      version: ref(0),
+      detailData:reactive([{
         title:"",
         msg:"",
         url:"",
         isFolder:false,
         other:[{key:"key",value:"value"}],
-      })
+      }]),
+      versionOptions:reactive([]),
+
     }
   }
 }
@@ -135,24 +166,33 @@ export default {
 .mainDetail{
   margin: 10px auto;
   max-width: 1000px;
-  display: flex;
-  justify-content: right;
-  align-items: flex-start;
-  flex-flow:  wrap;
 }
+.mainBox{
+  margin-top: 4px;
+}
+
 .detailPanel{
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 500px;
+  vertical-align: top;
+  display: inline-block;
+  width: calc( 100% - 207px );
 }
 .otherPanel{
   margin-left: 5px;
   width: 200px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 200px;
+  display: inline-block;
   border-radius: 5px;
   border: 1px solid v-bind(borderColor);
+}
+
+@media all and (max-width: 730px) {
+  .detailPanel{
+    width: 100%;
+  }
+  .otherPanel{
+    margin-top: 4px;
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .item{
@@ -167,7 +207,6 @@ export default {
 
 .value{
   margin-left: 16px;
-
 }
 
 </style>
