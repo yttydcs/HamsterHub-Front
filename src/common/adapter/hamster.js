@@ -30,7 +30,7 @@ export default {
             fileList.file.length = 0;
             return;
         }
-
+        fileList.history = {};
         fileList.file.length = 0;
         let pos = -1;
         for (let i = 0; i < content.length; i++) {

@@ -72,13 +72,34 @@
 
       </n-space>
     </div>
+    <!--  修改密码  -->
+    <n-modal
+        v-model:show="changePwdShow"
+        class="alertBox"
+        preset="card"
+        title="修改密码"
+        size="medium"
+    >
+      <n-form :model="formData">
+        <n-form-item-row label="旧密码">
+          <n-input v-model:value="formData.newPwd"/>
+        </n-form-item-row>
+        <n-form-item-row label="新密码">
+          <n-input v-model:value="formData.oldPwd"/>
+        </n-form-item-row>
+      </n-form>
+      <n-button type="primary" block secondary strong @click="confirmChangePwd">
+        登录
+      </n-button>
+    </n-modal>
+
   </div>
 
 </template>
 
 <script>
-import { defineComponent, h, ref } from "vue";
-import {NIcon, NAvatar, NButton, NSpace, NInput, NDivider, NDropdown} from "naive-ui";
+import {defineComponent, h, reactive, ref} from "vue";
+import {NIcon, NAvatar, NButton, NSpace, NInput, NDivider, NDropdown, NFormItemRow, NForm, NModal} from "naive-ui";
 import {
   SettingsOutline,
   Contrast,
@@ -88,9 +109,10 @@ import {
   FolderOpenOutline,
   ShareSocialOutline,
   LogOutOutline,
+  PencilOutline,
 } from "@vicons/ionicons5";
 
-import  loginData  from "@/common/loginData"
+import loginData, {removeLoginData} from "@/common/loginData"
 import login from "@/api/login";
 
 import curLang, {switchLang} from "@/common/lang";
@@ -104,6 +126,11 @@ const renderIcon = (icon) => {
 };
 const userOptions= [
   {
+    label: "修改密码",
+    key: "change",
+    icon: renderIcon(PencilOutline)
+  },
+  {
     label: "退出登录",
     key: "logout",
     icon: renderIcon(LogOutOutline)
@@ -113,6 +140,8 @@ const userOptions= [
 export default defineComponent({
   name: 'NavTop',
   components: {
+    NModal,
+    NForm, NFormItemRow,
     NButton,
     NIcon,
     NAvatar,
@@ -144,8 +173,19 @@ export default defineComponent({
           await login.logout();
           this.$router.push("/login");
           break
+        case "change" :
+          this.changePwdShow = true
+          break
       }
     },
+    async confirmChangePwd(){
+      let that = this;
+      login.changePwd(this.formData.oldPwd,this.formData.newPwd).then(res=>{
+        removeLoginData();
+        that.$router.push("/login");
+        that.changePwdShow = false;
+      })
+    }
 
 
   },
@@ -157,6 +197,8 @@ export default defineComponent({
       SearchOutline,
       curLang,
       userOptions,
+      changePwdShow: ref(false),
+      formData:reactive({newPwd:"",oldPwd:""}),
     };
   }
 });

@@ -28,7 +28,6 @@ export default {
      })
 
     },
-
     register(name,pwd,type=0,url = ""){
 
         // type  1.云匣默认 2.alist
@@ -59,13 +58,34 @@ export default {
         })
 
     },
-    async logout(){
+    changePwd(oldPwd,newPwd,type=0,url = ""){
 
-     removeLoginData();
+        // type  1.云匣默认 2.alist
+        // 设置网址
+        let u
+        if(type === 0){
+            u = url||"/api/changePassword"
+        }
+        // else if(type === 1){
+        //     u = url||"/api/auth/login"
+        // }else{
+        //     return
+        // }
+
+        // 构造提交数据
+        let d = {
+            "oldPassword":oldPwd,
+            "newPassword":newPwd
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
 
     },
-
-
-
-
+    async logout(){
+        removeLoginData();
+    },
 }
