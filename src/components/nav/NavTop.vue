@@ -59,16 +59,16 @@
           </n-button>
         </router-link>
 
-        <n-button text style="font-size: 24px" v-else >
-          <n-avatar
-              round
-              :size="24"
-              :src="loginData.user.avatarSrc"
-          >
-          </n-avatar>
-        </n-button>
-
-
+        <n-dropdown :options="userOptions" @select="handleSelect" v-else>
+          <n-button text style="font-size: 24px"  >
+            <n-avatar
+                round
+                :size="24"
+                :src="loginData.user.avatarSrc"
+            >
+            </n-avatar>
+          </n-button>
+        </n-dropdown>
 
       </n-space>
     </div>
@@ -78,7 +78,7 @@
 
 <script>
 import { defineComponent, h, ref } from "vue";
-import {NIcon, NAvatar, NButton, NSpace, NInput, NDivider} from "naive-ui";
+import {NIcon, NAvatar, NButton, NSpace, NInput, NDivider, NDropdown} from "naive-ui";
 import {
   SettingsOutline,
   Contrast,
@@ -87,12 +87,28 @@ import {
   LanguageOutline,
   FolderOpenOutline,
   ShareSocialOutline,
+  LogOutOutline,
 } from "@vicons/ionicons5";
 
 import  loginData  from "@/common/loginData"
+import login from "@/api/login";
 
 import curLang, {switchLang} from "@/common/lang";
 
+const renderIcon = (icon) => {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon)
+    });
+  };
+};
+const userOptions= [
+  {
+    label: "退出登录",
+    key: "logout",
+    icon: renderIcon(LogOutOutline)
+  }
+];
 
 export default defineComponent({
   name: 'NavTop',
@@ -109,6 +125,7 @@ export default defineComponent({
     LanguageOutline,
     FolderOpenOutline,
     ShareSocialOutline,
+    NDropdown,
   },
   props: {
     switchThemeFunc: Function
@@ -121,6 +138,16 @@ export default defineComponent({
         switchLang(0)
       }
     },
+    async handleSelect(key) {
+      switch (key) {
+        case "logout" :
+          await login.logout();
+          this.$router.push("/login");
+          break
+      }
+    },
+
+
   },
   setup() {
 
@@ -128,7 +155,8 @@ export default defineComponent({
       searchText: ref(null),
       loginData: loginData,
       SearchOutline,
-      curLang
+      curLang,
+      userOptions,
     };
   }
 });

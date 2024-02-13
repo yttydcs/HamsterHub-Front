@@ -6,7 +6,7 @@
       <div class="file" v-if="isExist && unlock">
         <OpenBox
             :title="shareData.data.name"
-            :msg="shareData.data.size + ` · ` + shareData.data.created"
+            :msg="shareData.data.size + ` · ` + shareData.data.created + ` · Ver:` + shareData.data.version"
             :url="url"
         />
       </div>

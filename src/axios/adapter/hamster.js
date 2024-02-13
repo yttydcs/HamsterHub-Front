@@ -28,7 +28,9 @@ let cancel;
 
 service.interceptors.request.use(
     config => {
-        config.headers.set("Authorization",loginData.loginKey.loginKeyValue);
+        if (loginData.loginState){
+            config.headers.set("Authorization",loginData.loginKey.loginKeyValue);
+        }
         // config.headers.set("Content-Type","application/x-www-form-urlencoded");
         return config
     }, error => {

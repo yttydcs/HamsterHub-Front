@@ -300,7 +300,6 @@ export default {
       closeAllMenu()
     },
     invokeMenuHandle(key){
-      console.log(key)
       switch(key){
         case "newDir":
           this.inputShow = true;
@@ -331,7 +330,6 @@ export default {
     },
     async handleNewDir(value){ // 执行文件夹创建
       this.inputShow = false;
-      console.log(fileData.root,this.curRoot);
       await file[0].mkDir(fileData.root,this.curParent,value);
       this.getFileData();
     },
@@ -356,6 +354,7 @@ export default {
       this.shareModel.name = vFile.name;
       this.shareModel.vFileId = vFile.other.id;
       this.shareBoxShow = true;
+
     },
     async handleMove(key){ // 打开移动窗口
       let vFile = this.getFileByKey(key);

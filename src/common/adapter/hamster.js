@@ -35,20 +35,15 @@ export default {
         let pos = -1;
         for (let i = 0; i < content.length; i++) {
             let historyKey =content[i].parentId + content[i].name
-            console.log(historyKey)
             let p;
             if(historyKey in fileList.history){
-                console.log("cf",content[i])
                 fileList.history[historyKey].id.push(content[i]["id"])
-                console.log(fileList.history)
-
                 if(fileList.history[historyKey].version>content[i]["version"]){
                     continue
                 }else{
                     fileList.history[historyKey].version = content[i]["version"];
                     p = fileList.history[historyKey].pos;
                 }
-
             }else{
                 pos++;
                 p = pos;
@@ -76,13 +71,7 @@ export default {
             fileList.file[p].other["rfileId"] = content[i]["rfileId"]
             fileList.file[p].other["version"] = content[i]["version"]
 
-
-
-
         }
-
-
-        console.log(fileList)
 
     }
 

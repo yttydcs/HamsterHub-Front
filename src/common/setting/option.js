@@ -46,7 +46,7 @@ export const optionList = reactive([
                 value: "",
                 data: false,
                 handle:setDark,
-            }
+            },
             // ,{
             //     type: "item",
             //     title: "个人选项2",
