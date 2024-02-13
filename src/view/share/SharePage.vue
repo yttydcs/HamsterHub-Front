@@ -22,6 +22,7 @@
               submit
             </n-button>
           </n-input-group>
+          <br>
 
         </div>
 
@@ -164,6 +165,10 @@ export default {
   max-width: 1200px;
   margin: 10px auto;
   min-height: calc(100vh - 100px);
+}
+
+.unlockBox{
+  margin-top: -70px;
 }
 
 .lock{
