@@ -15,7 +15,7 @@
       </div>
       <div class="lock" v-show="!unlock">
         <div class="unlockBox">
-          <n-icon :component="lockIcon" size="100" :depth="5" />
+          <n-icon :component="lockIcon" size="100" :depth="4" />
           <n-input-group >
             <n-input type="password" show-password-on="click" v-model:value="key"/>
             <n-button type="primary" ghost @click="handleSubmitKey">
@@ -165,6 +165,7 @@ export default {
   max-width: 1200px;
   margin: 10px auto;
   min-height: calc(100vh - 100px);
+  overflow: hidden;
 }
 
 .unlockBox{

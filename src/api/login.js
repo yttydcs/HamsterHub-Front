@@ -85,7 +85,20 @@ export default {
         })
 
     },
-    async logout(){
+    async logout(type=0,url = ""){
+
+        // type  1.云匣默认 2.alist
+        // 设置网址
+        let u
+        if(type === 0){
+            u = url||"/api/logout"
+        }
+
+        await axois[type]({
+            method:"post",
+            url:u,
+        })
+
         removeLoginData();
     },
 }
