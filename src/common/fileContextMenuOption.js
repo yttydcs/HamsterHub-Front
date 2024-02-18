@@ -48,7 +48,7 @@ const renderIcon = (icon) => {
         });
     };
 };
-Delete24Filled
+// Delete24Filled
 
 export const fileContextMenuOption = reactive([
     {
