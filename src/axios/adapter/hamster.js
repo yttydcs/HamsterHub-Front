@@ -28,7 +28,9 @@ let cancel;
 
 service.interceptors.request.use(
     config => {
-        config.headers.set("Authorization",loginData.loginKey.loginKeyValue);
+        if (loginData.loginState){
+            config.headers.set("Authorization",loginData.loginKey.loginKeyValue);
+        }
         // config.headers.set("Content-Type","application/x-www-form-urlencoded");
         return config
     }, error => {
@@ -42,7 +44,7 @@ service.interceptors.response.use(
         let data = responese.data;
 
         // 如果存在msg就弹出消息提示
-        if(msgIndex in data && data[msgIndex]!==""){
+        if(typeof data !="string" && msgIndex in data && data[msgIndex]!==""){
             if(data.code === successCode){
                 window.$message.success(data[msgIndex]);
             }else{

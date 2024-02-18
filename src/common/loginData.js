@@ -38,4 +38,11 @@ export function saveLoginData(){
     localStorage.setItem("loginData", JSON.stringify(loginData));
 }
 
+export function removeLoginData(){
+    loginData.loginState = false;
+    loginData.loginKey.loginKeyValue = "";
+    loginData.user = {};
+    localStorage.setItem("loginData", JSON.stringify(loginData));
+}
+
 export default loginData;

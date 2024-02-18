@@ -34,7 +34,7 @@ import {NButton, NInput, NModal, NSpace, NForm, NFormItem} from "naive-ui";
 import {reactive, ref} from "vue";
 
 export default {
-  name: 'messageApi',
+  name: 'InputBox',
   components: {NInput, NButton, NModal, NSpace, NForm, NFormItem},
   props: {
     title:String,

@@ -71,6 +71,15 @@ export default {
     },
     userRegister() {
       console.log("userRegister")
+      const loginOption = 0
+      const that = this
+      login.register(this.formData.name, this.formData.pwd, loginOption)
+          .then(function (response) {
+            if (that.adapters[loginOption].judgeLoginCode(response.code)) {
+              that.adapters[loginOption].setLoginDate(that.formData.name, response)
+              that.$router.push("/")
+            }
+          })
     }
   },
   components: {
@@ -96,8 +105,13 @@ export default {
 <style>
 .mainLogin {
   width: 100%;
-  height: calc(100% - 60);
+  height: calc(100vh - 65px);
   overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: center;
 }
 
 .loginPanel {
@@ -105,11 +119,11 @@ export default {
   width: 500px;
   height: 400px;
 
-  /* 居中 */
+  /* 居中
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);*/
 }
 
 /* 细微调整，防止太小遮挡 input 选中特效 */

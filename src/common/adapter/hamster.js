@@ -30,26 +30,49 @@ export default {
             fileList.file.length = 0;
             return;
         }
-
-        fileList.file.length = content.length
+        fileList.history = {};
+        fileList.file.length = 0;
+        let pos = -1;
         for (let i = 0; i < content.length; i++) {
-            fileList.file[i] = {}
-            fileList.file[i].name = content[i].name
-            fileList.file[i].is_dir = (content[i]["type"]===0)
-            fileList.file[i].selected = false
-            fileList.file[i].modified = content[i].modified
-            fileList.file[i].size = content[i].size
+            let historyKey =content[i].parentId + content[i].name
+            let p;
+            if(historyKey in fileList.history){
+                fileList.history[historyKey].id.push(content[i]["id"])
+                if(fileList.history[historyKey].version>content[i]["version"]){
+                    continue
+                }else{
+                    fileList.history[historyKey].version = content[i]["version"];
+                    p = fileList.history[historyKey].pos;
+                }
+            }else{
+                pos++;
+                p = pos;
+                fileList.history[historyKey] = {
+                    id:[content[i]["id"]],
+                    version:content[i]["version"],
+                    pos:pos
+                };
+            }
+
+            fileList.file[p] = {}
+            fileList.file[p].name = content[i].name
+            fileList.file[p].is_dir = (content[i]["type"]===0)
+            fileList.file[p].selected = false
+            fileList.file[p].modified = content[i].modified
+            fileList.file[p].size = content[i].size
 
             // 存储其他平台特有信息
-            fileList.file[i].other = {}
-            fileList.file[i].other["id"] = content[i]["id"]
-            fileList.file[i].other["type"] = content[i]["type"]
-            fileList.file[i].other["created"] = content[i]["created"]
-            fileList.file[i].other["accountID"] = content[i]["accountID"]
-            fileList.file[i].other["strategyId"] = content[i]["strategyId"]
-            fileList.file[i].other["rfileId"] = content[i]["rfileId"]
+            fileList.file[p].other = {}
+            fileList.file[p].other["id"] = content[i]["id"]
+            fileList.file[p].other["type"] = content[i]["type"]
+            fileList.file[p].other["created"] = content[i]["created"]
+            fileList.file[p].other["accountID"] = content[i]["accountID"]
+            fileList.file[p].other["strategyId"] = content[i]["strategyId"]
+            fileList.file[p].other["rfileId"] = content[i]["rfileId"]
+            fileList.file[p].other["version"] = content[i]["version"]
 
         }
+
     }
 
 }

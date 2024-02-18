@@ -1,9 +1,12 @@
 
 import mainLogin from "@/view/login/MainLogin.vue";
-import { createRouter, createWebHashHistory } from 'vue-router';
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main/MainLayout.vue";
 import MainSetting from "@/view/setting/MainSetting.vue";
+import ShareLayout from "@/view/share/ShareLayout.vue";
+import SharePage from "@/view/share/SharePage.vue";
+import MainDetail from "@/view/detail/MainDetail.vue";
 import Test from "@/view/test/test.vue"
 
 
@@ -14,7 +17,7 @@ const routes = [
         component: MainPage,
         children:[
             {
-                path: '/',
+                path: '',
                 component: MainLayout
             },
             {
@@ -26,8 +29,24 @@ const routes = [
                 component: MainSetting
             },
             {
+                path: 'share',
+                component: ShareLayout
+            },
+            {
+                path: 's/:ticket',
+                component: SharePage
+            },
+            {
+                path: 'detail',
+                component: MainDetail
+            },
+            {
                 path: 'test',
                 component: Test
+            },
+            {
+                path: '/:file*',
+                component: MainLayout
             },
 
 
@@ -39,7 +58,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes
 })
 export default router
