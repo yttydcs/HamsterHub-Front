@@ -14,6 +14,7 @@ function loadLoginData(){
             loginKeyValue:"" // 登录验证的值，如token、session等
         },
         user: {
+            id:0,
             name: null,
             avatarSrc: "https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
         }
