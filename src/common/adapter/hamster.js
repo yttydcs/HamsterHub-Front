@@ -16,6 +16,8 @@ export default {
         loginData.user.name = name;
         loginData.loginState = true;
 
+
+
         // 持久化
         saveLoginData()
     },
