@@ -74,7 +74,6 @@ export default {
           })
     },
     userRegister() {
-      console.log("userRegister")
       const loginOption = 0
       const that = this
       login.register(this.formData.name, this.formData.pwd, loginOption)

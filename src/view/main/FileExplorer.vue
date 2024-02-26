@@ -240,7 +240,6 @@ export default {
     },
     async getFileData(){
       if(!getCurRoot()){
-        console.log("curroot",getCurRoot());
         return
       }
 
