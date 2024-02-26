@@ -19,6 +19,10 @@
               <n-form-item-row label="密码">
                 <n-input v-model:value="formData.pwd"/>
               </n-form-item-row>
+              <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
+                延长登陆时间
+              </n-checkbox>
+              <br>
             </n-form>
             <n-button type="primary" block secondary strong @click="userLogin">
               登录
@@ -47,7 +51,7 @@
 </template>
 
 <script>
-import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm} from "naive-ui";
+import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox} from "naive-ui";
 import login from "@/api/login";
 import {ref} from "vue";
 
@@ -61,7 +65,7 @@ export default {
     userLogin() {
       const loginOption = 0
       const that = this
-      login.login(this.formData.name, this.formData.pwd, loginOption)
+      login.login(this.formData.name, this.formData.pwd,this.formData.lasting, loginOption)
           .then(function (response) {
             if (that.adapters[loginOption].judgeLoginCode(response.code)) {
               that.adapters[loginOption].setLoginDate(that.formData.name, response)
@@ -83,14 +87,15 @@ export default {
     }
   },
   components: {
-    NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm
+    NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox
   },
   setup() {
     // 初始化登录变量
     let loginData = ref({
       name: "",
       pwd: "",
-      checkPwd: ""
+      checkPwd: "",
+      lasting:false
     })
 
 

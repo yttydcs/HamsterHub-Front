@@ -2,7 +2,7 @@ import axois from "@/axios"
 import {removeLoginData} from "@/common/loginData";
 
 export default {
-    login(name,pwd,type=0,url = ""){
+    login(name,pwd,lasting=false,type=0,url = ""){
 
      // type  1.云匣默认 2.alist
      // 设置网址
@@ -18,7 +18,8 @@ export default {
      // 构造提交数据
      let d = {
          "username":name,
-         "password":pwd
+         "password":pwd,
+         "lasting":lasting
      }
 
      return axois[type]({
