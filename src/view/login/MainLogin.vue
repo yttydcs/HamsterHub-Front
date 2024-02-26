@@ -20,7 +20,7 @@
                 <n-input v-model:value="formData.pwd"/>
               </n-form-item-row>
               <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
-                延长登陆时间
+                保留登录状态
               </n-checkbox>
               <br>
             </n-form>
