@@ -80,7 +80,12 @@ router.beforeEach((to, from, next) => {
         if (loginData.loginState) {
             next()  //放行
         } else {
-            alert('抱歉，您无权限查看！')
+
+            window.$notification["error"]({
+                title:"您尚未登陆",
+                description:"已经为您导航至登陆页面"
+            })
+
             next("/login")
         }
     } else {

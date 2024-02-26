@@ -1,15 +1,17 @@
 <template>
   <n-config-provider style="height: 100%" :theme="theme.data">
     <NGlobalStyle></NGlobalStyle>
+    <NNotificationProvider>
     <NMessageProvider>
       <MessageApi></MessageApi>
       <router-view></router-view>
     </NMessageProvider>
+    </NNotificationProvider>
   </n-config-provider>
 </template>
 
 <script>
-import {NConfigProvider, NGlobalStyle ,NMessageProvider} from "naive-ui";
+import {NConfigProvider, NGlobalStyle ,NMessageProvider, NNotificationProvider} from "naive-ui";
 import {theme} from "@/common/theme";
 import MessageApi from "@/components/common/MessageApi.vue";
 
@@ -19,6 +21,7 @@ export default {
     NGlobalStyle,
     NMessageProvider,
     NConfigProvider,
+    NNotificationProvider,
     MessageApi
   },
   setup(){
