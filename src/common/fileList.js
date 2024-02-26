@@ -101,7 +101,7 @@ export function getUrlString(){
 export const fileList = reactive({
     device: 0, // 描述访问的是哪个后台，如hamster或者alist
     writable:false,
-    root: "1",
+    root: "",
     history:{},
     path: [],
     file: []

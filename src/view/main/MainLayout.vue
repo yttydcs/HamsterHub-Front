@@ -113,7 +113,10 @@ export default {
           return
         }
 
-        that.curRoot = arr[0].root
+        if(that.curRoot === ""){
+          this.switchToRoot(arr[0].root)
+          this.$refs.explorer.handleFlush()
+        }
         MenuOption[0].children = []
 
         for (let i = 0; i < arr.length; i++) {
@@ -126,10 +129,16 @@ export default {
 
       })
     },
+    switchToRoot(root){
+      this.fileData.root = root
+      this.fileData.path.length = 0
+      this.curRoot = root
+
+    },
+
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
-        this.fileData.root = ob.data
-        this.fileData.path.length = 0
+        this.switchToRoot(ob.data)
       }
     },
   },
@@ -144,9 +153,9 @@ export default {
     // console.log("aaaa")
     // console.log(to)
     // this.flushData()
+    // console.log("cc")
     this.$refs.explorer.handleFlush()
     next();
-
   },
   setup(){
     // 响应语言变化
@@ -162,6 +171,7 @@ export default {
     return{
       collapsed: ref(false),
       menuOptions: MenuOption,
+      curRoot:ref(""),
       curLang,
       fileData,
     }

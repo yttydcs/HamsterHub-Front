@@ -202,7 +202,7 @@ export default {
         return;
       }
 
-      let path = useRoute().fullPath
+      let path = window.location.pathname
       let arr = path.split("/");
 
       // 如果是根目录不处理
@@ -239,6 +239,11 @@ export default {
       fileData.path.length = num
     },
     async getFileData(){
+      if(!getCurRoot()){
+        console.log("curroot",getCurRoot());
+        return
+      }
+
       window.history.pushState({ path: getUrlString() }, '', getUrlString());
 
       const adapterOption = fileData.device;
