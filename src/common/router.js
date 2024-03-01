@@ -83,7 +83,8 @@ router.beforeEach((to, from, next) => {
 
             window.$notification["error"]({
                 title:"您尚未登陆",
-                description:"已经为您导航至登陆页面"
+                description:"已经为您导航至登陆页面",
+                duration:3000
             })
 
             next("/login")
