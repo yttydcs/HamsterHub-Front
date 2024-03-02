@@ -54,9 +54,6 @@ import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
 
-// console.log("f",fileMenu.getFileOption())
-
-
 
 const MenuOption = reactive(
     [

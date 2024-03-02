@@ -90,7 +90,6 @@ export default {
         // 构造提交数据
         let d = {
             "ticket": ticket,
-
         }
 
         if(key){
@@ -111,9 +110,29 @@ export default {
 
     },
 
-    async download(ticket,key){
-        let url = await this.getDownloadUrl(ticket,key);
+    async download(ticket,key,vFileId){
+        let url = await this.getDownloadUrl(ticket,key,vFileId);
         download.url(url)
+    },
+
+    queryShareList(ticket,key,parentId,page="0",limit="50"){
+        let u = "/api/queryShareList"
+
+        // 构造提交数据
+        let d = {
+            "ticket":ticket,
+            "key":key,
+            "parentId":parentId,
+            "page":page,
+            "limit":limit,
+        }
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d
+        })
+
     },
 
 

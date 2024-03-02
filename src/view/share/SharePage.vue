@@ -3,15 +3,19 @@
     <div class="main">
 <!--      {{ dataRoute.params }}-->
 <!--      {{ shareData.data  }}-->
-      <div class="file" v-show="isExist && unlock && !isDir">
+      <div class="file" v-if="isExist && unlock && isDir===false">
         <OpenBox
             :title="shareData.data.name"
             :msg="shareData.data.size + ` · ` + shareData.data.created + ` · Ver:` + shareData.data.version"
             :url="url"
         />
       </div>
-      <div class="list" v-show="isExist && unlock && isDir">
-        list
+      <div class="list" v-if="isExist && unlock && isDir">
+        <FileExplorer
+            ref="explorer"
+            :file-menu ="fileMenu"
+            :file-service="fileService"
+        />
       </div>
       <div class="lock" v-show="!unlock">
         <div class="unlockBox">
@@ -47,7 +51,9 @@ import calc from "@/common/calc";
 import download from "@/common/download"
 import { LockClosed as lockIcon } from "@vicons/ionicons5";
 import {getUrlString} from "@/common/fileList";
-
+import FileExplorer from "@/components/explorer/FileExplorer.vue";
+import fileService from "@/service/share/file"
+import fileMenu from "@/service/share/fileMenu"
 
 const NONE_KEY = 600008;
 const INCORRECT_KEY = 600009;
@@ -56,6 +62,7 @@ const INCORRECT_KEY = 600009;
 export default {
   name: 'sharePage',
   components: {
+    FileExplorer,
     OpenBox,
     NButton,
     NInputGroup,
@@ -79,6 +86,10 @@ export default {
           that.isExist = true
           that.unlock = true
           if (res.data.type===0){
+            that.fileService.getFileListObject().others["key"] = this.fileKey
+            that.fileService.getFileListObject().others["ticket"] = this.ticket
+            that.fileService.getFileListObject().others["id"] = res.data.id
+            console.log(that.fileService.getFileListObject())
             that.isDir = true
           }else{
             that.handleUrl(this.ticket,this.fileKey)
@@ -150,11 +161,13 @@ export default {
 
       isExist:ref(true),
       unlock:ref(true),
-      isDir:ref(false),
+      isDir:ref(null),
       url:ref(""),
       fileKey:ref(""),
       ticket:ref(""),
-      lockIcon
+      lockIcon,
+      fileMenu,
+      fileService
     }
   }
 }

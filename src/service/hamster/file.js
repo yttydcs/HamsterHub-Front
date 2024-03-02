@@ -40,7 +40,7 @@ function getCurRoot(){
 
 async function getCurPathNode(){
     if(fileList.path.length === 0){
-        return {label:"root",id:fileList.others["id"]}
+        return {label:"root",id:"0"}
     }
 
     // 如果没有父目录id的缓存
@@ -81,8 +81,8 @@ function isDir(index){
 
 
 function getUrlString(){
-    let res = "/s/" + fileList.root;
-    res = res + getPathString() + "?key=" + fileList.others["key"];
+    let res = "/" + fileList.root;
+    res = res + getPathString()
     return res
 }
 
@@ -103,6 +103,7 @@ export default {
         if (fileList.file[index].is_dir) {
             addPath(fileList.file[index].name, fileList.file[index].other.id);
         }
+        console.log(fileList)
     },
 
     async setRoot(root){
@@ -117,18 +118,20 @@ export default {
 
 
         // 如果是根目录不处理
-        if(arr.length <= 2 || (arr.length === 3 && arr[2]==="")){
+        if(arr.length === 1 || (arr.length === 2 && arr[1]==="")){
             return;
         }
 
+
+
         // 如果指定了root
-        if (arr[2]){
-            fileList.root = arr[2];
+        if (arr[1]){
+            fileList.root = arr[1];
         }
 
         // 如果指定了后续目录
         let num = 0
-        for (let i = 3; i < arr.length; i++) {
+        for (let i = 2; i < arr.length; i++) {
             // 必须不为空
             if(!arr[i]){
                 break;
@@ -164,7 +167,7 @@ export default {
             return
         }
 
-        share.queryShareList(getCurRoot(),fileList.others["key"],curParent).then(function (res) {
+        file.getFile(getCurRoot(),curParent).then(function (res) {
             if (adapter.judgeLoginCode(res.code)) {
                 adapter.setFileData(res,fileList)
             }
@@ -172,15 +175,33 @@ export default {
     },
 
     async fetchFileData(root,parent){
-        return await share.queryShareList(root,fileList.others["key"],parent)
+        return await file.getFile(root,parent)
     },
 
     async uploadFile(fileObject){
-        window.$message.info("只读状态，不可写入")
+        let curParent = (await getCurPathNode()).id
+        await file.uploadFile(getCurRoot(),curParent,"",fileObject)
+        await this.getFileData()
     },
 
     async newDir(name,parent=null){
-        window.$message.info("只读状态，不可写入")
+        if(!name){
+            window.$message.info("无法创建名字为空的文件夹")
+            return
+        }
+
+        let curParent = parent
+
+        if(curParent===null){
+            curParent = (await getCurPathNode()).id
+        }
+
+        await file.mkDir(getCurRoot(),curParent,name)
+    },
+
+    async deleteFile(vFile){
+        let fileId = vFile.other.id;
+        await file.delete(fileId);
     },
 
     async downloadFile(vFile){
@@ -191,8 +212,7 @@ export default {
         }
 
         let fileId = vFile.other.id;
-        await share.download(fileList.root,fileList.others["key"],fileId)
-        // await file.download(fileId,vFile.name)
+        await file.download(fileId,vFile.name)
     },
 
     async copyFileUrl(vFile){
@@ -206,11 +226,14 @@ export default {
     },
 
     async shareFile(id,key,expiry){
-        window.$message.info("只读状态，不可写入")
+        await share.create(id,key,expiry);
     },
 
     async moveFile(id,parentId){
-        window.$message.info("只读状态，不可写入")
+        await file.moveFile(id,parentId)
     },
+
+
+
 
 }
