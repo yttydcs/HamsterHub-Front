@@ -31,7 +31,6 @@ export default {
     },
     openFile(index){
       if(fileList.file[index].is_dir){
-        console.log(fileData)
         if(fileData.device === 0){
           addPath(fileList.file[index].name,fileList.file[index].other.id)
         }else{

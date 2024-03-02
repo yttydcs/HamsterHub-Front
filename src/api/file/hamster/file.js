@@ -115,7 +115,7 @@ export default {
 
     async download(id){
         let url =await this.getDownloadUrl(id);
-        download.url(url)
+        download.url(url,true)
     },
 
     async copyUrl(id){

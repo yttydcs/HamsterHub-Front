@@ -58,34 +58,35 @@ const MenuOption = reactive(
       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
       key: 'file',
       icon: renderIcon(FolderOpenOutline),
-    },  {
-      label: curLang.lang.leftMenuShare,
-      href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'share',
-      icon: renderIcon(ShareSocialOutline),
-    },{
-      label: curLang.lang.leftMenuFavorite,
-      href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'favorite',
-      icon: renderIcon(Collections24Regular),
-    },{
-      label: curLang.lang.leftMenuRecycle,
-      href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-      key: 'recycle',
-      icon: renderIcon(Recycle),
-    },{
-      label: curLang.lang.leftMenuShortcut,
-      key: 'shortcut',
-      icon: renderIcon(BookmarkOutline),
-      children: [
-        {
-          label: curLang.lang.leftMenuAdd,
-          href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-          key: 'add',
-          icon: renderIcon(AddCircleOutline),
-        }
-      ]
     },
+    //   {
+    //   label: curLang.lang.leftMenuShare,
+    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+    //   key: 'share',
+    //   icon: renderIcon(ShareSocialOutline),
+    // },{
+    //   label: curLang.lang.leftMenuFavorite,
+    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+    //   key: 'favorite',
+    //   icon: renderIcon(Collections24Regular),
+    // },{
+    //   label: curLang.lang.leftMenuRecycle,
+    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+    //   key: 'recycle',
+    //   icon: renderIcon(Recycle),
+    // },{
+    //   label: curLang.lang.leftMenuShortcut,
+    //   key: 'shortcut',
+    //   icon: renderIcon(BookmarkOutline),
+    //   children: [
+    //     {
+    //       label: curLang.lang.leftMenuAdd,
+    //       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+    //       key: 'add',
+    //       icon: renderIcon(AddCircleOutline),
+    //     }
+    //   ]
+    // },
   ]
 )
 
@@ -149,11 +150,6 @@ export default {
     this.fetchRoot()
   },
   beforeRouteUpdate(to, from, next){
-    // console.log('Route changed from', from, 'to', to);
-    // console.log("aaaa")
-    // console.log(to)
-    // this.flushData()
-    // console.log("cc")
     this.$refs.explorer.handleFlush()
     next();
   },

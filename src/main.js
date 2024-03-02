@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import {create,NButton} from "naive-ui";
-import router from "@/common/router";
+import router from "@/route/router";
 
 
 const app = createApp(App)

@@ -7,10 +7,14 @@ export default {
             return url;
         }
 
+        if(url.startsWith("http")){// 如果不是绝对地址需要转为绝对地址
+            return url
+        }
+
         return process.env["VUE_APP_URL"]+"api" + url
     },
 
-    url(url){
+    url(url, openWindow=false){
 
         if(url === ""){
             return;
@@ -21,18 +25,31 @@ export default {
             target = this.toAbsolute(url)
         }
 
+        if(openWindow){
+            window.open(target);
+            return;
+        }
+
         let iframe = document.createElement('iframe')
 
         // 防止影响页面，并设置属性
         iframe.style.display = 'none'
         iframe.style.height = 0
-        iframe.src = target
+        // iframe.referrerPolicy= 'no-referrer'
+
+
+
 
         // 加入dom树
         document.body.appendChild(iframe)
+
+        setTimeout(function () {
+            iframe.src = target
+        }, 100);
+
         setTimeout(function () {
             document.body.removeChild(iframe)
-        }, 300);
+        }, 500);
     },
 
     getText(url){
