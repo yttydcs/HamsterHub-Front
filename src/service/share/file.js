@@ -169,6 +169,8 @@ export default {
                 adapter.setFileData(res,fileList)
             }
             window.loading.finish()
+        }).catch((err)=>{
+            window.loading.error()
         })
     },
 
