@@ -30,7 +30,13 @@
               </n-icon>
             </n-button>
 
-            <n-button class="button" text  @click="handleDownload(item.ticket,item.key)">
+            <n-button v-if="item.type===0" class="button" text  @click="handleDownload(item.ticket,item.key)">
+              <n-icon>
+                <CloudDownloadOutline />
+              </n-icon>
+            </n-button>
+
+            <n-button v-if="item.type!==0" class="button" text  disabled>
               <n-icon>
                 <CloudDownloadOutline />
               </n-icon>
