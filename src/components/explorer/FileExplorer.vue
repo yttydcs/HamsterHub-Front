@@ -124,7 +124,7 @@ import {
   NButton,
   NDropdown,
   NInput,
-  NForm, NFormItem, NModal
+  NForm, NFormItem, NModal, useLoadingBar
 } from "naive-ui";
 import {ref, computed, watch, reactive, nextTick } from "vue";
 
@@ -180,17 +180,19 @@ export default {
       this.fileService.setPathLength(index+1)
       this.getFileData()
     },
-    switchRoot(root){
+    async switchRoot(root){
       this.fileService.setRoot(root);
       this.fileService.setPathLength(0);
-      this.getFileData()
+      await this.getFileData()
     },
     setFileSelect(index){
       this.fileData.file[index].selected = !this.fileData.file[index].selected
+
     },
-    enterPath(index){
-      this.fileService.enterPath(index);
-      this.getFileData();
+    async enterPath(index){
+      if(this.fileService.enterPath(index)){
+        await this.getFileData();
+      }
     },
     handleFlush(){
       this.handleRoute()
@@ -201,7 +203,7 @@ export default {
       await this.fileService.setPathByRoute(path)
     },
     async getFileData(){
-      await this.fileService.getFileData()
+      await this.fileService.getFileData();
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
@@ -373,6 +375,7 @@ export default {
       shareModel:reactive({name:"",vFileId:"",key:"",expiry:""}),
       moveBoxShow:ref(false),
       moveModel:reactive({name:"",vFileId:"",}),
+      loading:useLoadingBar(),
     }
   }
 }

@@ -102,11 +102,12 @@ export default {
     enterPath(index) {
         if (fileList.file[index].is_dir) {
             addPath(fileList.file[index].name, fileList.file[index].other.id);
+            return true;
         }
-        console.log(fileList)
+        return false;
     },
 
-    async setRoot(root){
+    setRoot(root){
         fileList.root = root;
     },
 
@@ -166,11 +167,12 @@ export default {
         if(this.curParent === "-1"){
             return
         }
-
+        window.loading.start()
         file.getFile(getCurRoot(),curParent).then(function (res) {
             if (adapter.judgeLoginCode(res.code)) {
                 adapter.setFileData(res,fileList)
             }
+            window.loading.finish()
         })
     },
 

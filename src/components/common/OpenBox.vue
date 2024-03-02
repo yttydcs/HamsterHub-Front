@@ -100,7 +100,6 @@ export default {
   },
   methods:{
     handleDownload(url){
-      console.log(url)
       download.url(url)
     },
     getOpenTypeByName(name){

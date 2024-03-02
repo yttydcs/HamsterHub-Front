@@ -1,7 +1,6 @@
 
 export default {
     toSizeString(size){
-        console.log(size)
         let res = 0;
         let unit ="Byte"
         let units = ["Byte","KB","MB","GB","TB","PB","EB","ZB","BB"];

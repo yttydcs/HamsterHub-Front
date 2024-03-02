@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import {NLayout, NLayoutSider, NMenu, NIcon} from "naive-ui";
+import {NLayout, NLayoutSider, NMenu, NIcon, useLoadingBar} from "naive-ui";
 import {h, reactive, ref, watch} from "vue";
 import { HomeOutline,
   ShareSocialOutline,
@@ -111,6 +111,7 @@ export default {
     // 获取可用的根目录
     fetchRoot(){
       let that = this
+      this.loading.start();
       strategy.query().then(res =>{
         let arr = res.data
 
@@ -140,12 +141,14 @@ export default {
             data: arr[i].root
           })
         }
-
+        this.loading.finish();
       })
     },
-    switchToRoot(root){
-      this.$refs.explorer.switchRoot(root)
+    async switchToRoot(root){
+      this.loading.start()
+      await this.$refs.explorer.switchRoot(root)
       this.curRoot = root
+      this.loading.finish()
     },
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
@@ -180,7 +183,8 @@ export default {
       curRoot:ref(""),
       curLang,
       fileMenu,
-      fileService
+      fileService,
+      loading:useLoadingBar(),
     }
   }
 }

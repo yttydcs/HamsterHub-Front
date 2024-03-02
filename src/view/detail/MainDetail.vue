@@ -52,10 +52,7 @@ export default {
       let data = (await file.getDetail(this.routeData.query.root,this.routeData.query.path)).data;
 
       for (let i = 0; i < data.length; i++) {
-        console.log(this.detailData[i])
-
         this.detailData[i]={};
-
         this.detailData[i]["title"] = data[i].name;
 
         data[i].created = data[i].created.replace("T"," ");
@@ -78,7 +75,6 @@ export default {
       this.createOption();
     },
     createOption(){
-      console.log("d",this.detailData)
       this.versionOptions.length = 0;
       for (let i = 0; i <this.detailData.length; i++) {
         this.versionOptions.push({
@@ -86,7 +82,6 @@ export default {
           value: i,
         })
       }
-      console.log(this.versionOptions)
     },
     async handleItem(data,p){
       this.detailData[p].other = []

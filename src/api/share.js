@@ -29,13 +29,9 @@ export default {
             ticket:ticket,
         }
 
-        console.log("key",key)
-
         if(key){
             d["key"]=key;
         }
-
-        console.log("d",d)
 
         return axois[type]({
             method:"get",

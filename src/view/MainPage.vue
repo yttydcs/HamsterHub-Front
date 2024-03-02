@@ -9,7 +9,7 @@
 
 <script>
 import navTop from "@/components/nav/NavTop.vue";
-import {NLayout, NLayoutHeader} from "naive-ui";
+import {NLayout, NLayoutHeader, useLoadingBar} from "naive-ui";
 import {switchTheme} from "@/common/theme";
 
 
@@ -24,9 +24,12 @@ export default {
     NLayout,
     NLayoutHeader,
   },
+  mounted() {
+    // 设置全局的加载对象
+    window.loading = useLoadingBar();
+    window.loading.start()
+  },
   setup(){
-    // 设置message对象
-    // window.$message = useMessage()
     return{
     }
   }

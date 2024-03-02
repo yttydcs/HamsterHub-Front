@@ -292,7 +292,6 @@ export default {
       // 设置旧值
       for (let i = 0; i < m.length; i++) {
         this.formData[m[i].title] = cur[m[i].title];
-        console.log(this.formData[m[i].title])
       }
 
       this.modifyBox = true;

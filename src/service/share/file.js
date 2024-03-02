@@ -102,10 +102,12 @@ export default {
     enterPath(index) {
         if (fileList.file[index].is_dir) {
             addPath(fileList.file[index].name, fileList.file[index].other.id);
+            return true;
         }
+        return false;
     },
 
-    async setRoot(root){
+    setRoot(root){
         fileList.root = root;
     },
 
@@ -113,8 +115,6 @@ export default {
         let target = decodeURI(route)
 
         let arr = target.split("/");
-
-
 
         // 如果是根目录不处理
         if(arr.length <= 2 || (arr.length === 3 && arr[2]==="")){
@@ -163,11 +163,12 @@ export default {
         if(this.curParent === "-1"){
             return
         }
-
+        window.loading.start()
         share.queryShareList(getCurRoot(),fileList.others["key"],curParent).then(function (res) {
             if (adapter.judgeLoginCode(res.code)) {
                 adapter.setFileData(res,fileList)
             }
+            window.loading.finish()
         })
     },
 
@@ -192,7 +193,6 @@ export default {
 
         let fileId = vFile.other.id;
         await share.download(fileList.root,fileList.others["key"],fileId)
-        // await file.download(fileId,vFile.name)
     },
 
     async copyFileUrl(vFile){

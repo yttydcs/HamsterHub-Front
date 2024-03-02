@@ -78,7 +78,6 @@ export default {
     flushData(){
       let that = this;
       share.getShare(this.ticket,this.fileKey).then((res)=>{
-        console.log("res",res);
         if("data" in res){
           res.data.size = calc.toSizeString(res.data.size);
           res.data.created = res.data.created.replace("T"," ");
@@ -89,7 +88,6 @@ export default {
             that.fileService.getFileListObject().others["key"] = this.fileKey
             that.fileService.getFileListObject().others["ticket"] = this.ticket
             that.fileService.getFileListObject().others["id"] = res.data.id
-            console.log(that.fileService.getFileListObject())
             that.isDir = true
           }else{
             that.handleUrl(this.ticket,this.fileKey)
@@ -106,7 +104,6 @@ export default {
       }).catch((err)=>{
         that.isExist=false
         let data = err;
-        console.log("err",data)
       })
     },
     handleUrl(ticket,key,vFileId){
