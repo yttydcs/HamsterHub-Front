@@ -35,13 +35,7 @@ export default {
     MessageApi,
     NLoadingBarProvider
   },
-  // mounted() {
-  //   const loadingBar = useLoadingBar();
-  //   loadingBar.start();
-  // },
   setup(){
-    // const loadingBar = useLoadingBar();
-    // loadingBar.start();
     return{
       theme,
     }

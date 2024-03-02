@@ -27,7 +27,6 @@ export default {
   mounted() {
     // 设置全局的加载对象
     window.loading = useLoadingBar();
-    window.loading.start()
   },
   setup(){
     return{

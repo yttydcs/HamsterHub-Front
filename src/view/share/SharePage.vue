@@ -42,7 +42,7 @@
 
 <script>
 import {onBeforeRouteUpdate, useRoute} from 'vue-router';
-import {NButton, NDataTable, NIcon, NSpace, NInputGroup, NInput , useThemeVars} from "naive-ui";
+import {NButton, NDataTable, NIcon, NSpace, NInputGroup, NInput, useThemeVars, useLoadingBar} from "naive-ui";
 import {computed, reactive, ref ,nextTick} from "vue";
 import share from "@/api/share";
 import OpenBox from "@/components/common/OpenBox.vue";
@@ -77,6 +77,7 @@ export default {
     },
     flushData(){
       let that = this;
+      this.loading.start()
       share.getShare(this.ticket,this.fileKey).then((res)=>{
         if("data" in res){
           res.data.size = calc.toSizeString(res.data.size);
@@ -93,17 +94,17 @@ export default {
             that.handleUrl(this.ticket,this.fileKey)
             that.isDir = false
           }
-
         }else{
           let data = res.response.data;
           if(data.code === INCORRECT_KEY || data.code === NONE_KEY){// 验证码错误
             that.unlock = false;
           }
-
         }
+        that.loading.finish()
       }).catch((err)=>{
         that.isExist=false
         let data = err;
+        that.loading.error()
       })
     },
     handleUrl(ticket,key,vFileId){
@@ -164,7 +165,8 @@ export default {
       ticket:ref(""),
       lockIcon,
       fileMenu,
-      fileService
+      fileService,
+      loading:useLoadingBar()
     }
   }
 }

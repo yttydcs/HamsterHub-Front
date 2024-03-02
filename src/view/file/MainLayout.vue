@@ -141,7 +141,9 @@ export default {
             data: arr[i].root
           })
         }
-        this.loading.finish();
+        that.loading.finish();
+      }).catch((res)=>{
+        that.loading.error();
       })
     },
     async switchToRoot(root){
