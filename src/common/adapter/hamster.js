@@ -1,5 +1,4 @@
 import loginData, {saveLoginData} from "@/common/loginData";
-import { fileList } from"@/common/fileList"
 
 // 用于hamster的登录适配方案
 
@@ -21,7 +20,7 @@ export default {
         // 持久化
         saveLoginData()
     },
-    setFileData(data){
+    setFileData(data,fileList){
 
         fileList.device = 0;
         // fileList.writable = data.data.write;
@@ -72,9 +71,7 @@ export default {
             fileList.file[p].other["strategyId"] = content[i]["strategyId"]
             fileList.file[p].other["rfileId"] = content[i]["rfileId"]
             fileList.file[p].other["version"] = content[i]["version"]
-
         }
-
     }
 
 }

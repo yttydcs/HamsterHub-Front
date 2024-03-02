@@ -44,11 +44,10 @@ import { HomeOutline,
 import { Recycle } from "@vicons/tabler";
 import { Collections24Regular } from "@vicons/fluent";
 import FileExplorer from "@/view/main/FileExplorer.vue";
-import {fileList as fileData} from "@/common/fileList";
 
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
-
+import fileService from "@/service/hamster/file"
 
 
 const MenuOption = reactive(
@@ -114,10 +113,19 @@ export default {
           return
         }
 
+        let fileListRoot = fileService.getFileListObject().root
+        // 检查当前root是否存在
+        for (let i = 0; i < arr.length; i++) {
+          if(arr[i].root=== fileListRoot){
+            that.curRoot = fileListRoot
+            break;
+          }
+        }
+
         if(that.curRoot === ""){
           this.switchToRoot(arr[0].root)
-          this.$refs.explorer.handleFlush()
         }
+
         MenuOption[0].children = []
 
         for (let i = 0; i < arr.length; i++) {
@@ -131,12 +139,9 @@ export default {
       })
     },
     switchToRoot(root){
-      this.fileData.root = root
-      this.fileData.path.length = 0
+      this.$refs.explorer.switchRoot(root)
       this.curRoot = root
-
     },
-
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
         this.switchToRoot(ob.data)
@@ -169,7 +174,6 @@ export default {
       menuOptions: MenuOption,
       curRoot:ref(""),
       curLang,
-      fileData,
     }
   }
 }

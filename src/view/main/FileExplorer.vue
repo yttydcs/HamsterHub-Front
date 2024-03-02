@@ -38,7 +38,9 @@
       <n-layout :native-scrollbar="false" style="height: 100%">
         <file-list
             style="padding-right: 24px"
-            :change-path="getFileData"
+            :file-list="fileData"
+            :enter-path="enterPath"
+            :file-click="setFileSelect"
         />
 
       </n-layout>
@@ -97,6 +99,7 @@
 
     <!--  移动  -->
     <FolderSelect
+        ref="folderSelect"
         v-model:show="moveBoxShow"
         title="移动"
         :data="moveModel"
@@ -127,16 +130,6 @@ import {ref, computed, watch, reactive, nextTick } from "vue";
 
 import FileList from "@/view/main/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
-import {
-  fileList as fileData,
-  getCurPathNode,
-  getPathString,
-  getCurRoot,
-  getUrlString,
-  addPath,
-  getPathStringNoneLast
-} from "@/common/fileList"
-import file from "@/api/file"
 import share from "@/api/share";
 import {useRoute} from "vue-router";
 
@@ -146,17 +139,11 @@ import {
   AppFolder24Regular,
 } from "@vicons/fluent";
 
-
-import hamster from "@/common/adapter/hamster";
-import alist from "@/common/adapter/alist";
-
 import curLang from "@/common/lang";
-const _adapters = [hamster, alist];
-
 import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "@/common/fileContextMenuOption";
-
 import InputBox from "@/components/common/InputBox.vue";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
+import fileService from "@/service/hamster/file"
 
 
 export default {
@@ -190,91 +177,37 @@ export default {
   },
   methods:{
     pathClick(index){
-      fileData.path.length = index+1;
+      fileService.setPathLength(index+1)
       this.getFileData()
+    },
+    switchRoot(root){
+      fileService.setRoot(root);
+      fileService.setPathLength(0);
+      this.getFileData()
+    },
+    setFileSelect(index){
+      this.fileData.file[index].selected = !this.fileData.file[index].selected
+    },
+    enterPath(index){
+      fileService.enterPath(index);
+      this.getFileData();
     },
     handleFlush(){
       this.handleRoute()
       this.getFileData()
     },
     async handleRoute(){
-      if(this.fileData.device!==0){
-        return;
-      }
-
       let path = window.location.pathname
-      let arr = path.split("/");
-
-      // 如果是根目录不处理
-      if(arr.length === 1 || (arr.length === 2)&& arr[1]===""){
-        return;
-      }
-
-      // 如果指定了root
-      if (arr[1]){
-        this.fileData.root = arr[1];
-      }
-
-      // 如果指定了后续目录
-      let num = 0
-      for (let i = 2; i < arr.length; i++) {
-        // 必须不为空
-        if(!arr[i]){
-          break;
-        }
-
-        num = num+1;
-
-        if(fileData.path.length < i-1){
-          addPath("","-1")
-        }
-
-        if(arr[i] !== fileData.path[i-2]){
-          fileData.path[i-2].label = arr[i];
-          fileData.path[i-2].id = "-1";
-        }
-
-      }
-
-      fileData.path.length = num
+      await fileService.setPathByRoute(path)
     },
     async getFileData(){
-      if(!getCurRoot()){
-        return
-      }
-
-      window.history.pushState({ path: getUrlString() }, '', getUrlString());
-
-      const adapterOption = fileData.device;
-      const that = this;
-
-      if(adapterOption === 0){
-        this.curParent = (await getCurPathNode()).id
-        // 目录可能已经不存在
-        if(this.curParent === "-1"){
-          return
-        }
-        file[adapterOption].getFile(getCurRoot(),this.curParent)
-          .then(function (res) {
-            if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
-              that.adapters[adapterOption].setFileData(res)
-          }
-        })
-      }else if(adapterOption === 1){
-        file[adapterOption].getFile(getPathString(),undefined,undefined,undefined,undefined,1)
-          .then(function (res) {
-            if (that.adapters[adapterOption].judgeLoginCode(res.code)) {
-              that.adapters[adapterOption].setFileData(res)
-            }
-          })
-      }
+      await fileService.getFileData()
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  files = event.dataTransfer.files;
       for (let i = 0; i < files.length; i++) {
-        await file[0].uploadFile(this.fileData.root,this.curParent,"",files[i])
-        await this.getFileData()
+        await fileService.uploadFile(files[i])
       }
     },
     handleContextMenuShow(event){
@@ -330,28 +263,25 @@ export default {
     },
     getFileByKey(key){
       let aim = fileContextMenuOption[findByKey(key)].data;
-      return fileData.file[aim];
+      return this.fileData.file[aim];
     },
     async handleNewDir(value){ // 执行文件夹创建
       this.inputShow = false;
-      await file[0].mkDir(fileData.root,this.curParent,value);
+      await fileService.newDir(value)
       this.getFileData();
     },
     async handleDelete(key){ // 执行文件删除
       let vFile = this.getFileByKey(key);
-      let fileId = vFile.other.id;
-      await file[0].delete(fileId);
+      await fileService.deleteFile(vFile)
       this.getFileData();
     },
     async handleDownload(key){ // 执行文件下载
       let vFile = this.getFileByKey(key);
-      let fileId = vFile.other.id;
-      await file[0].download(fileId,vFile.name)
+      await fileService.downloadFile(vFile)
     },
     async handleCopyUrl(key){ // 执行复制url
       let vFile = this.getFileByKey(key);
-      let fileId = vFile.other.id;
-      await file[0].copyUrl(fileId)
+      await fileService.copyFileUrl(vFile);
     },
     async handleShare(key){ // 打开分享窗口
       let vFile = this.getFileByKey(key);
@@ -364,10 +294,11 @@ export default {
       let vFile = this.getFileByKey(key);
       this.moveModel.name = vFile.name;
       this.moveModel.vFileId = vFile.other.id;
+      this.$refs.folderSelect.flushData(); // 刷新缓存数据
       this.moveBoxShow = true;
     },
     async confirmShare(){
-      await share.create(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
+      fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
       this.shareModel.key = "";
       this.shareModel.expiry = "";
       this.shareBoxShow = false;
@@ -381,30 +312,30 @@ export default {
         window.$message.info("不能自己向自己移动哦")
         return;
       }
-      await file[0].moveFile(this.moveModel.vFileId,parentId)
+      await fileService.moveFile(this.moveModel.vFileId,parentId)
       this.getFileData()
     },
     async handleDetail(key){
       let vFile = this.getFileByKey(key);
-      let root = getCurRoot();
-      let path = getPathString()+vFile.name;
+      let root = this.fileData.root;
+      let path = fileService.getPathString()+vFile.name;
       window.open("/detail?root="+root+"&path="+path);
     },
   },
-  watch:{
-    fileData:{
-      handler(val,oldVal){
-        if(val.root !== this.curRoot){
-          // 防止首次使用执行多个getFileData
-          if(this.curRoot !== null){
-            this.getFileData()
-          }
-          this.curRoot = val.root
-        }
-      },
-      deep: true
-    }
-  },
+  // watch:{
+  //   fileData:{
+  //     handler(val,oldVal){
+  //       if(val.root !== this.curRoot){
+  //         // 防止首次使用执行多个getFileData
+  //         if(this.curRoot !== null){
+  //           this.getFileData()
+  //         }
+  //         this.curRoot = val.root
+  //       }
+  //     },
+  //     deep: true
+  //   }
+  // },
   mounted() {
     this.handleFlush()
   },
@@ -418,8 +349,7 @@ export default {
       collapsed: ref(false),
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileData,
-      adapters:_adapters,
+      fileData:fileService.getFileListObject(),
       curRoot:null,
       curParent:"0",
       contextMenu:reactive({
@@ -433,7 +363,6 @@ export default {
       shareModel:reactive({name:"",vFileId:"",key:"",expiry:""}),
       moveBoxShow:ref(false),
       moveModel:reactive({name:"",vFileId:"",}),
-
     }
   }
 }

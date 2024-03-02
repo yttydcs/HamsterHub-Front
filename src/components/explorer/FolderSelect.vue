@@ -11,26 +11,26 @@
 
 
     >
-<!--      {{treeData}}-->
-      <!--          :default-expanded-keys="defaultExpandedKeys"-->
-      <n-tree
-          block-line
-          :data="treeData"
-          :on-load="handleLoad"
-          :on-update:selected-keys="handleNodeClick"
-          check-strategy="all"
-          selectable
-      />
 
-        <n-space class="=control-btn" align="stretch" justify="end">
+      <n-spin :show="loading" :delay="100">
+        <n-tree
+            block-line
+            :data="treeData"
+            :on-load="handleLoad"
+            :on-update:selected-keys="handleNodeClick"
+            check-strategy="all"
+            selectable
+        />
+      </n-spin>
 
-          <n-button type="primary" block secondary strong @click="confirmFunc(isSelect,root,parentId)" >
-            确定
-          </n-button>
-          <n-button  type="primary" block secondary strong @click="cancelFunc">
-            取消
-          </n-button>
-        </n-space>
+      <n-space class="=control-btn" align="stretch" justify="end">
+        <n-button type="primary" block secondary strong @click="confirmFunc(isSelect,root,parentId)" >
+          确定
+        </n-button>
+        <n-button  type="primary" block secondary strong @click="cancelFunc">
+          取消
+        </n-button>
+      </n-space>
 
     </n-modal>
 
@@ -38,22 +38,16 @@
 </template>
 
 <script>
-import {NButton, NInput, NModal, NSpace, NForm, NFormItem, NTree} from "naive-ui";
+import {NButton, NInput, NModal, NSpace, NForm, NFormItem, NTree, NSpin} from "naive-ui";
 import {reactive, ref} from "vue";
 import strategy from "@/api/strategy";
-import {fileList as fileData} from "@/common/fileList";
-import file from "@/api/file";
-import hamster from "@/common/adapter/hamster";
-import alist from "@/common/adapter/alist";
-const adapters = [hamster, alist];
+import fileService from "@/service/hamster/file"
 
 
-// NInput,NForm, NFormItem,
 export default {
   name: 'FolderSelect',
-  components: { NButton, NModal, NSpace, NTree },
+  components: { NButton, NModal, NSpace, NTree, NSpin },
   props: {
-    // title:String,
     show:Boolean,
     data:Object,
     confirmFunc:Function,
@@ -61,7 +55,12 @@ export default {
   },
 
   methods:{
+    flushData(){
+      this.treeData.length = 0;
+      this.fetchRoot();
+    },
     fetchRoot(){
+      this.loading = true;
       let that = this
       strategy.query().then(res =>{
         let arr = res.data
@@ -81,34 +80,19 @@ export default {
           })
         }
 
+        that.loading = false;
       })
     },
 
-    async getFileData(root,parentId){
-
-      const adapterOption = fileData.device;
-      const that = this;
-
-      if(adapterOption === 0){
-        let res = await file[adapterOption].getFile(root,parentId)
-        if (adapters[adapterOption].judgeLoginCode(res.code)) {
-          return res.data
-        }
-      }
-
-      return [];
-    },
-
     async handleLoad(node) {
-      // console.log("node",node)
       let root = node.root
-
       let parentId = "0";
+
       if(!node.isRoot){
         parentId = node.key;
       }
 
-      let files = await this.getFileData(root,parentId)
+      let files = (await fileService.fetchFileData(root,parentId)).data
 
       if (files.length <=0){
         node.isLeaf = true
@@ -153,12 +137,6 @@ export default {
       }
     },
   },
-  mounted() {
-    this.fetchRoot()
-  },
-  activated() {
-    this.fetchRoot()
-  },
   setup(){
 
     return {
@@ -167,11 +145,12 @@ export default {
       }),
       treeData: ref([
         {
-          label: "a",
+          label: "waiting",
           key: "0",
           isLeaf: false
         }
       ]),
+      loading:ref(false),
       root:ref(null),
       parentId:ref(null),
       isSelect:ref(false),

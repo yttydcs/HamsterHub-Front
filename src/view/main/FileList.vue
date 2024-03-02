@@ -8,7 +8,7 @@
                  :file-img-url="file.url"
                  :file-select="file.selected"
                  :file-click="fileClick"
-                 :db-click="openFile"
+                 :db-click="enterPath"
                  :isDir="fileList.file[index].is_dir"
         />
       </n-grid-item>
@@ -19,38 +19,24 @@
 <script>
 import {NGridItem,NGrid} from "naive-ui";
 import {h, ref} from "vue";
-import {fileList, addPath, fileList as fileData} from "@/common/fileList"
+import { addPath } from "@/common/fileList"
 
 import FileBox from "@/components/explorer/FileBox.vue";
 
 export default {
   name: 'FileList',
-  methods:{
-    fileClick(index){
-      fileList.file[index].selected = !fileList.file[index].selected
-    },
-    openFile(index){
-      if(fileList.file[index].is_dir){
-        if(fileData.device === 0){
-          addPath(fileList.file[index].name,fileList.file[index].other.id)
-        }else{
-          addPath(fileList.file[index].name)
-        }
-        this.changePath()
-      }
-    }
-  },
   components: {
     FileBox,
     NGridItem,
     NGrid
   },
   props: {
-    changePath:Function
+    fileList:Object,
+    fileClick:Function,
+    enterPath:Function
   },
   setup(){
     return{
-      fileList
     }
   }
 }
