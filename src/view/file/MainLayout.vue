@@ -22,7 +22,11 @@
 
       </n-layout-sider>
       <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
-        <FileExplorer ref="explorer" />
+        <FileExplorer
+            ref="explorer"
+            :file-menu ="fileMenu"
+            :file-service="fileService"
+        />
       </n-layout>
     </n-layout>
 
@@ -43,11 +47,15 @@ import { HomeOutline,
   } from "@vicons/ionicons5";
 import { Recycle } from "@vicons/tabler";
 import { Collections24Regular } from "@vicons/fluent";
-import FileExplorer from "@/view/main/FileExplorer.vue";
+import FileExplorer from "@/components/explorer/FileExplorer.vue";
 
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
+import fileMenu from "@/service/hamster/fileMenu"
+
+// console.log("f",fileMenu.getFileOption())
+
 
 
 const MenuOption = reactive(
@@ -174,6 +182,8 @@ export default {
       menuOptions: MenuOption,
       curRoot:ref(""),
       curLang,
+      fileMenu,
+      fileService
     }
   }
 }

@@ -128,7 +128,7 @@ import {
 } from "naive-ui";
 import {ref, computed, watch, reactive, nextTick } from "vue";
 
-import FileList from "@/view/main/FileList.vue";
+import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import share from "@/api/share";
 import {useRoute} from "vue-router";
@@ -143,7 +143,7 @@ import curLang from "@/common/lang";
 import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "@/common/fileContextMenuOption";
 import InputBox from "@/components/common/InputBox.vue";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
-import fileService from "@/service/hamster/file"
+
 
 
 export default {
@@ -177,19 +177,19 @@ export default {
   },
   methods:{
     pathClick(index){
-      fileService.setPathLength(index+1)
+      this.fileService.setPathLength(index+1)
       this.getFileData()
     },
     switchRoot(root){
-      fileService.setRoot(root);
-      fileService.setPathLength(0);
+      this.fileService.setRoot(root);
+      this.fileService.setPathLength(0);
       this.getFileData()
     },
     setFileSelect(index){
       this.fileData.file[index].selected = !this.fileData.file[index].selected
     },
     enterPath(index){
-      fileService.enterPath(index);
+      this.fileService.enterPath(index);
       this.getFileData();
     },
     handleFlush(){
@@ -198,16 +198,16 @@ export default {
     },
     async handleRoute(){
       let path = window.location.pathname
-      await fileService.setPathByRoute(path)
+      await this.fileService.setPathByRoute(path)
     },
     async getFileData(){
-      await fileService.getFileData()
+      await this.fileService.getFileData()
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  files = event.dataTransfer.files;
       for (let i = 0; i < files.length; i++) {
-        await fileService.uploadFile(files[i])
+        await this.fileService.uploadFile(files[i])
       }
     },
     handleContextMenuShow(event){
@@ -267,21 +267,21 @@ export default {
     },
     async handleNewDir(value){ // 执行文件夹创建
       this.inputShow = false;
-      await fileService.newDir(value)
+      await this.fileService.newDir(value)
       this.getFileData();
     },
     async handleDelete(key){ // 执行文件删除
       let vFile = this.getFileByKey(key);
-      await fileService.deleteFile(vFile)
+      await this.fileService.deleteFile(vFile)
       this.getFileData();
     },
     async handleDownload(key){ // 执行文件下载
       let vFile = this.getFileByKey(key);
-      await fileService.downloadFile(vFile)
+      await this.fileService.downloadFile(vFile)
     },
     async handleCopyUrl(key){ // 执行复制url
       let vFile = this.getFileByKey(key);
-      await fileService.copyFileUrl(vFile);
+      await this.fileService.copyFileUrl(vFile);
     },
     async handleShare(key){ // 打开分享窗口
       let vFile = this.getFileByKey(key);
@@ -298,7 +298,7 @@ export default {
       this.moveBoxShow = true;
     },
     async confirmShare(){
-      fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
+      this.fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
       this.shareModel.key = "";
       this.shareModel.expiry = "";
       this.shareBoxShow = false;
@@ -312,15 +312,19 @@ export default {
         window.$message.info("不能自己向自己移动哦")
         return;
       }
-      await fileService.moveFile(this.moveModel.vFileId,parentId)
+      await this.fileService.moveFile(this.moveModel.vFileId,parentId)
       this.getFileData()
     },
     async handleDetail(key){
       let vFile = this.getFileByKey(key);
       let root = this.fileData.root;
-      let path = fileService.getPathString()+vFile.name;
+      let path = this.fileService.getPathString()+vFile.name;
       window.open("/detail?root="+root+"&path="+path);
     },
+    setMenu(){
+      this.contextMenu.options.length = 0;
+      this.contextMenu.options.push(...this.fileMenu)
+    }
   },
   // watch:{
   //   fileData:{
@@ -337,19 +341,25 @@ export default {
   //   }
   // },
   mounted() {
+    this.setMenu()
     this.handleFlush()
   },
   activated() {
+    this.setMenu()
     this.handleFlush()
   },
-  setup(){
+  props:{
+    fileMenu:Object,
+    fileService:Object
+  },
+  setup(props){
     let theme = useThemeVars();
     let borderColor = computed(() => theme.value.borderColor);
     return{
       collapsed: ref(false),
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileData:fileService.getFileListObject(),
+      fileData:props.fileService.getFileListObject(),
       curRoot:null,
       curParent:"0",
       contextMenu:reactive({
