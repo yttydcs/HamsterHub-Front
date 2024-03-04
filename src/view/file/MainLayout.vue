@@ -10,15 +10,26 @@
           @collapse="collapsed = true"
           @expand="collapsed = false"
       >
+        <div class="menuBox">
+          <n-menu
+              :collapsed="collapsed"
+              :collapsed-width="64"
+              :collapsed-icon-size="22"
+              :options="menuOptions"
+              class="menu-left"
+              :on-update:value="handleMenuSelect"
+          />
+        </div>
 
-        <n-menu
-            :collapsed="collapsed"
-            :collapsed-width="64"
-            :collapsed-icon-size="22"
-            :options="menuOptions"
-            class="menu-left"
-            :on-update:value="handleMenuSelect"
-        />
+        <div class="DeviceUsageBox" v-show="!collapsed">
+          <DeviceUsage
+              v-show="curStrategy.total!=='' && curStrategy.total!==0"
+            :title = "curStrategy.title"
+            :free = "curStrategy.free"
+            :total = "curStrategy.total"
+          />
+
+        </div>
 
       </n-layout-sider>
       <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
@@ -48,6 +59,7 @@ import { HomeOutline,
 import { Recycle } from "@vicons/tabler";
 import { Collections24Regular } from "@vicons/fluent";
 import FileExplorer from "@/components/explorer/FileExplorer.vue";
+import DeviceUsage from "@/components/common/DeviceUsage.vue";
 
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
@@ -105,7 +117,8 @@ export default {
     NLayout,
     NLayoutSider,
     NMenu,
-    FileExplorer
+    FileExplorer,
+    DeviceUsage,
   },
   methods:{
     // 获取可用的根目录
@@ -116,6 +129,7 @@ export default {
         let arr = res.data
 
         if(arr===undefined || arr.length<=0){
+          that.curRoot = ""
           return
         }
 
@@ -128,18 +142,29 @@ export default {
           }
         }
 
+        // 首次进入设置第一个位选中
         if(that.curRoot === ""){
-          this.switchToRoot(arr[0].root)
+          that.switchToRoot(arr[0].root)
         }
 
         MenuOption[0].children = []
+        that.strategy.length = 0
 
         for (let i = 0; i < arr.length; i++) {
           MenuOption[0].children.push({
             label: arr[i].name,
             key: 'root-'+arr[i].root,
-            data: arr[i].root
+            data: arr[i].root,
+            index: i
           })
+
+          // 缓存 strategy
+          that.strategy.push(arr[i]);
+
+          // 找出当前root 对应的strategy
+          if(arr[i].root === fileListRoot){
+            that.setDeviceUsage(i)
+          }
         }
         that.loading.finish();
       }).catch((res)=>{
@@ -152,10 +177,24 @@ export default {
       this.curRoot = root
       this.loading.finish()
     },
+    setDeviceUsage(index,ob=null){
+      let aim
+
+      if(ob === null){
+        aim = this.strategy[index]
+      }else{
+        aim = ob
+      }
+
+      this.curStrategy.title = aim.name;
+      this.curStrategy.free = aim.size.usable;
+      this.curStrategy.total = aim.size.total;
+    },
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
         this.switchToRoot(ob.data)
       }
+      this.setDeviceUsage(ob.index)
     },
   },
   mounted() {
@@ -183,6 +222,8 @@ export default {
       collapsed: ref(false),
       menuOptions: MenuOption,
       curRoot:ref(""),
+      curStrategy:reactive({title:"",free:"",total:""}),
+      strategy:reactive([]),
       curLang,
       fileMenu,
       fileService,
@@ -195,5 +236,14 @@ export default {
 <style>
 .menu-left{
   text-align: left;
+}
+
+.DeviceUsageBox{
+  padding: 10px;
+}
+
+.menuBox{
+  height: calc(100vh - 140px);
+  overflow-y: auto;
 }
 </style>
