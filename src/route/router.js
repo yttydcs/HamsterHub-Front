@@ -9,7 +9,8 @@ import SharePage from "@/view/share/SharePage.vue";
 import MainDetail from "@/view/detail/MainDetail.vue";
 import Test from "@/view/test/test.vue"
 import loginData from "@/common/loginData";
-
+import TaskLayout from "@/view/task/TaskLayout.vue";
+import UpLoadTask from "@/view/task/UpLoadTask.vue";
 
 // 构建路由
 const routes = [
@@ -38,9 +39,18 @@ const routes = [
                 meta:{needToken:true}
             },
             {
-                path: 's/:ticket',
-                component: SharePage,
-                meta:{needToken:false}
+                path: 'task',
+                component: TaskLayout,
+                redirect: '/task/upload',
+                meta:{needToken:true},
+                children:[
+                    {
+                        path: 'upload',
+                        component: UpLoadTask,
+                        meta:{needToken:true}
+                    },
+
+                ]
             },
             {
                 path: 'detail',

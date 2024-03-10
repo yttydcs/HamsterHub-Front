@@ -71,7 +71,7 @@ const MenuOption = reactive(
     [
     {
       label: curLang.lang.leftMenuFile,
-      href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
+      href: '',
       key: 'file',
       icon: renderIcon(FolderOpenOutline),
     },

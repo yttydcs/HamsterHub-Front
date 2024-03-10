@@ -154,6 +154,22 @@ export default {
             url:u,
             data:d,
         })
+    },
+
+    isExist(root,hash){
+        let u = "/api/isExist"
+
+        // 构造提交数据
+        let d = {
+            root:root,
+            hash:hash
+        }
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d,
+        })
     }
 
 

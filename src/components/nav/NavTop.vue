@@ -35,6 +35,15 @@
 
         <n-divider vertical />
 
+
+        <router-link to="/task" v-if="loginData.loginState">
+          <n-button text style="font-size: 24px" >
+            <n-icon>
+              <TaskListSquareRtl24Regular />
+            </n-icon>
+          </n-button>
+        </router-link>
+
         <router-link to="/share" v-if="loginData.loginState">
           <n-button text style="font-size: 24px" >
             <n-icon>
@@ -112,6 +121,11 @@ import {
   PencilOutline,
 } from "@vicons/ionicons5";
 
+import {
+  TaskListSquareRtl24Regular
+} from "@vicons/fluent";
+
+
 import loginData, {removeLoginData} from "@/common/loginData"
 import login from "@/api/login";
 
@@ -154,6 +168,7 @@ export default defineComponent({
     LanguageOutline,
     FolderOpenOutline,
     ShareSocialOutline,
+    TaskListSquareRtl24Regular,
     NDropdown,
   },
   props: {
@@ -204,7 +219,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="css">
+<style scoped lang="css">
 .nav-top{
   height: 60px;
   line-height: 60px;

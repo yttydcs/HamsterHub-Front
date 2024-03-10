@@ -132,6 +132,7 @@ import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import share from "@/api/share";
 import {useRoute} from "vue-router";
+import hash from "@/common/hash";
 
 import {
   ArrowClockwise24Regular,
@@ -208,8 +209,10 @@ export default {
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  files = event.dataTransfer.files;
+
       for (let i = 0; i < files.length; i++) {
-        await this.fileService.uploadFile(files[i])
+        let data = await hash.fileToHash(files[i])
+        await this.fileService.uploadFile(files[i],data)
       }
     },
     handleContextMenuShow(event){

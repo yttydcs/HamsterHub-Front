@@ -2,8 +2,8 @@
   <div class="box">
     <div class="text">
       <span>{{title}}</span>
-      {{freeString}}/
-      {{totalString}}
+      <span class="textData"> {{usedString}} / {{totalString}}</span>
+
     </div>
 
     <n-progress
@@ -24,6 +24,9 @@ export default {
   name: 'DeviceUsage',
   components: {NProgress},
   computed:{
+    usedString(){
+      return calc.toSizeString(this.total-this.free);
+    },
     freeString(){
       return calc.toSizeString(this.free);
     },
@@ -31,9 +34,9 @@ export default {
       return calc.toSizeString(this.total);
     },
     percentage(){
-      let total = Number(this.total)
-      let free = Number(this.free)
-      return (total-free)/total*100
+      let total = Number(this.total);
+      let free = Number(this.free);
+      return (total-free)/total*100;
     }
   },
   props: {
@@ -64,6 +67,10 @@ export default {
     height: 30px;
     line-height: 30px;
     overflow: hidden;
+  }
+
+  .textData{
+    float: right;
   }
 
 </style>

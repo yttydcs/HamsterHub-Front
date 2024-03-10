@@ -182,9 +182,32 @@ export default {
         return await file.getFile(root,parent)
     },
 
-    async uploadFile(fileObject){
-        let curParent = (await getCurPathNode()).id
-        await file.uploadFile(getCurRoot(),curParent,"",fileObject)
+    async uploadFile(fileObject,hash="",root=null,parent=null){
+        let curParent = parent
+        let aimRoot = root
+        let isExist = false;
+
+        if(parent===null){
+            curParent = (await getCurPathNode()).id
+        }
+
+        if(root === null){
+            aimRoot = getCurRoot()
+        }
+        if(!!hash){
+            let temp = await file.isExist(aimRoot,hash)
+            console.log(temp.data)
+            if(temp.data){
+                isExist = true
+            }
+
+        }
+
+        if(!isExist){
+            await file.uploadFile(aimRoot,curParent,"",fileObject)
+        }else{
+            await file.uploadFile(aimRoot,curParent,hash,new File([],fileObject.name))
+        }
         await this.getFileData()
     },
 
