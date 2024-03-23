@@ -38,7 +38,7 @@ export default {
     },
 
 
-    uploadFile(root="0",parentId="0",hash="",file){
+    uploadFile(root="0",parentId="0",hash="",file,onUploadProgress=null){
 
         let u = "/api/upload"
 
@@ -54,7 +54,8 @@ export default {
             method:"post",
             url:u,
             data:d,
-            headers: {'Content-Type': 'multipart/form-data'}
+            headers: {'Content-Type': 'multipart/form-data'},
+            onUploadProgress: onUploadProgress
         })
 
     },

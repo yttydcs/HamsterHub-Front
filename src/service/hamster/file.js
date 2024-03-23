@@ -99,6 +99,10 @@ export default {
 
     getPathString,
 
+    getCurRoot,
+
+    getCurPathNode,
+
     enterPath(index) {
         if (fileList.file[index].is_dir) {
             addPath(fileList.file[index].name, fileList.file[index].other.id);
@@ -182,7 +186,7 @@ export default {
         return await file.getFile(root,parent)
     },
 
-    async uploadFile(fileObject,hash="",root=null,parent=null){
+    async uploadFile(fileObject,hash="",root=null,parent=null,onUploadProgress=null){
         let curParent = parent
         let aimRoot = root
         let isExist = false;
@@ -204,9 +208,9 @@ export default {
         }
 
         if(!isExist){
-            await file.uploadFile(aimRoot,curParent,"",fileObject)
+            await file.uploadFile(aimRoot,curParent,"",fileObject,onUploadProgress)
         }else{
-            await file.uploadFile(aimRoot,curParent,hash,new File([],fileObject.name))
+            await file.uploadFile(aimRoot,curParent,hash,new File([],fileObject.name),onUploadProgress)
         }
         await this.getFileData()
     },

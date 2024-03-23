@@ -4,14 +4,14 @@
       <h1>执行</h1>
     </div>
 
-    <div class="uploadTaskBox switchTran">
+    <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.doing" :key="index">
       <div class="img">
-        <fileIcon file-type="file"></fileIcon>
+        <fileIcon :file-type="item.type"></fileIcon>
       </div>
 
       <div class="detail">
         <div class="upBox">
-          <div class="name">name</div>
+          <div class="name">{{ item.name }}</div>
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%">
 
@@ -46,7 +46,7 @@
         <div class="progress">
           <NProgress
             indicator-placement="inside"
-            :percentage="20"
+            :percentage="item.progress"
             :border-radius="4"
             :fill-border-radius="4"
             status="success"
@@ -62,6 +62,43 @@
     <div class="title">
       <h1>结束</h1>
     </div>
+
+    <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.done" :key="index">
+      <div class="img">
+        <fileIcon :file-type="item.type"></fileIcon>
+      </div>
+
+      <div class="detail">
+        <div class="upBox">
+          <div class="name">{{ item.name }}</div>
+          <div class="action">
+            <n-space justify="end"  style="width: 100%; height: 100%">
+
+              <n-button class="button" text  @click="delDone(index)">
+                <n-icon>
+                  <Delete24Regular />
+                </n-icon>
+              </n-button>
+
+
+            </n-space>
+          </div>
+        </div>
+        <div class="progress">
+          <NProgress
+              indicator-placement="inside"
+              :percentage="item.progress"
+              :border-radius="4"
+              :fill-border-radius="4"
+              status="success"
+          />
+
+        </div>
+      </div>
+
+
+
+    </div>
   </div>
 
 
@@ -75,8 +112,7 @@ import {computed, h, reactive, ref, watch} from "vue";
 import { BanOutline, PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
 import { Recycle } from "@vicons/tabler";
 import { Delete24Regular, ArrowClockwise24Regular, CaretRight24Regular, Pause20Regular } from "@vicons/fluent";
-import FileExplorer from "@/components/explorer/FileExplorer.vue";
-import DeviceUsage from "@/components/common/DeviceUsage.vue";
+
 
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
@@ -84,6 +120,7 @@ import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
 
 import fileIcon from "@/components/explorer/FileIcon.vue";
+import uploadTask, {delDone} from "@/common/task/uploadTask";
 
 
 
@@ -106,6 +143,7 @@ export default {
     PauseOutline,
   },
   methods:{
+    delDone,
   },
   mounted() {
   },
@@ -123,6 +161,7 @@ export default {
       fileMenu,
       fileService,
       loading:useLoadingBar(),
+      uploadTask,
     }
   }
 }
@@ -148,11 +187,12 @@ export default {
 }
 
 .uploadTaskBox{
-  padding: 10px;
+  padding: 10px 0px 10px 10px;
   height: 50px;
   width: 100%;
   margin: 0 auto;
   border-radius: 5px;
+  overflow: hidden;
 }
 
 .uploadTaskBox:hover{

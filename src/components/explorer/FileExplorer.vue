@@ -133,6 +133,7 @@ import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import share from "@/api/share";
 import {useRoute} from "vue-router";
 import hash from "@/common/hash";
+import {addTasks} from "@/common/task/uploadTask";
 
 import {
   ArrowClockwise24Regular,
@@ -208,12 +209,21 @@ export default {
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
-      const  files = event.dataTransfer.files;
+      const  {files,items} = event.dataTransfer;
 
-      for (let i = 0; i < files.length; i++) {
-        let data = await hash.fileToHash(files[i])
-        await this.fileService.uploadFile(files[i],data)
-      }
+      let root = this.fileService.getCurRoot()
+      let parent = (await this.fileService.getCurPathNode()).id
+      let parentUrl = (await this.fileService.getPathString()).slice(0, -1)
+
+      addTasks(files,items,root,parentUrl,parent)
+
+
+      setTimeout(this.handleFlush, 300);
+
+      // for (let i = 0; i < files.length; i++) {
+      //   let data = await hash.fileToHash(files[i])
+      //   await this.fileService.uploadFile(files[i],data)
+      // }
     },
     handleContextMenuShow(event){
       // 阻止默认行为
