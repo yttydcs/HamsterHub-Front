@@ -11,9 +11,9 @@
 
       <div class="detail">
         <div class="upBox">
-          <div class="name">{{ item.name }}</div>
+          <div class="name"><span class="status"> {{ item.status }} </span>{{ item.name }}</div>
           <div class="action">
-            <n-space justify="end"  style="width: 100%; height: 100%">
+            <n-space justify="end"  style="width: 100%; height: 100%" v-show="false">
 
               <n-button class="button" text >
                 <n-icon>
@@ -239,6 +239,14 @@ export default {
 .button{
   height: 100%;
   font-size: 20px
+}
+
+.status{
+  display: inline-block;
+  margin-right: 10px;
+  padding: 0px 3px;
+  border-radius: 3px;
+
 }
 
 

@@ -1,6 +1,7 @@
-import { reactive } from "vue";
+import {reactive} from "vue";
 import fileService from "@/service/hamster/file"
 import file from "@/api/file/hamster/file";
+import hash from "@/common/hash";
 
 const KEY = "upload";
 
@@ -24,6 +25,7 @@ function loadUploadData(){
     // 构建默认值
     let res = {
         isUpload:false,
+        isHash:false,
         doing:[],
         error:[],
         done:[],
@@ -34,6 +36,10 @@ function loadUploadData(){
     if(localDate !== undefined){
         res = Object.assign(res,localDate);
     }
+
+    // 刚开始默认不执行任务
+    res.isUpload = false;
+    res.isHash = false;
 
     return reactive(
         res
@@ -54,7 +60,7 @@ export function addTask(root,parentUrl,name,fileEntry,parent = null,type="file")
         orderId:orderId,
         name:name,
         type:"file",
-        status:"wait", // wait,hash,ready,stop,error,doing
+        status:"wait", // wait,hash,ready,doing,stop,error
         progress:0,
         hash:"",
         parentUrl:parentUrl,
@@ -79,9 +85,6 @@ export async function setTasksParent(){
         }else if(parentUrl in  cache){// 有缓存用缓存
             uploadData.doing[i].parent = cache[parentUrl];
         }else{
-
-            // let res2 = await file.getDetail(uploadData.doing[i].root,parentUrl);
-            // console.log(res2)
 
             let res = await file.getDetail(uploadData.doing[i].root,parentUrl);
 
@@ -116,7 +119,6 @@ function isDataTransferItem(obj){
 }
 
 async function addTasksDeep(files,items,root,parentUrl,parentId){
-    // console.log(files,items,root,parentUrl,parentId)
     for (let i = 0; i <items.length; i++) {
         let entry = items[i]
 
@@ -135,9 +137,6 @@ async function addTasksDeep(files,items,root,parentUrl,parentId){
                 res = await file.mkDir(root,parentId,entry.name)
                 nextParentId = res.data.id;
             }
-
-            // console.log(res)
-            // let nextParentId = res.data.id;
 
             await addTasksDeep(files,nextItems,root,nextUrl + "/",nextParentId)
 
@@ -167,12 +166,19 @@ function getFileFromEntry(fileEntry) {
 
 async function  uploader() {
     let i = 0
+    let waiting = 0;
     while ( i < uploadData.doing.length) {
 
-        if (uploadData.doing[i].status !== "wait"){
+        if (uploadData.doing[i].status !== "ready"){
+            if(uploadData.doing[i].status !== "wait" || uploadData.doing[i].status !== "hash"){// 防止空转
+                waiting++
+                hashQueue()
+            }
             i++;
             continue;
         }
+
+        uploadData.doing[i].status = "uploading"
 
         let fileObj = await getFileFromEntry(uploadData.doing[i].fileEntry)
         let hash = uploadData.doing[i].hash
@@ -180,31 +186,71 @@ async function  uploader() {
         let parent = uploadData.doing[i].parent
         let index = i;
         let setProgress =(progressEvent)=>{
-            console.log(progressEvent.loaded , progressEvent.total)
-            let persent = (progressEvent.loaded / progressEvent.total * 100 | 0)
-            console.log(persent)
-            uploadData.doing[index].progress = persent;
+            uploadData.doing[index].progress = (progressEvent.loaded / progressEvent.total * 100 | 0);
         };
 
         await fileService.uploadFile(fileObj,hash,root,parent,setProgress);
 
         let temp  = uploadData.doing.splice(i,1)
+
         // 防止显示错误
         temp[0].progress = 100;
         uploadData.done.push(temp[0]);
         i=0;
         saveData()
     }
+
+    if(waiting === 0){
+        uploadData.isUpload = false;
+    }else{
+        setTimeout(uploader,1000);
+    }
+
+
+}
+
+async function  hashQueue() {
+    if(uploadData.isHash){
+        return false // 已经在计算就不再新增
+    }
+
+    for (let i = 0; i < uploadData.doing.length; i++) {
+        // 只计算在wait的
+        if (uploadData.doing[i].status !== "wait"){
+            continue;
+        }
+
+        // 锁定，防止重复计算
+        uploadData.doing[i].status = "hash"
+
+        let fileObj = await getFileFromEntry(uploadData.doing[i].fileEntry)
+        let index = i;
+
+        let setProgress =(cur,total)=>{
+            let p = (cur / total * 100 | 0);
+            let curP = uploadData.doing[index].progress;
+            uploadData.doing[index].progress = p;
+        };
+        let res = await hash.fileToHash(fileObj,setProgress)
+
+        uploadData.doing[i].hash = res;
+        uploadData.doing[i].status = "ready"
+        uploadData.doing[i].progress = 100
+
+        saveData()
+    }
+
+    uploadData.isHash=false
 }
 
 export async function startUpload(){
     if(uploadData.isUpload){
         return false // 已经在上传的时候就不再继续
     }
+    hashQueue()
 
-    await uploader()
+    setTimeout(uploader,1000)
 
-    uploadData.isUpload = false
 }
 export function delDone(index){
     uploadData.done.splice(index,1)
@@ -212,7 +258,7 @@ export function delDone(index){
 }
 
 export function saveData(){
-    localStorage.setItem(KEY, JSON.stringify(uploadData));
+    // localStorage.setItem(KEY, JSON.stringify(uploadData));
 }
 
 export function removeData(){
