@@ -200,7 +200,6 @@ export default {
         }
         if(!!hash){
             let temp = await file.isExist(aimRoot,hash)
-            console.log(temp.data)
             if(temp.data){
                 isExist = true
             }

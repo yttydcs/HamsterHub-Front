@@ -122,6 +122,15 @@ async function addTasksDeep(files,items,root,parentUrl,parentId){
     for (let i = 0; i <items.length; i++) {
         let entry = items[i]
 
+        if(!entry||!"isFile" in entry){
+            window.$notification["error"]({
+                title:"文件上传异常",
+                description:"非预期的文件类型，该文件并未被上传！",
+            })
+            return;
+        }
+
+
         if(entry.isFile){
             addTask(root,parentUrl,entry.name,entry,parentId)
         }else{
@@ -149,7 +158,10 @@ export async function addTasks(files,items,root,parentUrl,parentId){
     let nextUrl = parentUrl === "" ? "/" : parentUrl;
     let nextItems = [];
     for (let i = 0; i < items.length; i++) {
-        nextItems.push(items[i].webkitGetAsEntry())
+        let entry = items[i].webkitGetAsEntry();
+        if(entry){
+            nextItems.push(entry)
+        }
     }
 
     await addTasksDeep(files,nextItems,root,nextUrl,parentId);
@@ -185,6 +197,7 @@ async function  uploader() {
         let root = uploadData.doing[i].root
         let parent = uploadData.doing[i].parent
         let index = i;
+
         let setProgress =(progressEvent)=>{
             uploadData.doing[index].progress = (progressEvent.loaded / progressEvent.total * 100 | 0);
         };
