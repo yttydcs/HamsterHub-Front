@@ -27,6 +27,10 @@ const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 let cancel;
 
+let msgFilter =new Set();
+
+msgFilter.add("上传成功")
+
 service.interceptors.request.use(
     config => {
         if (loginData.loginState){
@@ -45,19 +49,23 @@ service.interceptors.response.use(
         let data = responese.data;
 
         // 如果存在msg就弹出消息提示
-        if(typeof data !="string" && msgIndex in data && data[msgIndex]!==""){
-            if(data.code === successCode){
-                window.$message.success(data[msgIndex]);
-            }else{
-                window.$message.error(data[msgIndex]);
-                if(data.code === expiredCode){
+        if(typeof data !="string" && msgIndex in data  ){
+            let msg = data[msgIndex]
+            if(msg!=="" &&! msgFilter.has(msg)){
+                if(data.code === successCode){
+                    window.$message.success(data[msgIndex]);
+                }else{
+                    window.$message.error(data[msgIndex]);
+                    if(data.code === expiredCode){
 
-                    loginData.loginKey.loginKeyValue = "";
-                    loginData.loginState = false;
+                        loginData.loginKey.loginKeyValue = "";
+                        loginData.loginState = false;
 
-                    saveLoginData()
+                        saveLoginData()
+                    }
                 }
             }
+
 
 
         }

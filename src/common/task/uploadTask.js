@@ -119,6 +119,7 @@ function isDataTransferItem(obj){
 }
 
 async function addTasksDeep(files,items,root,parentUrl,parentId){
+    let num = 0;
     for (let i = 0; i <items.length; i++) {
         let entry = items[i]
 
@@ -133,6 +134,9 @@ async function addTasksDeep(files,items,root,parentUrl,parentId){
 
         if(entry.isFile){
             addTask(root,parentUrl,entry.name,entry,parentId)
+
+            // 计算创建的任务数
+            num++;
         }else{
             let nextItems = await readEntriesAsync(entry)
             let nextUrl = parentUrl + entry.name;
@@ -147,16 +151,20 @@ async function addTasksDeep(files,items,root,parentUrl,parentId){
                 nextParentId = res.data.id;
             }
 
-            await addTasksDeep(files,nextItems,root,nextUrl + "/",nextParentId)
+            num = num + await addTasksDeep(files,nextItems,root,nextUrl + "/",nextParentId)
 
         }
 
+
+
     }
+    return num;
 }
 
 export async function addTasks(files,items,root,parentUrl,parentId){
     let nextUrl = parentUrl === "" ? "/" : parentUrl;
     let nextItems = [];
+    let num = 0; // 创建的上传数量
     for (let i = 0; i < items.length; i++) {
         let entry = items[i].webkitGetAsEntry();
         if(entry){
@@ -164,7 +172,13 @@ export async function addTasks(files,items,root,parentUrl,parentId){
         }
     }
 
-    await addTasksDeep(files,nextItems,root,nextUrl,parentId);
+    num = await addTasksDeep(files,nextItems,root,nextUrl,parentId);
+
+    window.$notification["info"]({
+        title:"文件上传",
+        description:num+"个文件上传任务已创建，将在后台执行上传任务，请勿关闭网页!",
+        duration:3000
+    })
 
     saveData();
     startUpload();
@@ -215,6 +229,13 @@ async function  uploader() {
 
     if(waiting === 0){
         uploadData.isUpload = false;
+
+        window.$notification["success"]({
+            title:"文件上传",
+            description:"所有上传任务已经完成！",
+            duration:3000
+        })
+
     }else{
         setTimeout(uploader,1000);
     }
