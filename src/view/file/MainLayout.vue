@@ -136,7 +136,7 @@ export default {
         let fileListRoot = fileService.getFileListObject().root
         // 检查当前root是否存在
         for (let i = 0; i < arr.length; i++) {
-          if(arr[i].root=== fileListRoot){
+          if(arr[i].root === fileListRoot){
             that.curRoot = fileListRoot
             break;
           }
@@ -145,6 +145,8 @@ export default {
         // 首次进入设置第一个位选中
         if(that.curRoot === ""){
           that.switchToRoot(arr[0].root)
+          // 重新获取root
+          fileListRoot = fileService.getFileListObject().root
         }
 
         MenuOption[0].children = []
