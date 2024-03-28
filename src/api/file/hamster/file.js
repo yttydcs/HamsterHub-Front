@@ -55,6 +55,7 @@ export default {
             url:u,
             data:d,
             headers: {'Content-Type': 'multipart/form-data'},
+            timeout: Infinity,
             onUploadProgress: onUploadProgress
         })
 

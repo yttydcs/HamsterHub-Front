@@ -9,6 +9,7 @@ let config = {
     timeout: 10000,
     // 每次请求携带cookie
     withCredentials: true,
+    maxContentLength: Infinity,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
 }
 
