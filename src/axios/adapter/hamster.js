@@ -1,10 +1,11 @@
 import axios from "axios";
+import url from "@/axios/baseUrl";
 
 import loginData,{ saveLoginData } from "@/common/loginData";
 
 let config = {
 
-    baseURL: process.env.VUE_APP_URL,
+    baseURL: url(),
     // 请求超时时间
     timeout: 10000,
     // 每次请求携带cookie

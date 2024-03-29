@@ -1,6 +1,7 @@
 import device from "@/api/device";
+import {getEnum} from "@/common/enums";
 
-let enumDevice = (await device.getDeviceType()).data
+let enumDevice = getEnum("enumDevice")
 
 
 // device curd config
@@ -27,7 +28,7 @@ const formModel = [
         title: "type",
         key: "type",
         type: "enum",
-        typeValue:["本地","阿里云盘","OneDrive"],
+        typeValue:enumDevice,
         show: true,
         create: true,
         modify: true,

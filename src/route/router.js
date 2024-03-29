@@ -26,23 +26,35 @@ const routes = [
             {
                 path: 'login',
                 component: MainLogin,
-                meta:{needToken:false}
+                meta:{
+                    needToken:false,
+                    title:"Login",
+                }
             },
             {
                 path: 'setting',
                 component: MainSetting,
-                meta:{needToken:false}
+                meta:{
+                    needToken:false,
+                    title:"Setting",
+                }
             },
             {
                 path: 'share',
                 component: ShareLayout,
-                meta:{needToken:true}
+                meta:{
+                    needToken:true,
+                    title:"Share",
+                }
             },
             {
                 path: 'task',
                 component: TaskLayout,
                 redirect: '/task/upload',
-                meta:{needToken:true},
+                meta:{
+                    needToken:true,
+                    title:"Task",
+                },
                 children:[
                     {
                         path: 'upload',
@@ -84,6 +96,7 @@ const router = createRouter({
 
 // 全局路由管理
 router.beforeEach((to, from, next) => {
+    document.title = to.meta.title ||"HamsterHub";
     //如果路由需要跳转
     if (to.meta.needToken) {
         // 检查登陆状态

@@ -15,7 +15,7 @@ export default {
         loginData.user.name = name;
         loginData.loginState = true;
         loginData.user.id = res.data.id;
-        loginData.user.avatarSrc = process.env["VUE_APP_URL"]+ "api/queryAvatar?accountId="+loginData.user.id;
+        loginData.user.avatarSrc = window.targetUrl+ "api/queryAvatar?accountId="+loginData.user.id;
 
         // 持久化
         saveLoginData()

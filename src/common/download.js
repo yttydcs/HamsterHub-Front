@@ -11,7 +11,7 @@ export default {
             return url
         }
 
-        return process.env["VUE_APP_URL"]+"api" + url
+        return window.targetUrl + "api" + url
     },
 
     url(url, openWindow=false){

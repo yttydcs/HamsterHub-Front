@@ -1,8 +1,9 @@
 import device from "@/api/device";
 import strategy from "@/api/strategy";
+import {getEnum} from "@/common/enums";
 
-let enumStrategyMode = (await strategy.getStrategyMode()).data
-let enumStrategyType = (await strategy.getStrategyType()).data
+let enumStrategyMode = getEnum("enumStrategyMode")
+let enumStrategyType = getEnum("enumStrategyType")
 // let enumPermissionType = []
 // 实时获取选项的方法
 async function deviceIdsFetch(selected=[]){

@@ -1,9 +1,10 @@
 import axios from "axios";
+import url from "@/axios/baseUrl";
 
 import loginData,{ saveLoginData } from "@/common/loginData";
 
 let config = {
-    baseURL: "https://alist.mymc.host/",
+    baseURL: url,
     // 请求超时时间
     timeout: 10000,
     // 每次请求携带cookie
