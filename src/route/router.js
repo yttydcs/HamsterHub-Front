@@ -75,6 +75,11 @@ const routes = [
                 meta:{needToken:false}
             },
             {
+                path: 's/:ticket',
+                component: SharePage,
+                meta:{needToken:false}
+            },
+            {
                 path: '/:file*',
                 component: MainLayout,
                 meta:{needToken:true}
