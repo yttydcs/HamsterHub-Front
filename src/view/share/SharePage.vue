@@ -21,7 +21,7 @@
         <div class="unlockBox">
           <n-icon :component="lockIcon" size="100" :depth="4" />
           <n-input-group >
-            <n-input type="password" show-password-on="click" v-model:value="key"/>
+            <n-input type="password" show-password-on="click" v-model:value="fileKey"/>
             <n-button type="primary" ghost @click="handleSubmitKey">
               submit
             </n-button>
@@ -95,7 +95,7 @@ export default {
             that.isDir = false
           }
         }else{
-          let data = res.response.data;
+          let data = res;
           if(data.code === INCORRECT_KEY || data.code === NONE_KEY){// 验证码错误
             that.unlock = false;
           }
@@ -103,7 +103,6 @@ export default {
         that.loading.finish()
       }).catch((err)=>{
         that.isExist=false
-        let data = err;
         that.loading.error()
       })
     },
@@ -115,7 +114,7 @@ export default {
     },
     async handleSubmitKey(){
       let ticket = this.dataRoute.params.ticket;
-      let key = this.key;
+      let key = this.fileKey;
       this.$router.push("/s/"+ticket+"?key="+key);
     },
     handleDownload(ticket,key){
