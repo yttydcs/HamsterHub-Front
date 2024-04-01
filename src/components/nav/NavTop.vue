@@ -98,7 +98,7 @@
         </n-form-item-row>
       </n-form>
       <n-button type="primary" block secondary strong @click="confirmChangePwd">
-        登录
+        提交
       </n-button>
     </n-modal>
 

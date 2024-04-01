@@ -51,9 +51,9 @@
 </template>
 
 <script>
-import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox} from "naive-ui";
+import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox, useThemeVars} from "naive-ui";
 import login from "@/api/login";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
@@ -97,8 +97,9 @@ export default {
       lasting:false
     })
 
-
+    let theme = useThemeVars();
     return {
+      boxShadow : computed(() => theme.value.boxShadow3),
       formData: loginData,
       adapters: _adapters
     }
@@ -106,7 +107,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .mainLogin {
   width: 100%;
   height: calc(100vh - 65px);
@@ -121,13 +122,8 @@ export default {
 .loginPanel {
   text-align: left;
   width: 500px;
-  height: 400px;
-
-  /* 居中
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);*/
+  box-shadow: v-bind(boxShadow);
+  margin-top: -60px;
 }
 
 /* 细微调整，防止太小遮挡 input 选中特效 */

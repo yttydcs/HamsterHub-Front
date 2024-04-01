@@ -45,7 +45,7 @@
 <!--        </div>-->
 
         <!--    普通视频的预览    -->
-        <div class="file-text" v-if="previewType === 'video'">
+        <div class="file-video" v-if="previewType === 'video'">
           <video :src="url" controls style="width: 100%"></video>
         </div>
 
@@ -208,6 +208,10 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.file-text{
+  white-space: pre-wrap;
 }
 
 .msg{
