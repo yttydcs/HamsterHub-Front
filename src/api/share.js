@@ -21,7 +21,7 @@ export default {
 
     },
 
-    getShare(ticket,key){
+    getShare(ticket,key,vFileId){
         let u = "/api/queryShareFile"
 
         // 构造提交数据
@@ -29,8 +29,12 @@ export default {
             ticket:ticket,
         }
 
-        if(key){
+        if (key){
             d["key"]=key;
+        }
+
+        if (vFileId){
+            d["vFileId"]=vFileId;
         }
 
         return axois[type]({

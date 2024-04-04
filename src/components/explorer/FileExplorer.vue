@@ -32,9 +32,17 @@
       </div>
     </div>
 
+    <div class="file-open" @contextmenu="handleContextMenuShow" v-if="fileData.isFile">
+      <n-layout :native-scrollbar="false" style="height: 100%">
+        <DetailBox
+            ref="detailBox"
+            :file-service="fileService"
+        />
 
+      </n-layout>
+    </div>
 
-    <div class="file-list-p" @contextmenu="handleContextMenuShow">
+    <div class="file-list-p" @contextmenu="handleContextMenuShow" v-else>
       <n-layout :native-scrollbar="false" style="height: 100%">
         <file-list
             style="padding-right: 24px"
@@ -145,7 +153,7 @@ import curLang from "@/common/lang";
 import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "@/common/fileContextMenuOption";
 import InputBox from "@/components/common/InputBox.vue";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
-
+import DetailBox from "@/components/explorer/DetailBox.vue";
 
 
 export default {
@@ -176,6 +184,7 @@ export default {
     NDropdown,
     InputBox,
     FolderSelect,
+    DetailBox,
   },
   methods:{
     pathClick(index){
@@ -192,9 +201,8 @@ export default {
 
     },
     async enterPath(index){
-      if(this.fileService.enterPath(index)){
-        await this.getFileData();
-      }
+      this.fileService.enterPath(index);
+      await this.getFileData(index);
     },
     handleFlush(){
       this.handleRoute()
@@ -204,8 +212,12 @@ export default {
       let path = window.location.pathname
       await this.fileService.setPathByRoute(path)
     },
-    async getFileData(){
+    async getFileData(index){
       await this.fileService.getFileData();
+      if(this.fileData.isFile){
+        let fileObj = await this.fileService.getNextFileDetail(index)
+        await this.$refs.detailBox.flushData(fileObj);
+      }
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
@@ -443,6 +455,12 @@ export default {
 }
 
 .file-list-p{
+  height: calc( 100% - 50px );
+  overflow: hidden;
+}
+
+.file-open{
+  margin-left: 6px;
   height: calc( 100% - 50px );
   overflow: hidden;
 }

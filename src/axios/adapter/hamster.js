@@ -1,7 +1,7 @@
 import axios from "axios";
 import url from "@/axios/baseUrl";
 
-import loginData,{ saveLoginData } from "@/common/loginData";
+import loginData, {removeLoginData, saveLoginData} from "@/common/loginData";
 
 let config = {
 
@@ -58,11 +58,7 @@ service.interceptors.response.use(
                 }else{
                     window.$message.error(data[msgIndex]);
                     if(data.code === expiredCode){
-
-                        loginData.loginKey.loginKeyValue = "";
-                        loginData.loginState = false;
-
-                        saveLoginData()
+                        removeLoginData();
                     }
                 }
             }

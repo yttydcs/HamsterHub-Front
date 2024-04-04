@@ -8,7 +8,8 @@ const successCode = 0; // 表示成功
 // 由service内部维护
 export const fileList = reactive({
     device: 0, // 描述访问的是哪个后台，如hamster或者alist
-    writable:false,
+    writable:true,
+    isFile:false,
     root: "",
     history:{},
     path: [],
@@ -38,6 +39,18 @@ function getCurRoot(){
     return fileList.root
 }
 
+async function getDetail(target){
+    return await file.getDetail(target.root,target.url)
+}
+
+async function getNextFileDetail(index){
+    let target = {
+        root : getCurRoot(),
+        url : (getPathString()).slice(0, -1)
+    }
+    return (await getDetail(target)).data;
+}
+
 async function getCurPathNode(){
     if(fileList.path.length === 0){
         return {label:"root",id:"0"}
@@ -45,7 +58,7 @@ async function getCurPathNode(){
 
     // 如果没有父目录id的缓存
     if(fileList.path[fileList.path.length-1].id === "-1"){
-        let data = await file.getDetail(fileList.root,getPathStringNoneLast());
+        let data = await getDetail({"root":fileList.root,"url":getPathStringNoneLast()});
         if("data" in data &&"type" in data.data[0] && "id" in data.data[0] &&data.data[0].type === 0){
             fileList.path[fileList.path.length-1].id = data.data[0].id
         }
@@ -62,6 +75,7 @@ function addPath(label,id){
 }
 
 function popPath(){
+    fileList.isFile = false;
     return fileList.path.pop()
 }
 
@@ -69,7 +83,7 @@ function popPathTo(postion){
     if(!(fileList.path.length > postion && postion>=0)){
         return {}
     }
-
+    fileList.isFile = false;
     let res = fileList.path[postion]
     fileList.path.length = postion
     return res
@@ -77,6 +91,10 @@ function popPathTo(postion){
 
 function isDir(index){
     return fileList.file[index].is_dir
+}
+
+function isFile(){
+    return fileList.isFile;
 }
 
 
@@ -92,10 +110,17 @@ export default {
     },
 
     setPathLength(index){
+        if(fileList.path.length > index){
+            fileList.isFile = false;
+        }
         fileList.path.length = index;
     },
 
     isDir,
+
+    isFile,
+
+    getNextFileDetail,
 
     getPathString,
 
@@ -104,11 +129,8 @@ export default {
     getCurPathNode,
 
     enterPath(index) {
-        if (fileList.file[index].is_dir) {
-            addPath(fileList.file[index].name, fileList.file[index].other.id);
-            return true;
-        }
-        return false;
+        addPath(fileList.file[index].name, fileList.file[index].other.id);
+        fileList.isFile = !fileList.file[index].is_dir;
     },
 
     setRoot(root){
@@ -120,14 +142,16 @@ export default {
 
         let arr = target.split("/");
 
-
-
         // 如果是根目录不处理
         if(arr.length === 1 || (arr.length === 2 && arr[1]==="")){
             return;
         }
 
 
+        // 不是根目录，并且最后一位不是 / 或 \ 则说明目标是一个文件
+        if(arr.length>2 && arr[arr.length-1] !==""){
+            fileList.isFile = true
+        }
 
         // 如果指定了root
         if (arr[1]){
@@ -163,7 +187,13 @@ export default {
             return
         }
 
-        window.history.pushState({ path: getUrlString() }, '', getUrlString());
+        let urlString
+        if (fileList.isFile){
+            urlString = getUrlString().slice(0, -1)
+        }else{
+            urlString = getUrlString()
+        }
+        window.history.pushState({ path: urlString }, '', urlString);
 
         let curParent = (await getCurPathNode()).id
 
@@ -171,15 +201,18 @@ export default {
         if(this.curParent === "-1"){
             return
         }
-        window.loading.start()
-        file.getFile(getCurRoot(),curParent).then(function (res) {
-            if (adapter.judgeLoginCode(res.code)) {
-                adapter.setFileData(res,fileList)
-            }
-            window.loading.finish()
-        }).catch((err)=>{
-            window.loading.error()
-        })
+
+        if (!fileList.isFile){
+            window.loading.start()
+            file.getFile(getCurRoot(),curParent).then(function (res) {
+                if (adapter.judgeLoginCode(res.code)) {
+                    adapter.setFileData(res,fileList)
+                }
+                window.loading.finish()
+            }).catch((err)=>{
+                window.loading.error()
+            })
+        }
     },
 
     async fetchFileData(root,parent){

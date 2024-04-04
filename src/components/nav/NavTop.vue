@@ -197,7 +197,7 @@ export default defineComponent({
       let that = this;
       login.changePwd(this.formData.oldPwd,this.formData.newPwd).then(res=>{
         removeLoginData();
-        that.$router.push("/login");
+        // that.$router.push("/login");
         that.changePwdShow = false;
       })
     }
