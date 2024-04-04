@@ -41,19 +41,21 @@ const fileContextMenuOption = reactive([
         show:false,
         icon: renderIcon(Copy24Filled),
         condition:1
-    },{
-        key: 'divider1',
-        type: 'divider',
-        show:false,
-        icon: renderIcon(OpenFolder24Filled),
-        condition:1
-    },{
-        label: "属性",
-        key: "detail",
-        show:false,
-        icon: renderIcon(AppsListDetail24Filled),
-        condition:1
-    },
+    }
+    // ,{
+    //     key: 'divider1',
+    //     type: 'divider',
+    //     show:false,
+    //     icon: renderIcon(OpenFolder24Filled),
+    //     condition:1
+    // },
+    // {
+    //     label: "属性",
+    //     key: "detail",
+    //     show:false,
+    //     icon: renderIcon(AppsListDetail24Filled),
+    //     condition:1
+    // },
 
 ]);
 

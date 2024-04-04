@@ -64,11 +64,11 @@ const routes = [
 
                 ]
             },
-            {
-                path: 'detail',
-                component: MainDetail,
-                meta:{needToken:true}
-            },
+            // {
+            //     path: 'detail',
+            //     component: MainDetail,
+            //     meta:{needToken:true}
+            // },
             {
                 path: 'test',
                 component: Test,

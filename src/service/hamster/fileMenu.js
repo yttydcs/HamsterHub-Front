@@ -83,13 +83,14 @@ const fileContextMenuOption = reactive([
         show:false,
         icon: renderIcon(FolderAdd24Filled),
         condition:0
-    },{
-        label: "属性",
-        key: "detail",
-        show:false,
-        icon: renderIcon(AppsListDetail24Filled),
-        condition:1
     },
+    // {
+    //     label: "属性",
+    //     key: "detail",
+    //     show:false,
+    //     icon: renderIcon(AppsListDetail24Filled),
+    //     condition:1
+    // },
 
 ]);
 
