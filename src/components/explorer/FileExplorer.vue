@@ -49,6 +49,7 @@
             :file-list="fileData"
             :enter-path="enterPath"
             :file-click="setFileSelect"
+            :show-menu="handleContextMenuShow"
         />
 
       </n-layout>

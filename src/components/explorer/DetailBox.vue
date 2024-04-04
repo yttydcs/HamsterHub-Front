@@ -75,7 +75,6 @@ export default {
         }
 
         await this.handleItem(data[i],i);
-        console.log(this.detailData)
       }
       this.createOption();
     },

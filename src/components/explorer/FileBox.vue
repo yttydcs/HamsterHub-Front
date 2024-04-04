@@ -16,8 +16,8 @@
       </div>
 
 
-      <div class="file-detail">
-        <n-button text style="height: 40px;font-size: 24px;">
+      <div class="file-detail" @click="e=>handleButtonContextMenuShow(e,fileIndex)">
+        <n-button text style="height: 40px;font-size: 24px;" >
           <n-icon>
             <detail-icon />
           </n-icon>
@@ -61,12 +61,21 @@ export default {
     fileSelect:Boolean,
     fileClick: Function,
     dbClick: Function,
-    isDir: Boolean
+    isDir: Boolean,
+    showMenu:Function
   },
   methods:{
     handleContextMenuShow(event,data){
+      console.log(event,data)
       // 阻止默认事件
       event.preventDefault();
+      openMenuByCondition(1,data)
+    },
+    handleButtonContextMenuShow(event,data){
+      console.log(event,data)
+      // 阻止点击事件向上传播
+      event.stopPropagation();
+      this.showMenu(event)
       openMenuByCondition(1,data)
     },
     getIconTypeByName(name){

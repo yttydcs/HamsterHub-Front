@@ -10,6 +10,7 @@
                  :file-click="fileClick"
                  :db-click="enterPath"
                  :isDir="fileList.file[index].is_dir"
+                 :show-menu="showMenu"
         />
       </n-grid-item>
     </n-grid>
@@ -33,7 +34,8 @@ export default {
   props: {
     fileList:Object,
     fileClick:Function,
-    enterPath:Function
+    enterPath:Function,
+    showMenu:Function
   },
   setup(){
     return{
