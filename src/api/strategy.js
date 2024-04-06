@@ -103,5 +103,25 @@ export default {
 
     },
 
+    getStrategySize(strategyId){
+
+        // 设置类不做兼容
+        let type = 0;
+
+        // 设置网址
+        let u = "/api/queryStrategySize"
+
+        let d = {
+            strategyId: strategyId
+        };
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d
+        })
+
+    },
+
 
 }

@@ -83,7 +83,6 @@ export default {
   },
   methods:{
     handleMenuSelect(key,ob){
-      console.log(key,ob)
       if(key==="upload"){
         this.$router.push("/task/upload");
       }

@@ -179,7 +179,7 @@ export default {
       this.curRoot = root
       this.loading.finish()
     },
-    setDeviceUsage(index,ob=null){
+    async setDeviceUsage(index,ob=null){
       let aim
 
       if(ob === null){
@@ -188,9 +188,11 @@ export default {
         aim = ob
       }
 
+      let strategySize = (await strategy.getStrategySize(aim.id)).data
+
       this.curStrategy.title = aim.name;
-      this.curStrategy.free = aim.size.usable;
-      this.curStrategy.total = aim.size.total;
+      this.curStrategy.free = strategySize.usable;
+      this.curStrategy.total = strategySize.total;
     },
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){

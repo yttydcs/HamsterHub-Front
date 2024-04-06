@@ -66,13 +66,11 @@ export default {
   },
   methods:{
     handleContextMenuShow(event,data){
-      console.log(event,data)
       // 阻止默认事件
       event.preventDefault();
       openMenuByCondition(1,data)
     },
     handleButtonContextMenuShow(event,data){
-      console.log(event,data)
       // 阻止点击事件向上传播
       event.stopPropagation();
       this.showMenu(event)
