@@ -86,6 +86,7 @@ export default {
           that.isExist = true
           that.unlock = true
           if (res.data.type===0){
+            console.log("key",this.fileKey)
             that.fileService.getFileListObject().others["key"] = this.fileKey
             that.fileService.getFileListObject().others["ticket"] = this.ticket
             that.fileService.getFileListObject().others["id"] = res.data.id

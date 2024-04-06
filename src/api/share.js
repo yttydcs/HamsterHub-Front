@@ -135,5 +135,27 @@ export default {
 
     },
 
+    findShareByName(ticket,key,parentId,name){
+        let u = "/api/searchShareFile"
+
+        // 构造提交数据
+        let d = {
+            ticket:ticket,
+            parentId:parentId,
+            name:name,
+        }
+
+        if (key){
+            d["key"]=key;
+        }
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d
+        })
+
+    },
+
 
 }

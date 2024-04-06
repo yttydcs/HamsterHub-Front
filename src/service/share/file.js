@@ -14,7 +14,7 @@ export const fileList = reactive({
     history:{},
     path: [],
     file: [],
-    others:{} // 保存其他的信息
+    others:{rootParent:"-1"} // 保存其他的信息
 });
 
 function getPathString(){
@@ -43,11 +43,45 @@ async function getDetail(target){
     return await share.getShare(target.ticket,target.key,target.vFileId)
 }
 
-async function getNextFileDetail(index){
+async function getRootParent(){
+
+    if (fileList.others.rootParent != "-1"){
+        return fileList.others.rootParent
+    }
+
     let target = {
         ticket : getCurRoot(),
         key : fileList.others["key"],
-        vFileId:fileList.file[index].other.id
+    }
+
+    let res = await getDetail(target);
+    if(!"data" in res || !"id" in res.data){
+        return "-1";
+    }
+
+    fileList.others.rootParent = res.data.id;
+
+    return res.data.id
+}
+
+async function getNextFileDetail(index){
+    let id = null;
+
+    // 防止刷新直接进的时候异常
+    if (!index){
+        if(fileList.path.length===1){
+            id = await getRootParent()
+        }else{
+            id = fileList.path[fileList.path.length-1].id;
+        }
+    }else{
+        id = fileList.file[index].other.id;
+    }
+
+    let target = {
+        ticket : getCurRoot(),
+        key : fileList.others["key"],
+        vFileId: id
     }
     return [(await getDetail(target)).data];
 }
@@ -59,7 +93,20 @@ async function getCurPathNode(){
 
     // 如果没有父目录id的缓存
     if(fileList.path[fileList.path.length-1].id === "-1"){
-        let data = await getDetail(fileList.root,getPathStringNoneLast());
+
+        let id = null
+
+        if(fileList.path.length>1){
+            id = fileList.path[fileList.path.length-2].id
+        }
+
+        let target = {
+            ticket : getCurRoot(),
+            key : fileList.others["key"],
+            vFileId:id
+        }
+
+        let data = await getDetail(target);
         if("data" in data &&"type" in data.data[0] && "id" in data.data[0] &&data.data[0].type === 0){
             fileList.path[fileList.path.length-1].id = data.data[0].id
         }
@@ -154,7 +201,7 @@ export default {
         }
 
         // 临时代码，待能刷新时取消
-        arr.length=3
+        // arr.length=3
 
         // 不是根目录，并且最后一位不是 / 或 \ 则说明目标是一个文件
         if(arr.length>3 && arr[arr.length-1] !==""){
@@ -168,6 +215,19 @@ export default {
 
         // 如果指定了后续目录
         let num = 0
+        let id = 0
+        // 如果需要遍历path
+        if(3 < arr.length){
+            let target = {
+                ticket : getCurRoot(),
+                key : fileList.others["key"],
+            }
+            let res = (await getDetail(target)).data;
+            id = res.id
+        }
+
+
+
         for (let i = 3; i < arr.length; i++) {
             // 必须不为空
             if(!arr[i]){
@@ -176,13 +236,27 @@ export default {
 
             num = num+1;
 
-            if(fileList.path.length < i-1){
+
+
+            if(fileList.path.length < i-2){
                 addPath("","-1")
             }
 
-            if(arr[i] !== fileList.path[i-2]){
-                fileList.path[i-2].label = arr[i];
-                fileList.path[i-2].id = "-1";
+
+            let res = await (share.findShareByName(getCurRoot(),fileList.others["key"],id,arr[i]));
+            if(!"data" in res){
+                // 出现异常，后续不再继续
+                num--;
+                break;
+            }
+
+            if(arr[i] !== fileList.path[i-3]){
+                fileList.path[i-3].label = arr[i];
+                fileList.path[i-3].id = res.data.id;
+                id = res.data.id;
+                if(res.data.type){
+                    fileList.isFile=true;
+                }
             }
 
         }

@@ -205,9 +205,9 @@ export default {
       this.fileService.enterPath(index);
       await this.getFileData(index);
     },
-    handleFlush(){
-      this.handleRoute()
-      this.getFileData()
+    async handleFlush(){
+      await this.handleRoute()
+      await this.getFileData()
     },
     async handleRoute(){
       let path = window.location.pathname
