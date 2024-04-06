@@ -69,7 +69,7 @@ async function getNextFileDetail(index){
 
     // 防止刷新直接进的时候异常
     if (!index){
-        if(fileList.path.length===1){
+        if(fileList.path.length===0){
             id = await getRootParent()
         }else{
             id = fileList.path[fileList.path.length-1].id;
@@ -218,15 +218,14 @@ export default {
         let id = 0
         // 如果需要遍历path
         if(3 < arr.length){
-            let target = {
-                ticket : getCurRoot(),
-                key : fileList.others["key"],
-            }
-            let res = (await getDetail(target)).data;
-            id = res.id
+            // let target = {
+            //     ticket : getCurRoot(),
+            //     key : fileList.others["key"],
+            // }
+            // let res = (await getDetail(target)).data;
+
+            id = await getRootParent()
         }
-
-
 
         for (let i = 3; i < arr.length; i++) {
             // 必须不为空
