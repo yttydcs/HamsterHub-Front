@@ -53,10 +53,10 @@
               multiple
               placeholder=""
               v-model:value="formData[item.key]"
-              :options="arrayBox.option"
+              :options="arrayBox[item.key].option"
               @update:value="handleUpdateValue"
               :loading="arrayBox.loading"
-              @update:show="show=> arraySelectHandle(show,item.typeValue)"
+              @update:show="show=> arraySelectHandle(show,item.typeValue,item.key)"
           />
         </n-form-item-row>
 
@@ -84,6 +84,7 @@
         :bordered="false"
     >
       <n-form :model="formData" v-for="(item,index) in tableData.modifyModel" :key="index">
+
         <!--    textBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='text'">
           <n-input v-model:value="formData[item.key]"/>
@@ -101,14 +102,15 @@
 
         <!--    arrayBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='array'">
+
           <n-select
               multiple
               placeholder=""
               v-model:value="formData[item.key]"
-              :options="arrayBox.option"
+              :options="arrayBox[item.key].option"
               @update:value="handleUpdateValue"
               :loading="arrayBox.loading"
-              @update:show="show=> arraySelectHandle(show,item.typeValue,item.key)"
+              @update:show="show => arraySelectHandle(show,item.typeValue,item.key)"
           />
         </n-form-item-row>
       </n-form>
@@ -142,7 +144,35 @@ import {
   NTag
 } from "naive-ui";
 
+// 从formModel中构建出增加表单和删除表单的数据
+const createFormByModel = (model,checkIndex="show")=>{
+  let res = []
 
+  for (let i = 0; i < model.length; i++) {
+    if(model[i][checkIndex]){
+
+      let o = {
+        title: model[i].title,
+        key: model[i].key,
+        modifyHide: model[i]["modifyHide"],
+        type: model[i]["type"],
+      }
+
+      // 如果是"enum" 构建 option
+      if(model[i]["type"] === "enum" || model[i]["type"] === "array"){
+        if(model[i]["typeValue"] instanceof Array ){
+          o["typeValue"] = createOptionByArray(model[i]["typeValue"])
+        }else{
+          o["typeValue"] = model[i]["typeValue"]
+        }
+      }
+
+      res.push(o)
+    }
+  }
+
+  return res;
+};
 // 从formModel中构建出表格的数据
 const createListByModel = (model,checkIndex="show")=>{
   let res = []
@@ -210,35 +240,6 @@ const createListByModel = (model,checkIndex="show")=>{
   return res;
 };
 
-// 从formModel中构建出增加表单和删除表单的数据
-const createFormByModel = (model,checkIndex="show")=>{
-  let res = []
-
-  for (let i = 0; i < model.length; i++) {
-    if(model[i][checkIndex]){
-
-      let o = {
-        title: model[i].title,
-        key: model[i].key,
-        modifyHide: model[i]["modifyHide"],
-        type: model[i]["type"],
-      }
-
-      // 如果是"enum" 构建 option
-      if(model[i]["type"] === "enum" || model[i]["type"] === "array"){
-        if(model[i]["typeValue"] instanceof Array ){
-          o["typeValue"] = createOptionByArray(model[i]["typeValue"])
-        }else{
-          o["typeValue"] = model[i]["typeValue"]
-        }
-      }
-
-      res.push(o)
-    }
-  }
-
-  return res;
-};
 
 const createOptionByArray= (arr) => {
   let options = []
@@ -280,6 +281,71 @@ export default {
     NSelect,
   },
   methods:{
+    createListByModel (model,checkIndex="show"){// 从formModel中构建出增加表单和删除表单的数据
+      let res = []
+      if(checkIndex==="show"){
+        // 如果是show就说明是用于生成列表的数据，第一个设置列表的一些属性
+        res.push({
+          type: "selection",
+          multiple: false,
+        })
+
+        // 加入索引
+        res.push({
+          title: '#',
+          key: '_indexKey',
+          width: 40,
+        })
+
+      }
+
+      for (let i = 0; i < model.length; i++) {
+        if(model[i][checkIndex]){
+          this.arrayBox[(model[i]["key"])]={};
+          let o = {
+            title: model[i].title,
+            key: model[i].key,
+            resizable: true,
+          }
+
+          // 渲染枚举的显示方式
+          if(model[i]["type"]==="enum"){
+            o["render"] = (row)=> {
+              return `${model[i]["typeValue"][row.type]}`
+            }
+          }
+
+          // 渲染数组的显示方式
+          if(model[i]["type"]==="array"){
+            o["render"] = (row) => {
+              return row[model[i].key].map((tagKey) => {
+                return h(
+                    NTag,
+                    {
+                      style: {
+                        marginRight: "6px"
+                      },
+                      type: "info",
+                      bordered: false
+                    },
+                    {
+                      default: () => tagKey
+                    }
+                );
+              });
+            }
+
+          }
+
+
+
+
+          res.push(o)
+        }
+      }
+
+      return res;
+    },
     openCreateBox(){
       this.createBox = true;
     },
@@ -349,8 +415,10 @@ export default {
       if(fetchFun){
         option = await fetchFun(this.formData[key])
       }
-      console.log(key)
-      this.arrayBox.option = option
+      console.log("show",show)
+      console.log("key",key)
+      console.log("fetchFun",fetchFun)
+      this.arrayBox[key].option = option
       this.arrayBox.loading = false
       console.log(this.formData)
     }
@@ -359,7 +427,7 @@ export default {
   mounted() {
 
     // 构建表头
-    this.tableData.headers = createListByModel(this.formModel)
+    this.tableData.headers = this.createListByModel(this.formModel)
 
     // 构建增加表单model
     this.tableData.addModel = createFormByModel(this.formModel,"create")
@@ -390,7 +458,7 @@ export default {
       checkedRowKeys:ref([1]),
       arrayBox: reactive({
         loading:false,
-        option:[]
+        option:{}
       })
 
     }
