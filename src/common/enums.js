@@ -11,7 +11,7 @@ function load(){
 }
 
 export function getEnum(name){
-    return enums["enumDevice"]
+    return enums[name]
 }
 
 const enums = {};

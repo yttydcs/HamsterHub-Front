@@ -349,8 +349,10 @@ export default {
       if(fetchFun){
         option = await fetchFun(this.formData[key])
       }
+      console.log(key)
       this.arrayBox.option = option
       this.arrayBox.loading = false
+      console.log(this.formData)
     }
 
   },
