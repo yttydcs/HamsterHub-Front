@@ -16,17 +16,18 @@
             </n-icon>
           </n-button>
 
-          <n-button text style="font-size: 20px" @click="getFileData">
+          <n-button text style="font-size: 20px" @click="switchBoxStyle(null)">
+            <n-icon>
+              <AppFolder24Regular />
+            </n-icon>
+          </n-button>
+
+          <n-button text style="font-size: 20px" @click="switchBoxStyle('line')">
             <n-icon>
               <AppsListDetail24Regular />
             </n-icon>
           </n-button>
 
-          <n-button text style="font-size: 20px" @click="getFileData">
-            <n-icon>
-              <AppFolder24Regular />
-            </n-icon>
-          </n-button>
         </n-space>
 
       </div>
@@ -50,6 +51,7 @@
             :enter-path="enterPath"
             :file-click="setFileSelect"
             :show-menu="handleContextMenuShow"
+            :box-style="boxStyle"
         />
 
       </n-layout>
@@ -220,6 +222,10 @@ export default {
         await this.$refs.detailBox.flushData(fileObj);
       }
     },
+    async switchBoxStyle(boxStyle){
+      this.boxStyle = boxStyle;
+      await this.getFileData();
+    },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  {files,items} = event.dataTransfer;
@@ -354,20 +360,6 @@ export default {
       this.contextMenu.options.push(...this.fileMenu)
     }
   },
-  // watch:{
-  //   fileData:{
-  //     handler(val,oldVal){
-  //       if(val.root !== this.curRoot){
-  //         // 防止首次使用执行多个getFileData
-  //         if(this.curRoot !== null){
-  //           this.getFileData()
-  //         }
-  //         this.curRoot = val.root
-  //       }
-  //     },
-  //     deep: true
-  //   }
-  // },
   mounted() {
     this.setMenu()
     this.handleFlush()
@@ -402,6 +394,7 @@ export default {
       moveBoxShow:ref(false),
       moveModel:reactive({name:"",vFileId:"",}),
       loading:useLoadingBar(),
+      boxStyle:ref(null),
     }
   }
 }

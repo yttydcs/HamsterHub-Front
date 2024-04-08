@@ -1,6 +1,11 @@
 <template>
   <div class="file-list-box">
-    <n-grid :x-gap="8" :y-gap="4" cols="1 310:2 460:3 610:4 760:5 910:6 1060:7 1210:8 1360:9 1510:10 1660:11 1810:12 1960:13">
+    <n-grid
+        :x-gap="8"
+        :y-gap="4"
+        cols="1 310:2 460:3 610:4 760:5 910:6 1060:7 1210:8 1360:9 1510:10 1660:11 1810:12 1960:13"
+        v-if="!boxStyle"
+    >
       <n-grid-item v-for="(file,index) in fileList.file" :key="index">
         <FileBox class="file-list-box-item anti-text-select"
                  :file-index="index"
@@ -11,9 +16,33 @@
                  :db-click="enterPath"
                  :isDir="fileList.file[index].is_dir"
                  :show-menu="showMenu"
+                 :box-style="boxStyle"
+                 :size="file.size"
+                 :modified="file.modified"
+
         />
       </n-grid-item>
     </n-grid>
+
+    <div
+        v-else
+        v-for="(file,index) in fileList.file" :key="index"
+    >
+      <FileBox class="file-list-box-item anti-text-select"
+               :file-index="index"
+               :file-name="file.name"
+               :file-img-url="file.url"
+               :file-select="file.selected"
+               :file-click="fileClick"
+               :db-click="enterPath"
+               :isDir="fileList.file[index].is_dir"
+               :show-menu="showMenu"
+               :box-style="boxStyle"
+               :size="file.size"
+               :modified="file.modified"
+      />
+
+    </div>
   </div>
 </template>
 
@@ -35,7 +64,8 @@ export default {
     fileList:Object,
     fileClick:Function,
     enterPath:Function,
-    showMenu:Function
+    showMenu:Function,
+    boxStyle:String
   },
   setup(){
     return{

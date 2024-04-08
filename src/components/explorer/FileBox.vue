@@ -4,18 +4,15 @@
        @click="fileClick(fileIndex)"
        @dblclick="dbClick(fileIndex)"
        @contextmenu="e=>handleContextMenuShow(e,fileIndex)"
+       v-if="!boxStyle"
   >
-
     <div class="file-img switchTheme">
       <fileIcon :file-type="iconType" />
     </div>
-
     <div class="file-name switchTheme">
       <div class="file-name-text switchTheme">
         {{ fileName }}
       </div>
-
-
       <div class="file-detail" @click="e=>handleButtonContextMenuShow(e,fileIndex)">
         <n-button text style="height: 40px;font-size: 24px;" >
           <n-icon>
@@ -23,10 +20,35 @@
           </n-icon>
         </n-button>
       </div>
+    </div>
+  </div>
+
+  <div class="file-box-line switchTheme borderHover"
+       :class="[fileSelect? 'file-selected' : 'file-unselected']"
+       @click="fileClick(fileIndex)"
+       @dblclick="dbClick(fileIndex)"
+       @contextmenu="e=>handleContextMenuShow(e,fileIndex)"
+       v-else
+  >
+    <div class="file-img-line switchTheme">
+      <fileIcon :file-type="iconType" />
+    </div>
+    <div class="file-name-line switchTheme">
+      <div class="file-name-text-line switchTheme">
+        {{ fileName }}
+      </div>
+      <div class="file-msg-text-line switchTheme">
+        {{ modified.replace("T"," ")  + ` · ` +  calc.toSizeString(size) }}
+      </div>
 
     </div>
-
-
+    <div class="file-detail-line" @click="e=>handleButtonContextMenuShow(e,fileIndex)">
+      <n-button text style="height: 60px;font-size: 24px;" >
+        <n-icon>
+          <detail-icon />
+        </n-icon>
+      </n-button>
+    </div>
   </div>
 
 
@@ -38,6 +60,7 @@ import {computed, h, nextTick, ref} from "vue";
 import {PersonOutline,Menu as DetailIcon} from "@vicons/ionicons5";
 import {fileContextMenuOption,openMenuByCondition} from "@/common/fileContextMenuOption";
 import fileIcon from "@/components/explorer/FileIcon.vue";
+import calc from "@/common/calc";
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
@@ -62,7 +85,10 @@ export default {
     fileClick: Function,
     dbClick: Function,
     isDir: Boolean,
-    showMenu:Function
+    showMenu:Function,
+    boxStyle:String,
+    size:String,
+    modified:String,
   },
   methods:{
     handleContextMenuShow(event,data){
@@ -92,6 +118,9 @@ export default {
     }
   },
   computed: {
+    calc() {
+      return calc
+    },
     iconType: function () {
       return this.isDir?"dir":this.getIconTypeByName(this.fileName);
     }
@@ -103,6 +132,8 @@ export default {
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
+      opacity2 : computed(() => theme.value.opacity2),
+      hoverColor : computed(() => theme.value.hoverColor),
     }
   }
 }
@@ -140,6 +171,18 @@ export default {
   position: relative;
 }
 
+.file-box-line{
+  height: 62px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  width: 100%;
+  text-align: left;
+  overflow: hidden;
+  position: relative;
+
+}
+
 .file-img{
   display: inline-block;
   width: 100%;
@@ -148,7 +191,23 @@ export default {
   margin: 0;
 }
 
+.file-img-line{
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  margin: 0;
+}
+
+
+
 .file-img svg{
+  transform: translate(50%,50%);
+  width: 50%;
+  height: 50%;
+}
+
+.file-img-line svg{
   transform: translate(50%,50%);
   width: 50%;
   height: 50%;
@@ -170,6 +229,15 @@ export default {
   line-height: 40px;
 }
 
+.file-name-line{
+  position: relative;
+  top: -6px;
+  width: calc( 100% - 100px) ;
+  height: 100%;
+  display: inline-block;
+
+}
+
 .file-name-text{
   display: inline-block;
   height:100%;
@@ -181,9 +249,38 @@ export default {
   -o-text-overflow: ellipsis;
 }
 
+.file-name-text-line{
+  height:28px;
+  line-height: 28px;
+  padding-left: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+
+.file-msg-text-line{
+  padding-left: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  height: 20px;
+  line-height: 20px;
+  opacity: v-bind(opacity2);
+}
+
 .file-detail{
   align-items: center;
   vertical-align: top;
+  width: 30px;
+  display: inline-block;
+}
+
+.file-detail-line{
+  align-items: center;
+  vertical-align: top;
+
   width: 30px;
   display: inline-block;
 }
