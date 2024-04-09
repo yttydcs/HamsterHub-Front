@@ -186,7 +186,7 @@ export default defineComponent({
       switch (key) {
         case "logout" :
           await login.logout();
-          this.$router.push("/login");
+          // this.$router.push("/login");
           break
         case "change" :
           this.changePwdShow = true

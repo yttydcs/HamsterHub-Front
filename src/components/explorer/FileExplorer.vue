@@ -16,13 +16,13 @@
             </n-icon>
           </n-button>
 
-          <n-button text style="font-size: 20px" @click="switchBoxStyle(null)">
+          <n-button text style="font-size: 20px" @click="switchBoxStyle(null)" v-if="boxStyle==='line'" >
             <n-icon>
               <AppFolder24Regular />
             </n-icon>
           </n-button>
 
-          <n-button text style="font-size: 20px" @click="switchBoxStyle('line')">
+          <n-button text style="font-size: 20px" @click="switchBoxStyle('line')"  v-if="boxStyle===null" >
             <n-icon>
               <AppsListDetail24Regular />
             </n-icon>
@@ -224,7 +224,7 @@ export default {
     },
     async switchBoxStyle(boxStyle){
       this.boxStyle = boxStyle;
-      await this.getFileData();
+      // await this.getFileData();
     },
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
@@ -449,13 +449,13 @@ export default {
 }
 
 .file-list-p{
-  height: calc( 100% - 50px );
+  height: calc( 100% - 90px );
   overflow: hidden;
 }
 
 .file-open{
   margin-left: 6px;
-  height: calc( 100% - 50px );
+  height: calc( 100% - 90px );
   overflow: hidden;
 }
 

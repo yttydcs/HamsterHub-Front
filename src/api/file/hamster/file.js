@@ -16,17 +16,28 @@ function copyText(str){
 let type = 0;
 
 export default {
-    getFile(root="0",parentId="0",page=1,pageLimit=50,refresh=false,url = "",){
-
+    getFile(root="0",parentId="0",page=null,pageLimit=50,refresh=false,url = "",){
+        // 默认不分页
         let u = "/api/queryList"
 
         // 构造提交数据
         let d = {
             root:root,
             parentId:parentId,
-            page:page,
             limit:pageLimit,
             refresh:refresh
+        }
+
+        if(page){
+            d['page'] = page
+        }
+
+        if(pageLimit){
+            d['pageLimit'] = pageLimit
+        }
+
+        if(refresh){
+            d['refresh'] = refresh
         }
 
         return axois[type]({

@@ -101,11 +101,24 @@ export async function setTasksParent(){
 
 }
 
-function readEntriesAsync(directory) {
-    return new Promise((resolve, reject) => {
-        let reader = directory.createReader();
-        reader.readEntries(resolve, reject);
-    });
+async function readEntriesAsync(directory) {
+    let entries = [];
+    let reader = directory.createReader();
+
+    while (true) {
+        let batch = await new Promise((resolve, reject) => {
+            reader.readEntries(resolve, reject);
+        });
+
+        if (batch.length === 0) {
+            // 如果读取到的批次为空，表示已经读取完所有文件，结束迭代
+            break;
+        }
+
+        entries.push(...batch);
+    }
+
+    return entries;
 }
 
 function isEntry(obj){

@@ -44,7 +44,7 @@ export function removeLoginData(){
     loginData.loginKey.loginKeyValue = "";
     loginData.user = {};
     localStorage.setItem("loginData", JSON.stringify(loginData));
-    location.href("/login");
+    location.href="/login";
 }
 
 export default loginData;
