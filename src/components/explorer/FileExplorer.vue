@@ -272,6 +272,10 @@ export default {
     },
     invokeMenuHandle(key){
       switch(key){
+        case "open":
+          let aim = fileContextMenuOption[findByKey(key)].data;
+          this.enterPath(aim)
+          break;
         case "newDir":
           this.inputShow = true;
           break;
