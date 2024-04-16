@@ -10,8 +10,10 @@ const zhLangData = {
         leftMenuRecycle :"回收",
         leftMenuShortcut :"快捷访问",
         leftMenuAdd :"添加",
-
-
+        user:{
+            login:"登陆",
+            register:"注册"
+        },
     }
 }
 

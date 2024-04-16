@@ -10,6 +10,10 @@ const enLangData = {
         leftMenuRecycle :"Recycle",
         leftMenuShortcut :"Shortcut",
         leftMenuAdd :"Add",
+        user:{
+            login:"登陆",
+            register:"注册",
+        },
     }
 }
 

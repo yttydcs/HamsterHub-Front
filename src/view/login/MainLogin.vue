@@ -41,7 +41,8 @@
               </n-form-item-row>
             </n-form>
             <n-button type="primary" block secondary strong @click="userRegister">
-              注册
+
+              {{curLang.lang.user.register}}
             </n-button>
           </n-tab-pane>
         </n-tabs>
@@ -58,6 +59,7 @@ import {computed, ref} from "vue";
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
 const _adapters = [hamster, alist];
+import curLang from "@/common/lang";
 
 export default {
   name: 'mainLogin',
@@ -101,7 +103,8 @@ export default {
     return {
       boxShadow : computed(() => theme.value.boxShadow3),
       formData: loginData,
-      adapters: _adapters
+      adapters: _adapters,
+      curLang
     }
   }
 }

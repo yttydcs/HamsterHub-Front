@@ -34,6 +34,7 @@
 
       </n-list>
     </div>
+    <UserSetting />
 
     <!--    todo: use route    -->
     <n-modal
@@ -71,6 +72,7 @@ import device from "@/api/device";
 import {reactive, ref} from "vue";
 import CommonCURD from "@/components/common/CommonCURD.vue";
 import {deviceConfig} from "@/common/curd/deviceConfig";
+import UserSetting from "@/components/setting/UserSetting.vue";
 
 
 export default {
@@ -87,7 +89,7 @@ export default {
     CommonCURD,
     // NInput,
     NModal,
-
+    UserSetting,
     NList, NButton, NListItem, NThing, NSwitch
   },
   mounted() {

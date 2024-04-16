@@ -215,11 +215,11 @@ export default {
     // 响应语言变化
     watch(curLang, () => {
       MenuOption[0].label = curLang.lang.leftMenuFile
-      MenuOption[1].label = curLang.lang.leftMenuShare
-      MenuOption[2].label = curLang.lang.leftMenuFavorite
-      MenuOption[3].label = curLang.lang.leftMenuRecycle
-      MenuOption[4].label = curLang.lang.leftMenuShortcut
-      MenuOption[4].children[MenuOption[4].children.length-1].label = curLang.lang.leftMenuAdd
+      // MenuOption[1].label = curLang.lang.leftMenuShare
+      // MenuOption[2].label = curLang.lang.leftMenuFavorite
+      // MenuOption[3].label = curLang.lang.leftMenuRecycle
+      // MenuOption[4].label = curLang.lang.leftMenuShortcut
+      // MenuOption[4].children[MenuOption[4].children.length-1].label = curLang.lang.leftMenuAdd
     });
 
     return{

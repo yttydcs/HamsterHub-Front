@@ -102,4 +102,22 @@ export default {
 
         removeLoginData();
     },
+    changeUserAvatar(file,type=0){
+
+        let u = "/api/uploadAvatar"
+
+        // 构造提交数据
+        let d = {
+            file:file,
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+            headers: {'Content-Type': 'multipart/form-data'},
+            timeout: Infinity,
+        })
+
+    },
 }
