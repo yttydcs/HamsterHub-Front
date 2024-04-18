@@ -10,9 +10,14 @@ const enLangData = {
         leftMenuRecycle :"Recycle",
         leftMenuShortcut :"Shortcut",
         leftMenuAdd :"Add",
+        plsInput:"please input",
         user:{
-            login:"log in",
-            register:"register",
+            login:"Log In",
+            register:"Register",
+            username:"Username",
+            password:"Password",
+            againPassword:"Confirm password",
+            saveSession:"Save session"
         },
     }
 }

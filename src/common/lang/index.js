@@ -6,13 +6,10 @@ import zh from "./other/zh"
 const langSet = [zh,en];
 
 function loadData(){
-
-    let res = Object.assign({},langSet[0])
-
+    let res = JSON.parse(JSON.stringify(langSet[0]))
     return reactive(
         res
     )
-
 }
 
 const curLang = loadData()
@@ -33,16 +30,8 @@ export function switchLang(index){
     if(index > langSet.length){
         return false;
     }
-
     curLang.name = langSet[index].name
-
     copyObj(curLang.lang,langSet[index].lang)
-    // curLang.lang = JSON.parse(JSON.stringify(langSet[index].lang));
-    // curLang.lang = Object.assign({}, langSet[index].lang);
-    // curLang.lang.user.register = "aaaaa"
-    // curLang = Object.assign({}, curLang);
-    // curLang.lang = langSet[index].lang
-    console.log(curLang.lang)
     return true
 }
 

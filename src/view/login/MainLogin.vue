@@ -11,16 +11,16 @@
             pane-wrapper-style="margin: 0 -4px"
             pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
         >
-          <n-tab-pane name="signIn" tab="登录">
+          <n-tab-pane name="signIn" :tab="curLang.lang.user.login">
             <n-form :model="formData">
-              <n-form-item-row label="用户名">
-                <n-input v-model:value="formData.name"/>
+              <n-form-item-row :label="curLang.lang.user.username">
+                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
-              <n-form-item-row label="密码">
-                <n-input v-model:value="formData.pwd"/>
+              <n-form-item-row :label="curLang.lang.user.password">
+                <n-input v-model:value="formData.pwd" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
-                保留登录状态
+                {{ curLang.lang.user.saveSession }}
               </n-checkbox>
               <br>
             </n-form>
@@ -28,16 +28,16 @@
               {{curLang.lang.user.login}}
             </n-button>
           </n-tab-pane>
-          <n-tab-pane name="signUp" tab="注册">
+          <n-tab-pane name="signUp" :tab="curLang.lang.user.register">
             <n-form :model="formData">
-              <n-form-item-row label="用户名">
-                <n-input v-model:value="formData.name"/>
+              <n-form-item-row :label="curLang.lang.user.username">
+                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
-              <n-form-item-row label="密码">
-                <n-input v-model:value="formData.pwd"/>
+              <n-form-item-row :label="curLang.lang.user.password">
+                <n-input v-model:value="formData.pwd" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
-              <n-form-item-row label="重复密码">
-                <n-input v-model:value="formData.checkPwd"/>
+              <n-form-item-row :label="curLang.lang.user.againPassword">
+                <n-input v-model:value="formData.checkPwd" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
             </n-form>
             <n-button type="primary" block secondary strong @click="userRegister">
