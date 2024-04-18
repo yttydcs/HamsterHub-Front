@@ -25,7 +25,7 @@
               <br>
             </n-form>
             <n-button type="primary" block secondary strong @click="userLogin">
-              登录
+              {{curLang.lang.user.login}}
             </n-button>
           </n-tab-pane>
           <n-tab-pane name="signUp" tab="注册">
@@ -41,7 +41,6 @@
               </n-form-item-row>
             </n-form>
             <n-button type="primary" block secondary strong @click="userRegister">
-
               {{curLang.lang.user.register}}
             </n-button>
           </n-tab-pane>

@@ -11,8 +11,8 @@ const enLangData = {
         leftMenuShortcut :"Shortcut",
         leftMenuAdd :"Add",
         user:{
-            login:"登陆",
-            register:"注册",
+            login:"log in",
+            register:"register",
         },
     }
 }

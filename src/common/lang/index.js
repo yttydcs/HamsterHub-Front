@@ -1,7 +1,6 @@
 import { reactive } from "vue";
 import en from "./other/en"
 import zh from "./other/zh"
-import Vue from "vue"; // 导入 Vue 模块
 // 语言选项
 
 const langSet = [zh,en];
@@ -18,14 +17,32 @@ function loadData(){
 
 const curLang = loadData()
 
+function copyObj(target,origin){
+    for (let key in origin) {
+        if(typeof origin[key] ==="object"){
+            copyObj(target[key],origin[key]);
+        }else{
+            target[key]=origin[key];
+        }
+
+    }
+}
+
 export function switchLang(index){
 
     if(index > langSet.length){
         return false;
     }
 
-    const newLang = langSet[index];
-    Object.assign(curLang, newLang);
+    curLang.name = langSet[index].name
+
+    copyObj(curLang.lang,langSet[index].lang)
+    // curLang.lang = JSON.parse(JSON.stringify(langSet[index].lang));
+    // curLang.lang = Object.assign({}, langSet[index].lang);
+    // curLang.lang.user.register = "aaaaa"
+    // curLang = Object.assign({}, curLang);
+    // curLang.lang = langSet[index].lang
+    console.log(curLang.lang)
     return true
 }
 
