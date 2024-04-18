@@ -3,12 +3,12 @@
 
     <n-list hoverable bordered>
       <template #header>
-        <n-thing title="用户设置" />
+        <n-thing :title="curLang.lang.userSetting.title" />
       </template>
 
       <n-list-item>
         <input type="file" style="display:none" ref="uploadInput" accept="image/*" @change="handleFileUpload"/>
-        <n-thing title="头像" description="点击即可重新上传头像" />
+        <n-thing :title="curLang.lang.userSetting.avatarTitle" :description="curLang.lang.userSetting.avatarDes" />
         <template #suffix>
 
           <n-avatar
@@ -23,11 +23,11 @@
       </n-list-item>
 
       <n-list-item>
-        <n-thing title="密码" description="定时修改密码保证以密码安全" />
+        <n-thing :title="curLang.lang.userSetting.pwdTitle" :description="curLang.lang.userSetting.pwdDes" />
         <template #suffix>
 
           <n-button @click="()=>{changePwdShow = true}">
-            修改
+            {{ curLang.lang.userSetting.pwdBtn }}
           </n-button>
 
         </template>
@@ -35,7 +35,7 @@
 
       <n-list-item>
         <n-button class="logoutBtn" strong secondary type="error" @click="logout">
-          退出登陆
+          {{ curLang.lang.userSetting.logout }}
         </n-button>
       </n-list-item>
 
@@ -45,19 +45,19 @@
         v-model:show="changePwdShow"
         class="alertBox"
         preset="card"
-        title="修改密码"
+        :title="curLang.lang.changePwdBox.title"
         size="medium"
     >
       <n-form :model="formData">
-        <n-form-item-row label="旧密码">
-          <n-input v-model:value="formData.oldPwd"/>
+        <n-form-item-row :label="curLang.lang.changePwdBox.oldPwd">
+          <n-input v-model:value="formData.oldPwd" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
-        <n-form-item-row label="新密码">
-          <n-input v-model:value="formData.newPwd"/>
+        <n-form-item-row :label="curLang.lang.changePwdBox.newPwd">
+          <n-input v-model:value="formData.newPwd" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
       </n-form>
       <n-button type="primary" block secondary strong @click="confirmChangePwd">
-        提交
+        {{ curLang.lang.changePwdBox.submit }}
       </n-button>
     </n-modal>
   </div>
@@ -82,6 +82,7 @@ import {
 import {computed, h, nextTick, reactive, ref} from "vue";
 import loginData, {removeLoginData} from "@/common/loginData";
 import login from "@/api/login";
+import curLang from "../../common/lang";
 
 
 export default {
@@ -121,6 +122,7 @@ export default {
   setup(){
     let theme = useThemeVars();
     return{
+      curLang,
       borderColor : computed(() => theme.value.borderColor),
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),

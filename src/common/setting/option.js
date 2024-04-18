@@ -1,7 +1,8 @@
-import { reactive } from "vue";
+import {reactive, toRefs} from "vue";
 import {deviceConfig} from "@/common/curd/deviceConfig";
 import {strategyConfig} from "@/common/curd/strategyConfig";
 import {setDark} from "@/common/theme";
+import curLang from "@/common/lang";
 
 /*  用于自动生成setting界面
 *
@@ -34,7 +35,7 @@ import {setDark} from "@/common/theme";
 export const optionList = reactive([
     {
         type: "group",
-        title : "个人设置",
+        title : curLang.lang.localSetting.title  ,
         description: "",
         list:[
             {

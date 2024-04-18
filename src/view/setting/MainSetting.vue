@@ -18,15 +18,15 @@
             />
             <!--                      -->
             <n-button v-if="item.type === 'group' ">
-              Setting
+              {{ curLang.lang.settingBtn }}
             </n-button>
 
             <n-button v-if="item.valueType === 'curd' " @click="curdHandle(item.title,item.value.model,item.value.fun)">
-              Setting
+              {{ curLang.lang.settingBtn }}
             </n-button>
 
             <n-button v-if="item.valueType === 'input' ">
-              Setting
+              {{ curLang.lang.settingBtn }}
             </n-button>
 
           </template>
@@ -69,11 +69,10 @@ import {
 import curLang from "@/common/lang";
 import {optionList} from "@/common/setting/option";
 import device from "@/api/device";
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import CommonCURD from "@/components/common/CommonCURD.vue";
 import {deviceConfig} from "@/common/curd/deviceConfig";
 import UserSetting from "@/components/setting/UserSetting.vue";
-
 
 export default {
   name: 'mainSetting',
@@ -96,8 +95,19 @@ export default {
 
   },
 
+
   setup() {
+    watch(curLang, () => {
+      console.log(curLang)
+      // MenuOption[0].label = curLang.lang.leftMenuFile
+      // MenuOption[1].label = curLang.lang.leftMenuShare
+      // MenuOption[2].label = curLang.lang.leftMenuFavorite
+      // MenuOption[3].label = curLang.lang.leftMenuRecycle
+      // MenuOption[4].label = curLang.lang.leftMenuShortcut
+      // MenuOption[4].children[MenuOption[4].children.length-1].label = curLang.lang.leftMenuAdd
+    });
     return {
+      curLang,
       optionList,
       curdData:reactive({
         title: "",

@@ -139,11 +139,11 @@ const renderIcon = (icon) => {
   };
 };
 const userOptions= [
-  {
-    label: "修改密码",
-    key: "change",
-    icon: renderIcon(PencilOutline)
-  },
+  // {
+  //   label: "修改密码",
+  //   key: "change",
+  //   icon: renderIcon(PencilOutline)
+  // },
   {
     label: "退出登录",
     key: "logout",
