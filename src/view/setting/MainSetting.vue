@@ -21,7 +21,7 @@
               {{ curLang.lang.settingBtn }}
             </n-button>
 
-            <n-button v-if="item.valueType === 'curd' " @click="curdHandle(item.title,item.value.model,item.value.fun)">
+            <n-button v-if="item.valueType === 'curd' " @click="curdHandle(item.text.title,item.value.model,item.value.fun)">
               {{ curLang.lang.settingBtn }}
             </n-button>
 

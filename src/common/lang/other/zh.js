@@ -12,6 +12,16 @@ const zhLangData = {
         leftMenuAdd :"添加",
         plsInput:"请输入",
         settingBtn:"设置",
+        curd:{
+            addTitle:"新增",
+            changeTitle:"修改",
+            addBtn:"新增",
+            changeBtn:"修改",
+            removeBtn:"删除",
+            refreshBtn:"刷新",
+            submitBtn:"提交",
+            cancelBtn:"取消",
+        },
         user:{
             login:"登陆",
             register:"注册",

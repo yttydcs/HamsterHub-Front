@@ -12,6 +12,16 @@ const enLangData = {
         leftMenuAdd :"Add",
         plsInput:"please input",
         settingBtn:"Setting",
+        curd:{
+            addTitle:"Add Item",
+            changeTitle:"Change Item",
+            addBtn: "Add",
+            changeBtn: "Change",
+            removeBtn: "Remove",
+            refreshBtn: "Refresh",
+            submitBtn: "Submit",
+            cancelBtn: "Cancel"
+        },
         user:{
             login:"Log In",
             register:"Register",

@@ -2,10 +2,10 @@
   <div class="mainBox">
     <div class="controlPanel">
       <n-space>
-        <n-button type="info" @click="openCreateBox">新增</n-button>
-        <n-button type="warning" @click="openModifyBox">修改</n-button>
-        <n-button type="error" @click="deleteHandle">删除</n-button>
-        <n-button @click="getData">刷新</n-button>
+        <n-button type="info" @click="openCreateBox">{{ curLang.lang.curd.addBtn }}</n-button>
+        <n-button type="warning" @click="openModifyBox">{{ curLang.lang.curd.changeBtn }}</n-button>
+        <n-button type="error" @click="deleteHandle">{{ curLang.lang.curd.removeBtn }}</n-button>
+        <n-button @click="getData">{{ curLang.lang.curd.refreshBtn }}</n-button>
       </n-space>
     </div>
     <div class="list" v-if="tableData.headers.length>0">
@@ -27,7 +27,7 @@
         v-model:show="createBox"
         class="alertBox"
         preset="card"
-        title="新增"
+        :title="curLang.lang.curd.addTitle"
         size="medium"
         :bordered="false"
     >
@@ -65,10 +65,10 @@
 
       <n-space align="stretch" justify="end">
         <n-button class="sendBtn" type="primary" block secondary strong @click="createHandle">
-          新增
+          {{ curLang.lang.curd.submitBtn }}
         </n-button>
         <n-button class="sendBtn" type="primary" block secondary strong @click="cancelHandle">
-          取消
+          {{ curLang.lang.curd.cancelBtn }}
         </n-button>
       </n-space>
 
@@ -79,7 +79,7 @@
         v-model:show="modifyBox"
         class="alertBox"
         preset="card"
-        title="修改"
+        :title="curLang.lang.curd.changeTitle"
         size="medium"
         :bordered="false"
     >
@@ -117,10 +117,10 @@
 
       <n-space align="stretch" justify="end">
         <n-button class="sendBtn" type="primary" block secondary strong @click="modifyHandle" >
-          修改
+          {{ curLang.lang.curd.submitBtn }}
         </n-button>
         <n-button class="sendBtn" type="primary" block secondary strong @click="cancelHandle">
-          取消
+          {{ curLang.lang.curd.cancelBtn }}
         </n-button>
       </n-space>
     </n-modal>
@@ -143,6 +143,7 @@ import {
   NSelect,
   NTag
 } from "naive-ui";
+import curLang from "@/common/lang";
 
 // 从formModel中构建出增加表单和删除表单的数据
 const createFormByModel = (model,checkIndex="show")=>{
@@ -444,6 +445,7 @@ export default {
   },
   setup(){
     return{
+      curLang,
       tableData: reactive({
         headers:[],
         addModel:[],
