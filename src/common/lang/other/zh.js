@@ -37,8 +37,21 @@ const zhLangData = {
         },
         localSetting:{
             title:"本地设置",
-            darkTitle:"黑暗模式",
-            darkDes:"黑黑黑",
+            darkMode:{
+                title:"黑暗模式",
+                description:"黑黑黑",
+            },
+        },
+        storeSetting:{
+            title:"存储设置",
+            device:{
+                title:"设备",
+                description:"进入存储设备管理界面",
+            },
+            strategy:{
+                title:"策略",
+                description:"进入存储策略管理界面",
+            },
         },
     }
 }

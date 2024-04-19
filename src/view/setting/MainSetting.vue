@@ -4,11 +4,11 @@
     <div class="settingBox" v-for="(group,index) in optionList" :key="index">
       <n-list hoverable bordered>
         <template #header>
-          <n-thing :title="group.title" />
+          <n-thing :title="group.text.title" />
         </template>
 
         <n-list-item v-for="(item,itemIndex) in group.list" :key="itemIndex">
-          <n-thing :title="item.title" :description="item.description" />
+          <n-thing :title="item.text.title" :description="item.text.description" />
           <template #suffix>
             <n-switch :round="false"
                       v-if="item.valueType === 'boolean'"

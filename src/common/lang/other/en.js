@@ -37,8 +37,21 @@ const enLangData = {
         },
         localSetting:{
             title:"Local Settings",
-            darkTitle:"Dark Mode",
-            darkDes:"Go dark.",
+            darkMode:{
+                title:"Dark Mode",
+                description:"Go dark.",
+            },
+        },
+        storeSetting:{
+            title: "Storage Settings",
+            device:{
+                title: "Devices",
+                description: "Go to storage device management"
+            },
+            strategy:{
+                title: "Strategies",
+                description: "Go to storage strategy management"
+            }
         },
     }
 }

@@ -35,13 +35,13 @@ import curLang from "@/common/lang";
 export const optionList = reactive([
     {
         type: "group",
-        title : curLang.lang.localSetting.title  ,
+        text: curLang.lang.localSetting,
+        title : "curLang.lang.localSetting" ,
         description: "",
         list:[
             {
                 type: "item",
-                title: "黑暗模式",
-                description: "黑黑黑",
+                text:curLang.lang.localSetting.darkMode,
                 key: "settingKey",
                 valueType: "boolean",
                 value: "",
@@ -67,20 +67,19 @@ export const optionList = reactive([
     },
     {
         type: "group",
+        text: curLang.lang.storeSetting,
         title : "存储",
         description: "",
         list:[
             {
                 type: "item",
-                title: "设备",
-                description: "进入存储设备管理界面",
+                text:curLang.lang.storeSetting.device,
                 key: "settingKey",
                 valueType: "curd",
                 value: deviceConfig,
             },{
                 type: "item",
-                title: "策略",
-                description: "进入存储策略管理界面",
+                text:curLang.lang.storeSetting.strategy,
                 key: "settingKey",
                 valueType: "curd",
                 value: strategyConfig,
