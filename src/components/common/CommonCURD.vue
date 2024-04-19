@@ -34,7 +34,7 @@
       <n-form :model="formData" v-for="(item,index) in tableData.addModel" :key="index">
         <!--    textBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='text'">
-          <n-input v-model:value="formData[item.key]"/>
+          <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
         <!--    enumBox    -->
@@ -87,7 +87,7 @@
 
         <!--    textBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='text'">
-          <n-input v-model:value="formData[item.key]"/>
+          <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
         <!--    enumBox    -->
