@@ -17,7 +17,7 @@
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password">
-                <n-input v-model:value="formData.pwd" :placeholder="curLang.lang.plsInput"/>
+                <n-input v-model:value="formData.pwd" type="password" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
                 {{ curLang.lang.user.saveSession }}
@@ -34,10 +34,10 @@
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password">
-                <n-input v-model:value="formData.pwd" :placeholder="curLang.lang.plsInput"/>
+                <n-input v-model:value="formData.pwd" type="password" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.againPassword">
-                <n-input v-model:value="formData.checkPwd" :placeholder="curLang.lang.plsInput"/>
+                <n-input v-model:value="formData.checkPwd" type="password" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
             </n-form>
             <n-button type="primary" block secondary strong @click="userRegister">
