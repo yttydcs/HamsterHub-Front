@@ -331,4 +331,8 @@ export default {
         window.$message.info("只读状态，不可写入")
     },
 
+    async copyFile(id,parentId){
+        window.$message.info("只读状态，不可写入")
+    },
+
 }

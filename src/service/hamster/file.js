@@ -296,7 +296,9 @@ export default {
         await file.moveFile(id,parentId)
     },
 
-
+    async copyFile(id,parentId){
+        await file.copyFile(id,parentId)
+    },
 
 
 }

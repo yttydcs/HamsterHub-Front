@@ -10,7 +10,7 @@ import {OpenFolder24Filled,
     ArrowMove24Regular,
     FolderAdd24Filled,
     AppsListDetail24Filled,
-
+    Rename24Filled
 } from "@vicons/fluent";
 
 const renderIcon = (icon) => {
@@ -46,6 +46,12 @@ const fileContextMenuOption = reactive([
         key: "share",
         show:false,
         icon: renderIcon(ShareAndroid24Filled),
+        condition:1
+    },{
+        label: "重命名",
+        key: "rename",
+        show:false,
+        icon: renderIcon(Rename24Filled),
         condition:1
     },{
         label: "复制链接",

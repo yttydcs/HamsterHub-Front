@@ -169,6 +169,22 @@ export default {
         })
     },
 
+    copyFile(vFileId,parentId){
+        let u = "/api/copy"
+
+        // 构造提交数据
+        let d = {
+            vFileId:vFileId,
+            parentId:parentId
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
+    },
+
     isExist(root,hash){
         let u = "/api/isExist"
 

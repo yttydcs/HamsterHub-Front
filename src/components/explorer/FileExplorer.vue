@@ -118,6 +118,24 @@
         :confirm-func="confirmMove"
     />
 
+    <!--  复制  -->
+    <FolderSelect
+        ref="folderSelect"
+        v-model:show="copyBoxShow"
+        title="复制"
+        :data="copyModel"
+        :cancelFunc="() =>{this.copyBoxShow=false;}"
+        :confirm-func="confirmCopy"
+    />
+
+    <!--  重命名  -->
+    <InputBox
+        title="重命名"
+        v-model:show="inputShow"
+        :confirm-func="handleNewDir"
+        :cancel-func="() =>{this.inputShow=false}"
+    />
+
   </div>
 
 
@@ -292,10 +310,16 @@ export default {
           this.handleCopyUrl(key);
           break;
         case "move":
-          this.handleMove (key);
+          this.handleMove(key);
+          break;
+        case "copy":
+          this.handleCopy(key);
           break;
         case "detail":
           this.handleDetail (key);
+          break;
+        case "rename":
+          this.handleRename(key);
           break;
       }
     },
@@ -335,6 +359,14 @@ export default {
       this.$refs.folderSelect.flushData(); // 刷新缓存数据
       this.moveBoxShow = true;
     },
+    async handleCopy(key){ // 打开拷贝窗口
+      let vFile = this.getFileByKey(key);
+      this.copyModel.name = vFile.name;
+      this.copyModel.vFileId = vFile.other.id;
+      console.log(this.copyModel)
+      this.$refs.folderSelect.flushData(); // 刷新缓存数据
+      this.copyBoxShow = true;
+    },
     async confirmShare(){
       this.fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
       this.shareModel.key = "";
@@ -353,11 +385,27 @@ export default {
       await this.fileService.moveFile(this.moveModel.vFileId,parentId)
       this.getFileData()
     },
+    async confirmCopy(isSelect,root,parentId){
+      this.copyBoxShow = false;
+      if(!isSelect){
+        return;
+      }
+      if(this.copyModel.vFileId === parentId){
+        window.$message.info("不能自己向自己复制哦")
+        return;
+      }
+      await this.fileService.copyFile(this.copyModel.vFileId,parentId)
+      this.getFileData()
+    },
     async handleDetail(key){
       let vFile = this.getFileByKey(key);
       let root = this.fileData.root;
       let path = this.fileService.getPathString()+vFile.name;
       window.open("/detail?root="+root+"&path="+path);
+    },
+    async handleRename(key){
+      let vFile = this.getFileByKey(key);
+      console.log(vFile)
     },
     setMenu(){
       this.contextMenu.options.length = 0;
@@ -397,6 +445,8 @@ export default {
       shareModel:reactive({name:"",vFileId:"",key:"",expiry:""}),
       moveBoxShow:ref(false),
       moveModel:reactive({name:"",vFileId:"",}),
+      copyBoxShow:ref(false),
+      copyModel:reactive({name:"",vFileId:"",}),
       loading:useLoadingBar(),
       boxStyle:ref(null),
     }
