@@ -110,7 +110,7 @@
 
     <!--  移动  -->
     <FolderSelect
-        ref="folderSelect"
+        ref="moveFolderSelect"
         v-model:show="moveBoxShow"
         title="移动"
         :data="moveModel"
@@ -120,7 +120,7 @@
 
     <!--  复制  -->
     <FolderSelect
-        ref="folderSelect"
+        ref="copyFolderSelect"
         v-model:show="copyBoxShow"
         title="复制"
         :data="copyModel"
@@ -356,15 +356,14 @@ export default {
       let vFile = this.getFileByKey(key);
       this.moveModel.name = vFile.name;
       this.moveModel.vFileId = vFile.other.id;
-      this.$refs.folderSelect.flushData(); // 刷新缓存数据
+      this.$refs.moveFolderSelect.flushData(); // 刷新缓存数据
       this.moveBoxShow = true;
     },
     async handleCopy(key){ // 打开拷贝窗口
       let vFile = this.getFileByKey(key);
       this.copyModel.name = vFile.name;
       this.copyModel.vFileId = vFile.other.id;
-      console.log(this.copyModel)
-      this.$refs.folderSelect.flushData(); // 刷新缓存数据
+      this.$refs.copyFolderSelect.flushData(); // 刷新缓存数据
       this.copyBoxShow = true;
     },
     async confirmShare(){
@@ -407,7 +406,6 @@ export default {
       let vFile = this.getFileByKey(key);
       this.renameModel.vFileId = vFile.other.id;
       this.renameBoxShow = true;
-      console.log(vFile)
     },
     async confirmRename(value){ // 执行重命名
       this.renameBoxShow = false;

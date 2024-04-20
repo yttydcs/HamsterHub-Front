@@ -4,7 +4,7 @@
         :show="show"
         class="alertBox"
         preset="card"
-        :title="`移动 ` + data.name"
+        :title="title + ` ` + data.name"
         size="medium"
         @close="cancelFunc"
         :show-line="true"
@@ -48,6 +48,7 @@ export default {
   name: 'FolderSelect',
   components: { NButton, NModal, NSpace, NTree, NSpin },
   props: {
+    title: String,
     show:Boolean,
     data:Object,
     confirmFunc:Function,
