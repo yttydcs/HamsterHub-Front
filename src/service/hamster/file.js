@@ -300,5 +300,13 @@ export default {
         await file.copyFile(id,parentId)
     },
 
+    async rename(vFileId,name){
+        if(!name){
+            window.$message.info("名称不能为空")
+        }else{
+            await file.rename(vFileId,name)
+        }
+    },
+
 
 }

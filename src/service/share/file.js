@@ -335,4 +335,8 @@ export default {
         window.$message.info("只读状态，不可写入")
     },
 
+    async rename(vFileId,name){
+        window.$message.info("只读状态，不可写入")
+    },
+
 }

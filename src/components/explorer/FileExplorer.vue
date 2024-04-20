@@ -131,9 +131,9 @@
     <!--  重命名  -->
     <InputBox
         title="重命名"
-        v-model:show="inputShow"
-        :confirm-func="handleNewDir"
-        :cancel-func="() =>{this.inputShow=false}"
+        v-model:show="renameBoxShow"
+        :confirm-func="confirmRename"
+        :cancel-func="() =>{this.renameBoxShow=false}"
     />
 
   </div>
@@ -405,7 +405,14 @@ export default {
     },
     async handleRename(key){
       let vFile = this.getFileByKey(key);
+      this.renameModel.vFileId = vFile.other.id;
+      this.renameBoxShow = true;
       console.log(vFile)
+    },
+    async confirmRename(value){ // 执行重命名
+      this.renameBoxShow = false;
+      await this.fileService.rename(this.renameModel.vFileId,value)
+      this.getFileData();
     },
     setMenu(){
       this.contextMenu.options.length = 0;
@@ -447,6 +454,8 @@ export default {
       moveModel:reactive({name:"",vFileId:"",}),
       copyBoxShow:ref(false),
       copyModel:reactive({name:"",vFileId:"",}),
+      renameBoxShow:ref(false),
+      renameModel:reactive({name:"",vFileId:"",}),
       loading:useLoadingBar(),
       boxStyle:ref(null),
     }

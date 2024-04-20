@@ -199,8 +199,22 @@ export default {
             url:u,
             params:d,
         })
-    }
+    },
 
+    rename(vFileId,name){
+        let u = "/api/rename"
 
+        // 构造提交数据
+        let d = {
+            vFileId:vFileId,
+            name:name
+        }
+
+        return axois[type]({
+            method:"post",
+            url:u,
+            data:d,
+        })
+    },
 
 }
