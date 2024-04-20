@@ -63,6 +63,36 @@ const enLangData = {
                 description: "Go to storage strategy management"
             }
         },
+        explorerMenu:{
+            open: "Open",
+            delete: "Delete",
+            download: "Download",
+            share: "Share",
+            rename: "Rename",
+            copyAddress: "Copy Link",
+            copy: "Copy",
+            move: "Move",
+            newDir: "New Folder"
+        },
+        explorerDetail:{
+            name:"Name",
+            size:"Size",
+            type:"Type",
+            version:"Version",
+            created:"Created",
+            modified:"Modified",
+            downloadBtn:"Download"
+        },
+        taskUpload:{
+            title: "File Upload",
+            doing: "In Progress",
+            done: "Done"
+        },
+        taskDownload:{
+            title: "Offline Download",
+            doing: "In Progress",
+            done: "Done"
+        },
     }
 }
 

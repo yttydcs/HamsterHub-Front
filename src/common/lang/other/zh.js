@@ -63,6 +63,36 @@ const zhLangData = {
                 description:"进入存储策略管理界面",
             },
         },
+        explorerMenu:{
+            open:"打开",
+            delete:"删除",
+            download:"下载",
+            share:"分享",
+            rename:"删除",
+            copyAddress:"复制链接",
+            copy:"复制",
+            move:"移动",
+            newDir:"新建文件夹",
+        },
+        explorerDetail:{
+            name:"名称",
+            size:"尺寸",
+            type:"类型",
+            version:"版本",
+            created:"创建日期",
+            modified:"修改日期",
+            downloadBtn:"下载"
+        },
+        taskUpload:{
+            title:"文件上传",
+            doing:"执行",
+            done:"结束",
+        },
+        taskDownload:{
+            title:"离线下载",
+            doing:"执行",
+            done:"结束",
+        },
     }
 }
 

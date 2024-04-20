@@ -12,6 +12,7 @@ import {OpenFolder24Filled,
     AppsListDetail24Filled,
     Rename24Filled
 } from "@vicons/fluent";
+import curLang from "@/common/lang";
 
 const renderIcon = (icon) => {
     return () => {
@@ -24,37 +25,37 @@ const renderIcon = (icon) => {
 
 const fileContextMenuOption = reactive([
     {
-        label: "打开",
+        label: curLang.lang.explorerMenu.open,
         key: "open",
         show:false,
         icon: renderIcon(OpenFolder24Filled),
         condition:1
     },{
-        label: "删除",
+        label: curLang.lang.explorerMenu.delete,
         key: "delete",
         show:false,
         icon: renderIcon(Delete24Filled),
         condition:1
     },{
-        label: "下载",
+        label: curLang.lang.explorerMenu.download,
         key: "download",
         show:false,
         icon: renderIcon(ArrowDownload24Filled),
         condition:1
     },{
-        label: "分享",
+        label: curLang.lang.explorerMenu.share,
         key: "share",
         show:false,
         icon: renderIcon(ShareAndroid24Filled),
         condition:1
     },{
-        label: "重命名",
+        label: curLang.lang.explorerMenu.rename,
         key: "rename",
         show:false,
         icon: renderIcon(Rename24Filled),
         condition:1
     },{
-        label: "复制链接",
+        label: curLang.lang.explorerMenu.copyAddress,
         key: "copyAddress",
         show:false,
         icon: renderIcon(Copy24Filled),
@@ -66,13 +67,13 @@ const fileContextMenuOption = reactive([
         icon: renderIcon(OpenFolder24Filled),
         condition:1
     },{
-        label: "复制",
+        label: curLang.lang.explorerMenu.copy,
         key: "copy",
         show:false,
         icon: renderIcon(SendCopy24Filled),
         condition:1
     },{
-        label: "移动",
+        label: curLang.lang.explorerMenu.move,
         key: "move",
         show:false,
         icon: renderIcon(ArrowMove24Regular),
@@ -84,7 +85,7 @@ const fileContextMenuOption = reactive([
         icon: renderIcon(OpenFolder24Filled),
         condition:1
     },{
-        label: "新建文件夹",
+        label: curLang.lang.explorerMenu.newDir,
         key: "newDir",
         show:false,
         icon: renderIcon(FolderAdd24Filled),

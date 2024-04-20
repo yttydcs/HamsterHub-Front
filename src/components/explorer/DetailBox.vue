@@ -16,7 +16,7 @@
       <div class="otherPanel">
         <div class="item" v-for="(item,index) in detailData[version].other" :key="index">
           <div class="key">
-            {{item.key}}:
+            {{ curLang.lang.explorerDetail[item.key] }}
           </div>
           <div class="value">
             {{item.value}}
@@ -42,6 +42,7 @@ import file from "@/api/file/hamster/file";
 import calc from "@/common/calc";
 import download from "@/common/download";
 import {useThemeVars} from "naive-ui";
+import curLang from "@/common/lang";
 
 const _adapters = [hamster, alist];
 
@@ -141,6 +142,7 @@ export default {
   setup() {
     let theme = useThemeVars();
     return {
+      curLang,
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
       version: ref(0),

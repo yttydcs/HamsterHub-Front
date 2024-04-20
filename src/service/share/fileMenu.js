@@ -12,6 +12,7 @@ import {OpenFolder24Filled,
     AppsListDetail24Filled,
 
 } from "@vicons/fluent";
+import curLang from "@/common/lang";
 
 const renderIcon = (icon) => {
     return () => {
@@ -24,39 +25,24 @@ const renderIcon = (icon) => {
 
 const fileContextMenuOption = reactive([
     {
-        label: "打开",
+        label: curLang.lang.explorerMenu.open,
         key: "open",
         show:false,
         icon: renderIcon(OpenFolder24Filled),
         condition:1
     },{
-        label: "下载",
+        label: curLang.lang.explorerMenu.download,
         key: "download",
         show:false,
         icon: renderIcon(ArrowDownload24Filled),
         condition:1
     },{
-        label: "复制链接",
+        label: curLang.lang.explorerMenu.copyAddress,
         key: "copyAddress",
         show:false,
         icon: renderIcon(Copy24Filled),
         condition:1
     }
-    // ,{
-    //     key: 'divider1',
-    //     type: 'divider',
-    //     show:false,
-    //     icon: renderIcon(OpenFolder24Filled),
-    //     condition:1
-    // },
-    // {
-    //     label: "属性",
-    //     key: "detail",
-    //     show:false,
-    //     icon: renderIcon(AppsListDetail24Filled),
-    //     condition:1
-    // },
-
 ]);
 
 export default fileContextMenuOption;

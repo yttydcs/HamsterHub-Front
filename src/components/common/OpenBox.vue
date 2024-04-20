@@ -15,7 +15,7 @@
                 <CloudDownloadOutline />
               </n-icon>
             </template>
-            下载
+            {{ curLang.lang.explorerDetail.downloadBtn }}
           </n-button>
 
 
@@ -64,6 +64,7 @@ import fileIcon from "@/components/explorer/FileIcon.vue";
 import { NButton, NIcon } from "naive-ui";
 import { CloudDownloadOutline } from "@vicons/ionicons5";
 import download from "@/common/download"
+import curLang from "@/common/lang";
 
 const openTypeIndex = {
   txt:"text",
@@ -146,6 +147,7 @@ export default {
   setup(){
     let theme = useThemeVars();
     return {
+      curLang,
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
       text: ref(""),

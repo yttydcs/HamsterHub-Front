@@ -54,7 +54,7 @@ import fileMenu from "@/service/hamster/fileMenu"
 const MenuOption = reactive(
     [
     {
-      label: "文件上传",
+      label: curLang.lang.taskUpload.title,
       href: '',
       key: 'upload',
       icon: renderIcon(CloudUploadOutline),
@@ -94,7 +94,10 @@ export default {
   },
 
   setup(){
-
+    watch(curLang, () => {
+      MenuOption[0].label = curLang.lang.taskUpload.title
+      MenuOption[1].label = curLang.lang.taskDownload.title
+    });
 
     return{
       collapsed: ref(false),

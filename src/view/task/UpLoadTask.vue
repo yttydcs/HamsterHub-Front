@@ -1,7 +1,7 @@
 <template>
   <div class="main switchTran">
     <div class="title">
-      <h1>执行</h1>
+      <h1>{{ curLang.lang.taskUpload.doing }}</h1>
     </div>
 
     <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.doing" :key="index">
@@ -60,7 +60,7 @@
     </div>
 
     <div class="title">
-      <h1>结束</h1>
+      <h1>{{ curLang.lang.taskUpload.done }}</h1>
     </div>
 
     <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.done" :key="index">
@@ -121,7 +121,6 @@ import fileMenu from "@/service/hamster/fileMenu"
 
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import uploadTask, {delDone} from "@/common/task/uploadTask";
-
 
 
 
