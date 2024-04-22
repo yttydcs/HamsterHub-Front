@@ -12,11 +12,11 @@
             pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
         >
           <n-tab-pane name="signIn" :tab="curLang.lang.user.login">
-            <n-form :model="formData">
-              <n-form-item-row :label="curLang.lang.user.username">
+            <n-form ref="loginForm" :model="formData" :rules="loginRules">
+              <n-form-item-row :label="curLang.lang.user.username" path="name">
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
-              <n-form-item-row :label="curLang.lang.user.password">
+              <n-form-item-row :label="curLang.lang.user.password" path="pwd">
                 <n-input
                     show-password-on="click"
                     v-model:value="formData.pwd"
@@ -34,11 +34,11 @@
             </n-button>
           </n-tab-pane>
           <n-tab-pane name="signUp" :tab="curLang.lang.user.register">
-            <n-form :model="formData">
-              <n-form-item-row :label="curLang.lang.user.username">
-                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
+            <n-form ref="registerForm" :model="formData" :rules="registerRules">
+              <n-form-item-row :label="curLang.lang.user.username" path="name">
+                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput" />
               </n-form-item-row>
-              <n-form-item-row :label="curLang.lang.user.password">
+              <n-form-item-row :label="curLang.lang.user.password" path="pwd">
                 <n-input
                     show-password-on="click"
                     v-model:value="formData.pwd"
@@ -46,7 +46,7 @@
                     :placeholder="curLang.lang.plsInput"
                 />
               </n-form-item-row>
-              <n-form-item-row :label="curLang.lang.user.againPassword">
+              <n-form-item-row :label="curLang.lang.user.againPassword" path="checkPwd">
                 <n-input
                     show-password-on="click"
                     v-model:value="formData.checkPwd"
@@ -55,13 +55,13 @@
                 />
               </n-form-item-row>
 
-              <n-form-item-row :label="curLang.lang.user.address">
+              <n-form-item-row :label="curLang.lang.user.address" path="address">
                 <n-input v-model:value="formData.address" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
 
-              <n-form-item-row :label="curLang.lang.user.code">
+              <n-form-item-row :label="curLang.lang.user.code" path="code">
                 <n-input v-model:value="formData.code" :placeholder="curLang.lang.plsInput"/>
-                <n-button strong style="width: 70px;margin-left: 3px" v-if="sendCodeTime<=0" @click="sendCode" >
+                <n-button strong style="width: 70px;margin-left: 3px" v-if="sendCodeTime<=0" @click="sendCode" :disabled="waiting" >
                   {{curLang.lang.user.sendCodeBtn }}
                 </n-button>
 
@@ -70,7 +70,7 @@
                 </n-button>
               </n-form-item-row>
             </n-form>
-            <n-button type="primary" block secondary strong @click="userRegister">
+            <n-button type="primary" block secondary strong @click="userRegister" >
               {{curLang.lang.user.register}}
             </n-button>
           </n-tab-pane>
@@ -89,6 +89,8 @@ import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
 const _adapters = [hamster, alist];
 import curLang from "@/common/lang";
+import loginRules from "@/common/rules/login";
+import registerRules from "@/common/rules/register";
 
 
 
@@ -100,43 +102,55 @@ function isPhoneNumber(phoneNumber) { // 验证手机号
 export default {
   name: 'mainLogin',
   methods: {
-    userLogin() {
+    async userLogin() {
       const loginOption = 0
       const that = this
-      login.login(this.formData.name, this.formData.pwd,this.formData.lasting, loginOption)
-          .then(function (response) {
-            if (that.adapters[loginOption].judgeLoginCode(response.code)) {
-              that.adapters[loginOption].setLoginDate(that.formData.name, response)
-              that.$router.push("/")
-            }
-          })
+
+      this.$refs.loginForm.validate().then(()=>{
+        login.login(this.formData.name, this.formData.pwd, this.formData.lasting, loginOption)
+            .then(function (response) {
+              if (that.adapters[loginOption].judgeLoginCode(response.code)) {
+                that.adapters[loginOption].setLoginDate(that.formData.name, response);
+                that.$router.push("/");
+              }
+            });
+
+      }).catch((err)=>{
+        window.$message.error(curLang.lang.validateError);
+      })
+
     },
     userRegister() {
       const loginOption = 0
       const that = this
-      login.register(this.formData.name, this.formData.pwd,this.formData.address,this.formData.code, loginOption)
-          .then(function (response) {
-            if (that.adapters[loginOption].judgeLoginCode(response.code)) {
-              that.adapters[loginOption].setLoginDate(that.formData.name, response)
-              that.$router.push("/")
-            }
-          })
+      this.$refs.registerForm.validate().then(()=>{
+        login.register(this.formData.name, this.formData.pwd,this.formData.address,this.formData.code, loginOption)
+            .then(function (response) {
+              if (that.adapters[loginOption].judgeLoginCode(response.code)) {
+                that.adapters[loginOption].setLoginDate(that.formData.name, response)
+                that.$router.push("/")
+              }
+            })
+      }).catch((err)=>{
+        window.$message.error(curLang.lang.validateError);
+      })
+
     },
     sendCode() {
       const loginOption = 0
-      const waitTime = 60
+      const waitTime = 120
       const that = this
 
       if(!isPhoneNumber(this.formData.address)){
-        window.$message.error("请填写正确的手机号");
+        window.$message.error(curLang.lang.registerRules.addressNotPhone);
         return;
       }else if (this.sendCodeTime !==0){
-        window.$message.error("处于冷却时间");
+        window.$message.error(curLang.lang.registerRules.cooldown);
         return;
       }
 
       if(this.waiting){
-        window.$message.error("正在处理请稍后");
+        window.$message.error(curLang.lang.registerRules.processing);
         return;
       }else{
         this.waiting = true
@@ -160,10 +174,20 @@ export default {
         that.waiting = false
       })
 
+    },
+    isPasswordSame(rule, value) {
+      if(!value){
+        return true
+      }
+      return value === this.formData.pwd;
     }
   },
   components: {
     NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox
+  },
+  mounted() {
+    // 由于需要验证2次密码是否一致需要组件的环境，所以validator在这里传入
+    this.registerRules.checkPwd[1].validator = this.isPasswordSame
   },
   setup() {
     // 初始化登录变量
@@ -183,7 +207,9 @@ export default {
       adapters: _adapters,
       curLang,
       waiting:ref(false),
-      sendCodeTime:ref(0)
+      sendCodeTime:ref(0),
+      loginRules,
+      registerRules,
     }
   }
 }

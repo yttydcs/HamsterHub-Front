@@ -1,5 +1,7 @@
 
 // 中文
+import registerRules from "@/common/rules/register";
+
 const zhLangData = {
     name:"zh",
     lang:{
@@ -12,6 +14,8 @@ const zhLangData = {
         leftMenuAdd :"添加",
         plsInput:"请输入",
         settingBtn:"设置",
+        validateError:"输入数据存在异常",
+        processing:"正在处理请稍后",
         curd:{
             addTitle:"新增",
             changeTitle:"修改",
@@ -32,6 +36,20 @@ const zhLangData = {
             address:"手机号",
             sendCodeBtn:"发送",
             code:"验证码"
+        },
+        loginRules:{
+            name:"请输入用户名",
+            pwd:"请输入密码",
+        },
+        registerRules:{
+            name:"请输入用户名",
+            pwd:"请输入密码",
+            checkPwd:"请再次输入密码",
+            checkPwdNotSame:"密码不一致",
+            address:"请输入手机号",
+            addressNotPhone:"请输入正确的手机号",
+            code:"请输入验证码",
+            cooldown:"处于冷却时间",
         },
         userSetting:{
             title:"用户设置",

@@ -12,6 +12,8 @@ const enLangData = {
         leftMenuAdd :"Add",
         plsInput:"Please input",
         settingBtn:"Setting",
+        validateError: "Input data contains errors",
+        processing:"Processing, please wait",
         curd:{
             addTitle:"Add Item",
             changeTitle:"Change Item",
@@ -22,7 +24,6 @@ const enLangData = {
             submitBtn: "Submit",
             cancelBtn: "Cancel"
         },
-
         user:{
             login: "Login",
             register: "Register",
@@ -33,6 +34,20 @@ const enLangData = {
             address: "Phone Number",
             sendCodeBtn: "Send",
             code: "Verification Code"
+        },
+        loginRules:{
+            name: "Please enter username",
+            pwd: "Please enter password"
+        },
+        registerRules:{
+            name: "Please enter username",
+            pwd: "Please enter password",
+            checkPwd: "Please enter password again",
+            checkPwdNotSame: "Passwords do not match",
+            address: "Please enter phone number",
+            addressNotPhone: "Please enter a valid phone number",
+            code: "Please enter verification code",
+            cooldown:"Cooldown period in progress.",
         },
         userSetting:{
             title:"User Settings",
