@@ -28,7 +28,10 @@ const zhLangData = {
             username:"用户名",
             password:"密码",
             againPassword:"重复密码",
-            saveSession:"保留登陆状态"
+            saveSession:"保留登陆状态",
+            address:"手机号",
+            sendCodeBtn:"发送",
+            code:"验证码"
         },
         userSetting:{
             title:"用户设置",

@@ -17,7 +17,12 @@
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password">
-                <n-input v-model:value="formData.pwd" type="password" :placeholder="curLang.lang.plsInput"/>
+                <n-input
+                    show-password-on="click"
+                    v-model:value="formData.pwd"
+                    type="password"
+                    :placeholder="curLang.lang.plsInput"
+                />
               </n-form-item-row>
               <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
                 {{ curLang.lang.user.saveSession }}
@@ -34,10 +39,35 @@
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password">
-                <n-input v-model:value="formData.pwd" type="password" :placeholder="curLang.lang.plsInput"/>
+                <n-input
+                    show-password-on="click"
+                    v-model:value="formData.pwd"
+                    type="password"
+                    :placeholder="curLang.lang.plsInput"
+                />
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.againPassword">
-                <n-input v-model:value="formData.checkPwd" type="password" :placeholder="curLang.lang.plsInput"/>
+                <n-input
+                    show-password-on="click"
+                    v-model:value="formData.checkPwd"
+                    type="password"
+                    :placeholder="curLang.lang.plsInput"
+                />
+              </n-form-item-row>
+
+              <n-form-item-row :label="curLang.lang.user.address">
+                <n-input v-model:value="formData.address" :placeholder="curLang.lang.plsInput"/>
+              </n-form-item-row>
+
+              <n-form-item-row :label="curLang.lang.user.code">
+                <n-input v-model:value="formData.code" :placeholder="curLang.lang.plsInput"/>
+                <n-button strong style="width: 70px;margin-left: 3px" v-if="sendCodeTime<=0" @click="sendCode" >
+                  {{curLang.lang.user.sendCodeBtn }}
+                </n-button>
+
+                <n-button strong style="width: 70px;margin-left: 3px" disabled v-else >
+                  {{ sendCodeTime }}
+                </n-button>
               </n-form-item-row>
             </n-form>
             <n-button type="primary" block secondary strong @click="userRegister">
@@ -60,6 +90,13 @@ import alist from "@/common/adapter/alist";
 const _adapters = [hamster, alist];
 import curLang from "@/common/lang";
 
+
+
+function isPhoneNumber(phoneNumber) { // 验证手机号
+  const phoneRegex = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+  return phoneRegex.test(phoneNumber);
+}
+
 export default {
   name: 'mainLogin',
   methods: {
@@ -77,13 +114,52 @@ export default {
     userRegister() {
       const loginOption = 0
       const that = this
-      login.register(this.formData.name, this.formData.pwd, loginOption)
+      login.register(this.formData.name, this.formData.pwd,this.formData.address,this.formData.code, loginOption)
           .then(function (response) {
             if (that.adapters[loginOption].judgeLoginCode(response.code)) {
               that.adapters[loginOption].setLoginDate(that.formData.name, response)
               that.$router.push("/")
             }
           })
+    },
+    sendCode() {
+      const loginOption = 0
+      const waitTime = 60
+      const that = this
+
+      if(!isPhoneNumber(this.formData.address)){
+        window.$message.error("请填写正确的手机号");
+        return;
+      }else if (this.sendCodeTime !==0){
+        window.$message.error("处于冷却时间");
+        return;
+      }
+
+      if(this.waiting){
+        window.$message.error("正在处理请稍后");
+        return;
+      }else{
+        this.waiting = true
+      }
+
+      let timerHandle = 0;
+
+      function timer(){
+        that.sendCodeTime--;
+        if(that.sendCodeTime<=0){
+          that.sendCodeTime = 0;
+          clearInterval(timerHandle);
+        }
+      }
+
+      login.sendCode(this.formData.address, loginOption).then(()=>{
+        that.sendCodeTime = waitTime;
+        timerHandle = setInterval(timer, 1000);
+        that.waiting = false
+      }).catch(err=>{
+        that.waiting = false
+      })
+
     }
   },
   components: {
@@ -95,6 +171,8 @@ export default {
       name: "",
       pwd: "",
       checkPwd: "",
+      code:"",
+      address:"",
       lasting:false
     })
 
@@ -103,7 +181,9 @@ export default {
       boxShadow : computed(() => theme.value.boxShadow3),
       formData: loginData,
       adapters: _adapters,
-      curLang
+      curLang,
+      waiting:ref(false),
+      sendCodeTime:ref(0)
     }
   }
 }

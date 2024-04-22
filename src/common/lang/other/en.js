@@ -10,7 +10,7 @@ const enLangData = {
         leftMenuRecycle :"Recycle",
         leftMenuShortcut :"Shortcut",
         leftMenuAdd :"Add",
-        plsInput:"please input",
+        plsInput:"Please input",
         settingBtn:"Setting",
         curd:{
             addTitle:"Add Item",
@@ -22,13 +22,17 @@ const enLangData = {
             submitBtn: "Submit",
             cancelBtn: "Cancel"
         },
+
         user:{
-            login:"Log In",
-            register:"Register",
-            username:"Username",
-            password:"Password",
-            againPassword:"Confirm password",
-            saveSession:"Save session"
+            login: "Login",
+            register: "Register",
+            username: "Username",
+            password: "Password",
+            againPassword: "Confirm Password",
+            saveSession: "Remember Me",
+            address: "Phone Number",
+            sendCodeBtn: "Send",
+            code: "Verification Code"
         },
         userSetting:{
             title:"User Settings",
