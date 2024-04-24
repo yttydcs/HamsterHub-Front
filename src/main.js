@@ -3,9 +3,10 @@ import App from './App.vue'
 import {create,NButton} from "naive-ui";
 import router from "@/route/router";
 
+const naive = create();
 
 const app = createApp(App)
-app.use(router).mount('#app')
+app.use(router).use(naive).mount('#app')
 
 
 

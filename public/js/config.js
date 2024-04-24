@@ -1,3 +1,5 @@
 window.config = {
-    url: ''
+    url: '',
+    name: '',
+    mdTheme: '',
 }

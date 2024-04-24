@@ -1,6 +1,10 @@
 <template>
   <div class="nav-top">
-    <div class="nav-logo"></div>
+    <div class="nav-logo">
+      <img src="/favicon.ico" alt="">
+      {{ appName }}
+
+    </div>
     <div class="nav-left">
       <n-input v-model:value="searchText" type="text" :placeholder="curLang.lang.searchBoxPlaceholder" >
         <template #prefix>
@@ -204,9 +208,15 @@ export default defineComponent({
 
 
   },
+  computed:{
+    appName(){
+      return window.config.name || process.env["VUE_APP_NAME"];
+    },
+  },
   setup() {
 
     return {
+      name:"HamsterHub",
       searchText: ref(null),
       loginData: loginData,
       SearchOutline,
@@ -241,7 +251,17 @@ export default defineComponent({
 
 
 .nav-logo{
+  padding-left: 32px;
   width: 240px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.nav-logo img{
+  position: relative;
+  width: 24px;
+  height: 24px;
+  top: 4px;
 }
 
 /*  to do
