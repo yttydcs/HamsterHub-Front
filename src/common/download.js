@@ -65,7 +65,7 @@ export default {
             method:"get",
             url:u,
             responseType: 'text',
-            withCredentials: true
+            withCredentials: false
         })
     }
 }

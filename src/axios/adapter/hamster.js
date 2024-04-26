@@ -9,7 +9,7 @@ let config = {
     // 请求超时时间
     timeout: 10000,
     // 每次请求携带cookie
-    withCredentials: true,
+    withCredentials: false,
     maxContentLength: Infinity,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
 }
@@ -94,5 +94,5 @@ service.interceptors.response.use(
     }
 )
 
-service.defaults.withCredentials = true
+service.defaults.withCredentials = false
 export default service
