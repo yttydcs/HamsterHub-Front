@@ -26,4 +26,4 @@ export function setDark(isDark) {
 }
 
 
-export const theme = reactive({ data:null,mdTheme:"github" });
+export const theme = reactive({ data:null,mdTheme:"light" });

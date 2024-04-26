@@ -34,7 +34,13 @@ export default {
         fileList.history = {};
         fileList.file.length = 0;
         let pos = -1;
+        let hasReadMeFile = false;
         for (let i = 0; i < content.length; i++) {
+            if(content[i].name === "README.md"){
+                fileList.readmeData.id = content[i].id;
+                hasReadMeFile = true
+            }
+
             let historyKey =content[i].parentId + content[i].name
             let p;
             if(historyKey in fileList.history){
@@ -71,6 +77,10 @@ export default {
             fileList.file[p].other["strategyId"] = content[i]["strategyId"]
             fileList.file[p].other["rfileId"] = content[i]["rfileId"]
             fileList.file[p].other["version"] = content[i]["version"]
+        }
+
+        if(!hasReadMeFile){
+            fileList.readmeData.id = -1
         }
     }
 

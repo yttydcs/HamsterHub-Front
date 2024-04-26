@@ -15,6 +15,7 @@
             ref="explorer"
             :file-menu ="fileMenu"
             :file-service="fileService"
+            :readme="true"
         />
       </div>
       <div class="lock" v-show="!unlock">

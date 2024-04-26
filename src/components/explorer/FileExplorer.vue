@@ -44,7 +44,7 @@
     </div>
 
     <div class="file-list-p" @contextmenu="handleContextMenuShow" v-else>
-      <n-layout :native-scrollbar="false" style="height: 100%">
+      <n-layout :native-scrollbar="false">
         <file-list
             style="padding-right: 24px"
             :file-list="fileData"
@@ -55,6 +55,15 @@
         />
 
       </n-layout>
+      <div class="readmeBox">
+        <OpenBox
+            v-if="readme && fileData.readmeData.url"
+            title="README.md"
+            :url="fileData.readmeData.url"
+            msg=""
+        />
+      </div>
+
     </div>
 
     <!--  文件列表的右键菜单  -->
@@ -155,7 +164,7 @@ import {
   NInput,
   NForm, NFormItem, NModal, useLoadingBar
 } from "naive-ui";
-import {ref, computed, watch, reactive, nextTick } from "vue";
+import {ref, computed, watch, reactive, nextTick, toRefs} from "vue";
 
 import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
@@ -175,6 +184,7 @@ import {fileContextMenuOption,openMenuByCondition,closeAllMenu,findByKey} from "
 import InputBox from "@/components/common/InputBox.vue";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
 import DetailBox from "@/components/explorer/DetailBox.vue";
+import OpenBox from "@/components/common/OpenBox.vue";
 
 
 export default {
@@ -188,6 +198,7 @@ export default {
     }
   },
   components: {
+    OpenBox,
     NModal,
     NFormItem,
     NForm,
@@ -427,16 +438,36 @@ export default {
   },
   props:{
     fileMenu:Object,
-    fileService:Object
+    fileService:Object,
+    readme:Boolean
   },
   setup(props){
     let theme = useThemeVars();
     let borderColor = computed(() => theme.value.borderColor);
+    let fileData = props.fileService.getFileListObject()
+
+    watch(() => fileData.readmeData.id, async (newId,oldId) => {
+      if(!props.readme){
+        return;
+      }
+      if(newId === -1){
+        fileData.readmeData.url = "";
+        return;
+      }
+
+      try {
+        fileData.readmeData.url = await props.fileService.getDownloadUrl(newId);
+      }catch(e){
+        fileData.readmeData.url = "";
+      }
+
+    });
+
     return{
       collapsed: ref(false),
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileData:props.fileService.getFileListObject(),
+      fileData,
       curRoot:null,
       curParent:"0",
       contextMenu:reactive({
@@ -456,6 +487,7 @@ export default {
       renameModel:reactive({name:"",vFileId:"",}),
       loading:useLoadingBar(),
       boxStyle:ref(null),
+      readmeData:reactive({msg:"",name:"",url:""}),
     }
   }
 }
@@ -520,6 +552,10 @@ export default {
   overflow: hidden;
 }
 
+.readmeBox{
+  padding-left: 5px;
+  padding-right: 18px;
+}
 
 
 </style>

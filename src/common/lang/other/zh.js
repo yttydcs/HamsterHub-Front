@@ -89,7 +89,7 @@ const zhLangData = {
             delete:"删除",
             download:"下载",
             share:"分享",
-            rename:"删除",
+            rename:"重命名",
             copyAddress:"复制链接",
             copy:"复制",
             move:"移动",

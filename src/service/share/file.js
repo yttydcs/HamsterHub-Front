@@ -2,6 +2,7 @@ import {reactive} from "vue";
 import file from "@/api/file/hamster/file";
 import adapter from "@/common/adapter/hamster"
 import share from "@/api/share";
+import download from "@/common/download";
 
 const successCode = 0; // 表示成功
 
@@ -14,7 +15,8 @@ export const fileList = reactive({
     history:{},
     path: [],
     file: [],
-    others:{rootParent:"-1"} // 保存其他的信息
+    others:{rootParent:"-1"}, // 保存其他的信息
+    readmeData:{id:"",url:""} // 存储readme文件的信息
 });
 
 function getPathString(){
@@ -338,5 +340,10 @@ export default {
     async rename(vFileId,name){
         window.$message.info("只读状态，不可写入")
     },
+
+    async getDownloadUrl(vFileId){
+        let res = await share.getDownloadUrl(getCurRoot(),fileList.others["key"],vFileId)
+        return download.toAbsolute(res);
+    }
 
 }
