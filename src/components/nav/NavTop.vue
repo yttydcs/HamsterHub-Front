@@ -251,6 +251,11 @@ export default defineComponent({
 
 
 .nav-logo{
+  -webkit-user-select:none;/*webkit浏览器*/
+  -moz-user-select:none;/*火狐*/
+  -ms-user-select:none;/*IE10*/
+  user-select:none;
+
   padding-left: 32px;
   width: 240px;
   font-weight: 500;
