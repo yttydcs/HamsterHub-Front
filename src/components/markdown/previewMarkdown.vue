@@ -1,6 +1,13 @@
 <template>
   <div class="markdownBox">
-    <MdPreview class="preview" :editorId="id" :modelValue="mdText" :previewTheme="preTheme" :theme="theme.mdTheme"/>
+    <MdPreview
+        class="preview"
+        :editorId="id"
+        :modelValue="mdText"
+        :previewTheme="preTheme"
+        :theme="theme.mdTheme"
+        :style="{ 'width': showCatalog? 'width: 1000px;' : '100%'  }"
+    />
     <div class="catalog" v-if="showCatalog">
       <MdCatalog  :editorId="id" :scrollElement="scrollElement" />
     </div>
@@ -16,7 +23,6 @@ import {theme} from "@/common/theme";
 import {reactive, ref, watch} from 'vue';
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
-import {NAffix} from "naive-ui";
 
 
 const defaultTheme = "github"
@@ -51,9 +57,8 @@ export default {
 
 <style scoped>
 .markdownBox{
-
-  margin: 0 auto;
-  width: 1300px;
+  text-align: center;
+  width: 100%;
 }
 
 .preview{

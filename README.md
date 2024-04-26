@@ -1,21 +1,21 @@
-# hello-world
+# HamsterHub-Front
 
-## Project setup
+## 安装 Project setup
 ```
-npm install
+yarn install
 ```
 
-### Compiles and hot-reloads for development
+### 开发环境运行 Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包 Compiles and minifies for production
 ```
 npm run build
 ```
 
-### Lints and fixes files
+### 格式化 Lints and fixes files
 ```
 npm run lint
 ```

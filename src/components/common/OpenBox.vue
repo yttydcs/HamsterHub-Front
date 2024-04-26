@@ -40,9 +40,9 @@
         </div>
 
         <!--    todo:md文本的预览    -->
-<!--        <div class="file-text" v-if="previewType === 'text'">-->
-<!--          {{text}}-->
-<!--        </div>-->
+        <div class="file-md" v-if="previewType === 'md'">
+          <previewMarkdown :md-text="text" style="width: 100%"></previewMarkdown>
+        </div>
 
         <!--    普通视频的预览    -->
         <div class="file-video" v-if="previewType === 'video'">
@@ -65,6 +65,7 @@ import { NButton, NIcon } from "naive-ui";
 import { CloudDownloadOutline } from "@vicons/ionicons5";
 import download from "@/common/download"
 import curLang from "@/common/lang";
+import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
 
 const openTypeIndex = {
   txt:"text",
@@ -78,7 +79,8 @@ export default {
     fileIcon,
     NButton,
     NIcon,
-    CloudDownloadOutline
+    CloudDownloadOutline,
+    previewMarkdown
   },
   props: {
     title:String,
@@ -124,6 +126,7 @@ export default {
     handlePreviewIndex(openType){
       switch (openType) {
         case "text":
+        case "md":
           this.textPreview();
           break;
 
@@ -136,6 +139,9 @@ export default {
         if(res){
           that.text = res;
         }else{
+          that.text = "";
+        }
+        if(typeof(that.text)!="string"){
           that.text = "";
         }
 
@@ -198,6 +204,11 @@ export default {
   max-width: 250px;
   overflow: hidden;
   margin: 0 auto;
+}
+
+.file-md{
+  width: 100%;
+  overflow: hidden;
 }
 
 .file-img svg{

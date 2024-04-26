@@ -6,7 +6,7 @@ export function switchTheme() {
     if (theme.data !== null) {
         theme.data = null;
         optionList[0].list[0].data = false
-        theme.mdTheme = "github"
+        theme.mdTheme = "light"
     } else {
 
         theme.data = darkTheme;
