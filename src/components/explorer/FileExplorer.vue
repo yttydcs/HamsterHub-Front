@@ -446,6 +446,16 @@ export default {
     let borderColor = computed(() => theme.value.borderColor);
     let fileData = props.fileService.getFileListObject()
 
+    // 使菜单响应语言变化
+    watch(curLang, () => {
+      for (let i = 0; i < fileContextMenuOption.length; i++) {
+        if ("label" in fileContextMenuOption[i]){
+          fileContextMenuOption[i].label =curLang.lang.explorerMenu[fileContextMenuOption[i].key] ;
+        }
+      }
+    });
+
+    // 检查readme文件id
     watch(() => fileData.readmeData.id, async (newId,oldId) => {
       if(!props.readme){
         return;
