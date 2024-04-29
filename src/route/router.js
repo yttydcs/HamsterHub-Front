@@ -4,13 +4,12 @@ import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main";
 import MainSetting from "@/view/setting/MainSetting.vue";
-import ShareLayout from "@/view/share/ShareLayout.vue";
-import SharePage from "@/view/share/SharePage.vue";
-import MainDetail from "@/view/detail/MainDetail.vue";
+import ShareLayout from "@/view/main/share/ShareLayout.vue";
+import SharePage from "@/view/main/share/SharePage.vue";
 import Test from "@/view/test/test.vue"
 import loginData from "@/common/loginData";
-import TaskLayout from "@/view/task/TaskLayout.vue";
-import UpLoadTask from "@/view/task/UpLoadTask.vue";
+import TaskLayout from "@/view/main/task/TaskLayout.vue";
+import UpLoadTask from "@/view/main/task/UpLoadTask.vue";
 
 // 构建路由
 const routes = [
