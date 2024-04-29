@@ -175,7 +175,7 @@ export default {
     },
     async switchToRoot(root){
       this.loading.start()
-      await this.$refs.explorer.switchRoot(root)
+      this.$router.push("/"+root);
       this.curRoot = root
       this.loading.finish()
     },

@@ -2,7 +2,7 @@
 import MainLogin from "@/view/login/MainLogin.vue";
 import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
-import MainLayout from "@/view/file/MainLayout.vue";
+import MainLayout from "@/view/main";
 import MainSetting from "@/view/setting/MainSetting.vue";
 import ShareLayout from "@/view/share/ShareLayout.vue";
 import SharePage from "@/view/share/SharePage.vue";
