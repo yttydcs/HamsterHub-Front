@@ -60,7 +60,7 @@ const MenuOption = reactive(
       icon: renderIcon(CloudUploadOutline),
     },
     {
-      label: "离线下载",
+      label: curLang.lang.taskDownload.title,
       href: '',
       key: 'cloudDownload',
       icon: renderIcon(CloudDownloadOutline),

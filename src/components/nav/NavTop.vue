@@ -40,21 +40,21 @@
         <n-divider vertical />
 
 
-        <router-link to="/task" v-if="loginData.loginState">
-          <n-button text style="font-size: 24px" >
-            <n-icon>
-              <TaskListSquareRtl24Regular />
-            </n-icon>
-          </n-button>
-        </router-link>
+<!--        <router-link to="/task" v-if="loginData.loginState">-->
+<!--          <n-button text style="font-size: 24px" >-->
+<!--            <n-icon>-->
+<!--              <TaskListSquareRtl24Regular />-->
+<!--            </n-icon>-->
+<!--          </n-button>-->
+<!--        </router-link>-->
 
-        <router-link to="/share" v-if="loginData.loginState">
-          <n-button text style="font-size: 24px" >
-            <n-icon>
-              <ShareSocialOutline />
-            </n-icon>
-          </n-button>
-        </router-link>
+<!--        <router-link to="/share" v-if="loginData.loginState">-->
+<!--          <n-button text style="font-size: 24px" >-->
+<!--            <n-icon>-->
+<!--              <ShareSocialOutline />-->
+<!--            </n-icon>-->
+<!--          </n-button>-->
+<!--        </router-link>-->
 
         <router-link to="/" v-if="loginData.loginState">
           <n-button text style="font-size: 24px" >
@@ -79,8 +79,14 @@
                 :size="24"
                 :src="loginData.user.avatarSrc"
             >
+
             </n-avatar>
+            <span class="user-name">
+<!--              {{ loginData.user.name }}-->
+            </span>
+
           </n-button>
+
         </n-dropdown>
 
       </n-space>
@@ -171,8 +177,8 @@ export default defineComponent({
     PersonOutline,
     LanguageOutline,
     FolderOpenOutline,
-    ShareSocialOutline,
-    TaskListSquareRtl24Regular,
+    // ShareSocialOutline,
+    // TaskListSquareRtl24Regular,
     NDropdown,
   },
   props: {
@@ -275,7 +281,7 @@ export default defineComponent({
 */
 .nav-right{
   height: 100%;
-  margin-right: 100px;
+  margin-right: 40px;
   float: right;
 }
 
@@ -291,6 +297,12 @@ export default defineComponent({
 /* vertically */
 .nav-right button{
   height: 100%;
+}
+
+.user-name{
+  margin-left: 6px;
+  font-weight: lighter;
+  font-size: 16px;
 }
 
 </style>

@@ -21,7 +21,7 @@
           />
         </div>
 
-        <div class="DeviceUsageBox" v-if="!collapsed">
+        <div class="DeviceUsageBox" v-if="!collapsed && showDevice">
           <DeviceUsage
               v-show="curStrategy.total!=='' && curStrategy.total!==0"
             :title = "curStrategy.title"
@@ -33,11 +33,7 @@
 
       </n-layout-sider>
       <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
-        <FileExplorer
-            ref="explorer"
-            :file-menu ="fileMenu"
-            :file-service="fileService"
-        />
+        <router-view></router-view>
       </n-layout>
     </n-layout>
 
@@ -47,17 +43,18 @@
 <script>
 import {NLayout, NLayoutSider, NMenu, NIcon, useLoadingBar} from "naive-ui";
 import {h, reactive, ref, watch} from "vue";
-import { HomeOutline,
+import {
+  HomeOutline,
   ShareSocialOutline,
   FileTrayFullOutline,
   DocumentTextOutline,
   FolderOpenOutline,
   AddCircleOutline,
   FlagOutline,
-  BookmarkOutline
-  } from "@vicons/ionicons5";
+  BookmarkOutline, CloudUploadOutline, CloudDownloadOutline
+} from "@vicons/ionicons5";
 import { Recycle } from "@vicons/tabler";
-import { Collections24Regular } from "@vicons/fluent";
+import {Collections24Regular, TaskListSquareRtl24Regular} from "@vicons/fluent";
 import FileExplorer from "@/components/explorer/FileExplorer.vue";
 import DeviceUsage from "@/components/common/DeviceUsage.vue";
 
@@ -65,22 +62,45 @@ import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
+import {fileContextMenuOption} from "@/common/fileContextMenuOption";
 
 
 const MenuOption = reactive(
     [
     {
-      label: curLang.lang.leftMenuFile,
+      label: curLang.lang.leftMenu.file,
       href: '',
       key: 'file',
       icon: renderIcon(FolderOpenOutline),
+      ignoreChildren:true, // 标记切换语言时忽略子菜单
     },
-    //   {
-    //   label: curLang.lang.leftMenuShare,
-    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-    //   key: 'share',
-    //   icon: renderIcon(ShareSocialOutline),
-    // },{
+    {
+      label: curLang.lang.leftMenu.share,
+      href: '/share',
+      key: 'share',
+      icon: renderIcon(ShareSocialOutline),
+    },{
+      label: curLang.lang.leftMenu.task,
+      href: '',
+      key: 'task',
+      icon: renderIcon(TaskListSquareRtl24Regular),
+      children: [
+        {
+          label: curLang.lang.leftMenu.upload,
+          href: '',
+          key: 'upload',
+        },
+        {
+          label: curLang.lang.leftMenu.download,
+          href: '',
+          key: 'download',
+        },
+      ],
+      },
+
+
+
+      // {
     //   label: curLang.lang.leftMenuFavorite,
     //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
     //   key: 'favorite',
@@ -117,40 +137,23 @@ export default {
     NLayout,
     NLayoutSider,
     NMenu,
-    FileExplorer,
     DeviceUsage,
   },
   methods:{
     // 获取可用的根目录
-    fetchRoot(){
-      let that = this
+    async fetchRoot(){
       this.loading.start();
-      strategy.query().then(res =>{
+      try{
+        let res = await strategy.query()
+
         let arr = res.data
 
         if(arr===undefined || arr.length<=0){
-          that.curRoot = ""
           return
         }
 
-        let fileListRoot = fileService.getFileListObject().root
-        // 检查当前root是否存在
-        for (let i = 0; i < arr.length; i++) {
-          if(arr[i].root === fileListRoot){
-            that.curRoot = fileListRoot
-            break;
-          }
-        }
-
-        // 首次进入设置第一个位选中
-        if(that.curRoot === ""){
-          that.switchToRoot(arr[0].root)
-          // 重新获取root
-          fileListRoot = fileService.getFileListObject().root
-        }
-
         MenuOption[0].children = []
-        that.strategy.length = 0
+        this.strategy.length = 0
 
         for (let i = 0; i < arr.length; i++) {
           MenuOption[0].children.push({
@@ -161,17 +164,12 @@ export default {
           })
 
           // 缓存 strategy
-          that.strategy.push(arr[i]);
-
-          // 找出当前root 对应的strategy
-          if(arr[i].root === fileListRoot){
-            that.setDeviceUsage(i)
-          }
+          this.strategy.push(arr[i]);
         }
-        that.loading.finish();
-      }).catch((res)=>{
-        that.loading.error();
-      })
+        this.loading.finish();
+      }catch (e) {
+        this.loading.error();
+      }
     },
     async switchToRoot(root){
       this.loading.start()
@@ -182,6 +180,9 @@ export default {
     async setDeviceUsage(index,ob=null){
       let aim
       if(ob === null){
+        if(index >= this.strategy.length){
+          return
+        }
         aim = this.strategy[index]
       }else{
         aim = ob
@@ -195,11 +196,16 @@ export default {
     },
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
-        this.switchToRoot(ob.data)
+        this.switchToRoot(ob.data);
+        this.showDevice = true;
+      }else{
+        this.$router.push(key);
+        this.showDevice = false;
       }
 
     },
     handleRoute(rootName){
+      console.log(rootName)
       if(rootName === this.showRoot){
         return;
       }
@@ -213,37 +219,63 @@ export default {
       if(index!==null){
         this.setDeviceUsage(index);
         this.showRoot = rootName ;
+        this.showDevice = true;
       }
     },
+    checkUrl(path){
+      let url = path.split("/");
+
+      // 初始状态自动导航到第一个策略
+      if(url.length <=1 || (url.length ===2 && url[1]==="")){
+        if(this.strategy.length > 0){
+          this.$router.push("/"+this.strategy[0].root)
+        }
+        return
+      }
+
+      let root = url[1];
+
+      this.handleRoute(root)
+    }
   },
-  mounted() {
-    this.fetchRoot()
+  async mounted() {
+    await this.fetchRoot()
+    let path = this.$router.currentRoute.value.fullPath
+    console.log(path)
+    this.checkUrl(path);
   },
-  activated() {
-    this.fetchRoot()
-  },
+  // activated() {
+  //   this.fetchRoot()
+  // },
   watch: {
     // 响应路由变化
     $route(to, from) {
-      let url = fileService.getFileListObject().root
-      this.handleRoute(url)
+      this.checkUrl(to.fullPath);
     }
   },
   setup(){
     // 响应语言变化
     watch(curLang, () => {
-      MenuOption[0].label = curLang.lang.leftMenuFile
-      // MenuOption[1].label = curLang.lang.leftMenuShare
-      // MenuOption[2].label = curLang.lang.leftMenuFavorite
-      // MenuOption[3].label = curLang.lang.leftMenuRecycle
-      // MenuOption[4].label = curLang.lang.leftMenuShortcut
-      // MenuOption[4].children[MenuOption[4].children.length-1].label = curLang.lang.leftMenuAdd
+      function setLangData(Option) {
+        for (let i = 0; i < Option.length; i++) {
+          if ("label" in Option[i]){
+            Option[i].label =curLang.lang.leftMenu[Option[i].key] ;
+          }
+
+          // 如果还有子菜单就继续
+          if("children" in Option[i] && !Option[i].ignoreChildren){
+            setLangData(Option[i].children);
+          }
+        }
+      }
+      setLangData(MenuOption)
     });
 
     return{
       collapsed: ref(false),
       menuOptions: MenuOption,
       curRoot:ref(""),
+      showDevice:ref(false),
       showRoot:ref(""),
       curStrategy:reactive({title:"",free:"",total:""}),
       strategy:reactive([]),

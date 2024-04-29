@@ -46,9 +46,6 @@ export default {
   },
   setup(){
     return {
-      model:reactive({
-        value:""
-      })
     }
   }
 }

@@ -4,12 +4,13 @@ import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import MainPage from "@/view/MainPage.vue";
 import MainLayout from "@/view/main";
 import MainSetting from "@/view/setting/MainSetting.vue";
-import ShareLayout from "@/view/main/share/ShareLayout.vue";
-import SharePage from "@/view/main/share/SharePage.vue";
+import ShareLayout from "@/view/main/share/ShareList.vue";
+import SharePage from "@/view/share/SharePage.vue";
 import Test from "@/view/test/test.vue"
 import loginData from "@/common/loginData";
 import TaskLayout from "@/view/main/task/TaskLayout.vue";
 import UpLoadTask from "@/view/main/task/UpLoadTask.vue";
+import FileLayout from "@/view/main/file"
 
 // 构建路由
 const routes = [
@@ -20,7 +21,31 @@ const routes = [
             {
                 path: '',
                 component: MainLayout,
-                meta:{needToken:true}
+                meta:{needToken:true},
+                children: [
+                    {
+                        path: 'share',
+                        component: ShareLayout,
+                        meta:{
+                            needToken:true,
+                            title:"Share",
+                        }
+                    },
+                    {
+                        path: '/:file*',
+                        component: FileLayout,
+                        meta:{needToken:true}
+                    },
+                    {
+                        path: 'upload',
+                        component: UpLoadTask,
+                        meta:{
+                            needToken:true,
+                            title:"Upload",
+                        }
+                    },
+                ]
+
             },
             {
                 path: 'login',
@@ -38,31 +63,24 @@ const routes = [
                     title:"Setting",
                 }
             },
-            {
-                path: 'share',
-                component: ShareLayout,
-                meta:{
-                    needToken:true,
-                    title:"Share",
-                }
-            },
-            {
-                path: 'task',
-                component: TaskLayout,
-                redirect: '/task/upload',
-                meta:{
-                    needToken:true,
-                    title:"Task",
-                },
-                children:[
-                    {
-                        path: 'upload',
-                        component: UpLoadTask,
-                        meta:{needToken:true}
-                    },
 
-                ]
-            },
+            // {
+            //     path: 'task',
+            //     component: TaskLayout,
+            //     redirect: '/task/upload',
+            //     meta:{
+            //         needToken:true,
+            //         title:"Task",
+            //     },
+            //     children:[
+            //         {
+            //             path: 'upload',
+            //             component: UpLoadTask,
+            //             meta:{needToken:true}
+            //         },
+            //
+            //     ]
+            // },
             // {
             //     path: 'detail',
             //     component: MainDetail,
@@ -78,11 +96,11 @@ const routes = [
                 component: SharePage,
                 meta:{needToken:false}
             },
-            {
-                path: '/:file*',
-                component: MainLayout,
-                meta:{needToken:true}
-            },
+            // {
+            //     path: '/:file*',
+            //     component: FileLayout,
+            //     meta:{needToken:true}
+            // },
 
 
         ]

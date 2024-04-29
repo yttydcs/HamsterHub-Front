@@ -6,16 +6,17 @@ const zhLangData = {
     name:"zh",
     lang:{
         searchBoxPlaceholder : "搜索",
-        leftMenuFile :"文件",
-        leftMenuShare :"分享",
-        leftMenuFavorite :"收藏",
-        leftMenuRecycle :"回收",
-        leftMenuShortcut :"快捷访问",
-        leftMenuAdd :"添加",
         plsInput:"请输入",
         settingBtn:"设置",
         validateError:"输入数据存在异常",
         processing:"正在处理请稍后",
+        leftMenu:{
+            file :"文件",
+            share :"分享",
+            task :"任务",
+            upload: "文件上传",
+            download: "离线下载",
+        },
         curd:{
             addTitle:"新增",
             changeTitle:"修改",

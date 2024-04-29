@@ -4,16 +4,17 @@ const enLangData = {
     name:"en",
     lang:{
         searchBoxPlaceholder : "Search",
-        leftMenuFile :"File",
-        leftMenuShare :"Share",
-        leftMenuFavorite :"Favorite",
-        leftMenuRecycle :"Recycle",
-        leftMenuShortcut :"Shortcut",
-        leftMenuAdd :"Add",
         plsInput:"Please input",
         settingBtn:"Setting",
         validateError: "Input data contains errors",
         processing:"Processing, please wait",
+        leftMenu:{
+            file: "File",
+            share: "Share",
+            task: "Task",
+            upload: "Upload",
+            download: "Download",
+        },
         curd:{
             addTitle:"Add Item",
             changeTitle:"Change Item",
