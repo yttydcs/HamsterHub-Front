@@ -3,6 +3,7 @@ import file from "@/api/file/hamster/file";
 import adapter from "@/common/adapter/hamster"
 import share from "@/api/share";
 import download from "@/common/download";
+import router from "@/route/router";
 
 const successCode = 0; // 表示成功
 
@@ -195,7 +196,13 @@ export default {
         }else{
             urlString = getUrlString()
         }
-        window.history.pushState({ path: urlString }, '', urlString);
+        //
+        // router.push(urlString);
+        // console.log(history.state)
+        // history.state.position++;
+        // history.state.back = history.state.current;
+        // history.state = urlString;
+        window.history.pushState({...history.state}, '', urlString);
 
         let curParent = (await getCurPathNode()).id
 

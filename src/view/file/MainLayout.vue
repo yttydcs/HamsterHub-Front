@@ -21,7 +21,7 @@
           />
         </div>
 
-        <div class="DeviceUsageBox" v-show="!collapsed">
+        <div class="DeviceUsageBox" v-if="!collapsed">
           <DeviceUsage
               v-show="curStrategy.total!=='' && curStrategy.total!==0"
             :title = "curStrategy.title"
@@ -181,7 +181,6 @@ export default {
     },
     async setDeviceUsage(index,ob=null){
       let aim
-
       if(ob === null){
         aim = this.strategy[index]
       }else{
@@ -198,7 +197,25 @@ export default {
       if(key.substr(0,4)==="root"){
         this.switchToRoot(ob.data)
       }
-      this.setDeviceUsage(ob.index)
+
+    },
+    handleRoute(rootName){
+      console.log("rootName",rootName);
+      console.log("curRoot",this.showRoot)
+      if(rootName === this.showRoot){
+        return;
+      }
+      let index = null
+      for (let i = 0; i < this.strategy.length; i++) {
+        if(this.strategy[i].root === rootName){
+          index = i;
+        }
+      }
+
+      if(index!==null){
+        this.setDeviceUsage(index);
+        this.showRoot = rootName ;
+      }
     },
   },
   mounted() {
@@ -207,9 +224,12 @@ export default {
   activated() {
     this.fetchRoot()
   },
-  beforeRouteUpdate(to, from, next){
-    this.$refs.explorer.handleFlush()
-    next();
+  watch: {
+    // 响应路由变化
+    $route(to, from) {
+      let url = fileService.getFileListObject().root
+      this.handleRoute(url)
+    }
   },
   setup(){
     // 响应语言变化
@@ -226,6 +246,7 @@ export default {
       collapsed: ref(false),
       menuOptions: MenuOption,
       curRoot:ref(""),
+      showRoot:ref(""),
       curStrategy:reactive({title:"",free:"",total:""}),
       strategy:reactive([]),
       curLang,

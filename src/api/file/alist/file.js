@@ -5,6 +5,7 @@ let type = 1;
 
 export default {
     getFile(path="/",key="",page=1,pageLimit=50,refresh=false,type=0,url = "",){
+        // console.trace(11)
 
         // 获得url
         let u = "/api/fs/list"

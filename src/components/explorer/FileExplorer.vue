@@ -169,7 +169,7 @@ import {ref, computed, watch, reactive, nextTick, toRefs} from "vue";
 import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
 import share from "@/api/share";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import hash from "@/common/hash";
 import {addTasks} from "@/common/task/uploadTask";
 
@@ -219,6 +219,9 @@ export default {
     DetailBox,
   },
   methods:{
+    changeRoute(){
+
+    },
     pathClick(index){
       this.fileService.setPathLength(index+1)
       this.getFileData()
@@ -429,6 +432,7 @@ export default {
     }
   },
   mounted() {
+    console.log("mounted")
     this.setMenu()
     this.handleFlush()
   },
@@ -440,6 +444,12 @@ export default {
     fileMenu:Object,
     fileService:Object,
     readme:Boolean
+  },
+  watch: {
+    // 响应路由变化
+    $route(to, from) {
+      this.handleFlush();
+    }
   },
   setup(props){
     let theme = useThemeVars();
@@ -474,6 +484,7 @@ export default {
     });
 
     return{
+      router: useRouter(),
       collapsed: ref(false),
       borderColor,
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
