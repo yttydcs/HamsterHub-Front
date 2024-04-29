@@ -206,9 +206,7 @@ export default {
         // arr.length=3
 
         // 不是根目录，并且最后一位不是 / 或 \ 则说明目标是一个文件
-        if(arr.length>3 && arr[arr.length-1] !==""){
-            fileList.isFile = true
-        }
+        fileList.isFile = arr.length > 3 && arr[arr.length - 1] !== "";
 
         // 如果指定了root
         if (arr[2]){
@@ -251,7 +249,7 @@ export default {
                 break;
             }
 
-            if(arr[i] !== fileList.path[i-3]){
+            if(arr[i] !== fileList.path[i-3].label){
                 fileList.path[i-3].label = arr[i];
                 fileList.path[i-3].id = res.data.id;
                 id = res.data.id;
@@ -269,8 +267,8 @@ export default {
         if(!getCurRoot()){
             return
         }
-        let urlString = getUrlString()
-        window.history.pushState({ path: urlString }, '', urlString);
+        // let urlString = getUrlString()
+        // window.history.pushState({ path: urlString }, '', urlString);
 
         let curParent = (await getCurPathNode()).id
 
@@ -344,6 +342,21 @@ export default {
     async getDownloadUrl(vFileId){
         let res = await share.getDownloadUrl(getCurRoot(),fileList.others["key"],vFileId)
         return download.toAbsolute(res);
+    },
+
+    setRouteHistory(){
+        let urlString
+        if (fileList.isFile){
+            urlString = getUrlString().slice(0, -1)
+        }else{
+            urlString = getUrlString()
+        }
+        //
+        // router.push(urlString);
+
+        // console.log(history)
+
+        window.history.pushState({...history.state}, '', urlString);
     }
 
 }

@@ -150,11 +150,8 @@ export default {
             return;
         }
 
-
         // 不是根目录，并且最后一位不是 / 或 \ 则说明目标是一个文件
-        if(arr.length>2 && arr[arr.length-1] !==""){
-            fileList.isFile = true
-        }
+        fileList.isFile = arr.length > 2 && arr[arr.length - 1] !== "";
 
         // 如果指定了root
         if (arr[1]){
@@ -175,7 +172,7 @@ export default {
                 addPath("","-1")
             }
 
-            if(arr[i] !== fileList.path[i-2]){
+            if(arr[i] !== fileList.path[i-2].label){
                 fileList.path[i-2].label = arr[i];
                 fileList.path[i-2].id = "-1";
             }
@@ -190,19 +187,19 @@ export default {
             return
         }
 
-        let urlString
-        if (fileList.isFile){
-            urlString = getUrlString().slice(0, -1)
-        }else{
-            urlString = getUrlString()
-        }
-        //
-        // router.push(urlString);
-        // console.log(history.state)
-        // history.state.position++;
-        // history.state.back = history.state.current;
-        // history.state = urlString;
-        window.history.pushState({...history.state}, '', urlString);
+        // let urlString
+        // if (fileList.isFile){
+        //     urlString = getUrlString().slice(0, -1)
+        // }else{
+        //     urlString = getUrlString()
+        // }
+        // //
+        // // router.push(urlString);
+        // // console.log(history.state)
+        // // history.state.position++;
+        // // history.state.back = history.state.current;
+        // // history.state = urlString;
+        // window.history.pushState({...history.state}, '', urlString);
 
         let curParent = (await getCurPathNode()).id
 
@@ -320,7 +317,20 @@ export default {
     async getDownloadUrl(vFileId){
        let res = await file.getDownloadUrl(vFileId)
         return download.toAbsolute(res);
+    },
+
+    setRouteHistory(){
+        let urlString
+        if (fileList.isFile){
+            urlString = getUrlString().slice(0, -1)
+        }else{
+            urlString = getUrlString()
+        }
+        //
+        // router.push(urlString);
+
+        // console.log(history)
+
+        window.history.pushState({...history.state}, '', urlString);
     }
-
-
 }

@@ -200,8 +200,6 @@ export default {
 
     },
     handleRoute(rootName){
-      console.log("rootName",rootName);
-      console.log("curRoot",this.showRoot)
       if(rootName === this.showRoot){
         return;
       }

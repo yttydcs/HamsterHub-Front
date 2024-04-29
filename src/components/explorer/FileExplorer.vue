@@ -220,23 +220,26 @@ export default {
   },
   methods:{
     changeRoute(){
-
+      this.fileService.setRouteHistory();
     },
     pathClick(index){
-      this.fileService.setPathLength(index+1)
-      this.getFileData()
+      this.fileService.setPathLength(index+1);
+      this.getFileData();
+      this.changeRoute();
     },
     async switchRoot(root){
       this.fileService.setRoot(root);
       this.fileService.setPathLength(0);
+      this.changeRoute();
       await this.getFileData()
+
     },
     setFileSelect(index){
       this.fileData.file[index].selected = !this.fileData.file[index].selected
-
     },
     async enterPath(index){
       this.fileService.enterPath(index);
+      this.changeRoute();
       await this.getFileData(index);
     },
     async handleFlush(){
