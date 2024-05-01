@@ -113,6 +113,15 @@ const enLangData = {
             doing: "In Progress",
             done: "Done"
         },
+        confirmBtn:{
+            ok: "OK",
+            cancel: "Cancel"
+        },
+        form:{
+            name: "Name",
+            shareCode: "Access Code",
+            expiry: "Expiration Time"
+        }
     }
 }
 

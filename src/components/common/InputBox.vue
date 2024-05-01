@@ -9,7 +9,7 @@
         @close="cancelFunc"
     >
       <n-form v-model:model="model" label-placement="left">
-        <n-form-item path="value" label="名称">
+        <n-form-item path="value" :label="curLang.lang.form.name">
           <n-input  v-model:value="model.value" type="text" />
         </n-form-item>
       </n-form>
@@ -17,10 +17,10 @@
         <n-space class="=control-btn" align="stretch" justify="end">
 
           <n-button type="primary" block secondary strong @click="confirmFunc(model.value)" >
-            确定
+            {{ curLang.lang.confirmBtn.ok }}
           </n-button>
           <n-button  type="primary" block secondary strong @click="cancelFunc">
-            取消
+            {{ curLang.lang.confirmBtn.cancel }}
           </n-button>
         </n-space>
 
@@ -32,6 +32,7 @@
 <script>
 import {NButton, NInput, NModal, NSpace, NForm, NFormItem} from "naive-ui";
 import {reactive, ref} from "vue";
+import curLang from "@/common/lang";
 
 export default {
   name: 'InputBox',
@@ -44,6 +45,7 @@ export default {
   },
   setup(){
     return {
+      curLang,
       model:reactive({
         value:""
       })

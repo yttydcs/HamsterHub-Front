@@ -150,12 +150,13 @@ export default {
 }
 
 .borderHover:hover{
-  border-color: v-bind(borderHover);
+  /*border-color: v-bind(borderHover);*/
+  background-color: v-bind(hoverColor);
 }
 
-.borderHover:hover .file-name{
+/*.borderHover:hover .file-name{
   border-color: v-bind(borderHover);
-}
+}*/
 
 .file-box{
   display: inline-block;
@@ -199,8 +200,6 @@ export default {
   margin: 0;
 }
 
-
-
 .file-img svg{
   transform: translate(50%,50%);
   width: 50%;
@@ -212,7 +211,6 @@ export default {
   width: 50%;
   height: 50%;
 }
-
 
 .file-img img{
   width: 100%;
@@ -286,7 +284,7 @@ export default {
 }
 
 .switchTheme{
-  transition:border 0.3s v-bind(cubicBezierEaseInOut);
+  transition:all 0.3s v-bind(cubicBezierEaseInOut);
 }
 
 </style>

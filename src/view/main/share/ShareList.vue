@@ -2,10 +2,7 @@
   <div class="shareLayout">
 
     <div class="list">
-      <div
-          class="item-box borderHover switchTheme"
-          :class="[fileSelect? 'box-selected' : 'box-unselected']"
-      >
+      <div class="item-box switchTheme box-unselected">
         <!--    todo:lang    -->
         <div class="item-name">Name</div>
         <div class="item-ticket">Ticket</div>
@@ -13,8 +10,7 @@
         <div class="item-action">Action</div>
       </div>
       <div
-          class="item-box borderHover switchTheme"
-          :class="[fileSelect? 'box-selected' : 'box-unselected']"
+          class="item-box borderHover switchTheme box-unselected"
           v-for="(item,index) in shareListData.data"
           :key="index"
       >
@@ -114,6 +110,7 @@ export default {
       borderColor : computed(() => theme.value.borderColor),
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),
+      hoverColor : computed(() => theme.value.hoverColor),
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
       fileSelect: false,
       shareListData:reactive({
@@ -126,41 +123,20 @@ export default {
 
 <style scoped>
 .shareLayout{
-  max-width: 900px;
-  margin: 10px auto;
+  width: calc(100% - 20px);
+  margin: 20px auto;
 }
-
-
-@media only screen and (max-width: 900px){
-  .shareLayout{
-    padding: 0 0;
-    width: 100%;
-  }
-}
-
-.item{
-
-}
-
 
 .box-unselected{
   border-color: v-bind(borderColor);
 }
 
-.box-selected{
-  border-color: v-bind(borderSelected);
-}
-
 .borderHover:hover{
-  border-color: v-bind(borderHover);
-}
-
-.borderHover:hover .file-name{
-  border-color: v-bind(borderHover);
+  /* border-color: v-bind(borderHover);*/
+  background-color: v-bind(hoverColor);
 }
 
 .item-box{
-  //display: inline-block;
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
@@ -168,14 +144,13 @@ export default {
   height: 40px;
   line-height: 40px;
   text-align: left;
-  //overflow: hidden;
   position: relative;
   display: flex;
   flex-wrap: wrap;
 }
 
 .switchTheme{
-  transition:border 0.3s v-bind(cubicBezierEaseInOut);
+  transition:all 0.3s v-bind(cubicBezierEaseInOut);
 }
 
 .item-name{

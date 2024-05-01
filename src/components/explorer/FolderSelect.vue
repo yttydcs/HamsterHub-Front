@@ -4,7 +4,7 @@
         :show="show"
         class="alertBox"
         preset="card"
-        :title="title + ` ` + data.name"
+        :title="title + `: ` + data.name"
         size="medium"
         @close="cancelFunc"
         :show-line="true"
@@ -25,10 +25,10 @@
 
       <n-space class="=control-btn" align="stretch" justify="end">
         <n-button type="primary" block secondary strong @click="confirmFunc(isSelect,root,parentId)" >
-          确定
+          {{ curLang.lang.confirmBtn.ok }}
         </n-button>
         <n-button  type="primary" block secondary strong @click="cancelFunc">
-          取消
+          {{ curLang.lang.confirmBtn.cancel }}
         </n-button>
       </n-space>
 
@@ -42,7 +42,7 @@ import {NButton, NInput, NModal, NSpace, NForm, NFormItem, NTree, NSpin} from "n
 import {reactive, ref} from "vue";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
-
+import curLang from "@/common/lang";
 
 export default {
   name: 'FolderSelect',
@@ -141,6 +141,7 @@ export default {
   setup(){
 
     return {
+      curLang,
       model:reactive({
         value:""
       }),

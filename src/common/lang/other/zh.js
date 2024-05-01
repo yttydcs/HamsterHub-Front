@@ -115,6 +115,15 @@ const zhLangData = {
             doing:"执行",
             done:"结束",
         },
+        confirmBtn:{
+            ok:"确定",
+            cancel:"取消"
+        },
+        form:{
+            name:"名称",
+            shareCode:"提取码",
+            expiry:"过期时间"
+        }
     }
 }
 

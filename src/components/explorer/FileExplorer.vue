@@ -80,7 +80,7 @@
 
     <!--  新建文件夹  -->
     <InputBox
-        title="新建文件夹"
+        :title="curLang.lang.explorerMenu.newDir"
         v-model:show="inputShow"
         :confirm-func="handleNewDir"
         :cancel-func="() =>{this.inputShow=false}"
@@ -91,15 +91,15 @@
         v-model:show="shareBoxShow"
         class="alertBox"
         preset="card"
-        :title="'分享 '+ shareModel.name"
+        :title="curLang.lang.explorerMenu.share  + ': '+ shareModel.name"
         size="medium"
     >
       <n-form v-model:model="shareModel" label-placement="left">
-        <n-form-item path="key" label="提取码">
+        <n-form-item path="key" :label="curLang.lang.form.shareCode">
           <n-input  v-model:value="shareModel.key" type="text" />
         </n-form-item>
 
-        <n-form-item path="key" label="过期时间">
+        <n-form-item path="key" :label="curLang.lang.form.expiry">
           <n-input  v-model:value="shareModel.expiry" type="text" />
         </n-form-item>
       </n-form>
@@ -107,10 +107,10 @@
       <n-space class="=control-btn" align="stretch" justify="end">
 
         <n-button type="primary" block secondary strong @click="confirmShare" >
-          确定
+          {{ curLang.lang.confirmBtn.ok }}
         </n-button>
         <n-button  type="primary" block secondary strong @click="()=>{shareBoxShow = false}">
-          取消
+          {{ curLang.lang.confirmBtn.cancel }}
         </n-button>
       </n-space>
 
@@ -121,7 +121,7 @@
     <FolderSelect
         ref="moveFolderSelect"
         v-model:show="moveBoxShow"
-        title="移动"
+        :title="curLang.lang.explorerMenu.move"
         :data="moveModel"
         :cancelFunc="() =>{this.moveBoxShow=false;}"
         :confirm-func="confirmMove"
@@ -131,7 +131,7 @@
     <FolderSelect
         ref="copyFolderSelect"
         v-model:show="copyBoxShow"
-        title="复制"
+        :title="curLang.lang.explorerMenu.copy"
         :data="copyModel"
         :cancelFunc="() =>{this.copyBoxShow=false;}"
         :confirm-func="confirmCopy"
@@ -139,7 +139,7 @@
 
     <!--  重命名  -->
     <InputBox
-        title="重命名"
+        :title="curLang.lang.explorerMenu.rename"
         v-model:show="renameBoxShow"
         :confirm-func="confirmRename"
         :cancel-func="() =>{this.renameBoxShow=false}"
@@ -487,6 +487,7 @@ export default {
     });
 
     return{
+      curLang,
       router: useRouter(),
       collapsed: ref(false),
       borderColor,
