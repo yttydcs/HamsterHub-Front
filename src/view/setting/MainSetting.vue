@@ -34,6 +34,7 @@
 
       </n-list>
     </div>
+    <UserManageSetting />
     <UserSetting />
 
     <!--    todo: use route    -->
@@ -73,6 +74,7 @@ import {reactive, ref, watch} from "vue";
 import CommonCURD from "@/components/common/CommonCURD.vue";
 import {deviceConfig} from "@/common/curd/deviceConfig";
 import UserSetting from "@/components/setting/UserSetting.vue";
+import UserManageSetting from "@/components/setting/UserManageSetting.vue";
 
 export default {
   name: 'mainSetting',
@@ -89,6 +91,7 @@ export default {
     // NInput,
     NModal,
     UserSetting,
+    UserManageSetting,
     NList, NButton, NListItem, NThing, NSwitch
   },
   mounted() {
@@ -128,14 +131,12 @@ export default {
   height: 500px;
 }
 
-// 优化小窗口的体验
 @media only screen and (max-width: 900px){
   .CURDBox{
     width: 100%;
   }
 }
 
-// 优化小窗口的体验
 @media only screen and (max-height: 500px){
   .CURDBox{
     width: 100%;

@@ -89,11 +89,15 @@ export default {
         if(type === 0){
             u = url||"/api/logout"
         }
+        try{
+            await axois[type]({
+                method:"post",
+                url:u,
+            })
+        }catch (e) {
+            console.log(e)
+        }
 
-        await axois[type]({
-            method:"post",
-            url:u,
-        })
 
         removeLoginData();
     },

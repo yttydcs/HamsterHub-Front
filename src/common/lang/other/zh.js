@@ -119,11 +119,18 @@ const zhLangData = {
             ok:"确定",
             cancel:"取消"
         },
-        form:{
-            name:"名称",
-            shareCode:"提取码",
-            expiry:"过期时间"
-        }
+        form: {
+            name: "名称",
+            shareCode: "提取码",
+            expiry: "过期时间"
+        },
+        userManageSetting: {
+            title: "用户管理",
+            canRegister: {
+                title: "允许注册",
+                description: "启用之后则允许注册新用户",
+            }
+        },
     }
 }
 

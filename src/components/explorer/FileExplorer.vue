@@ -435,7 +435,6 @@ export default {
     }
   },
   mounted() {
-    console.log("mounted")
     this.setMenu()
     this.handleFlush()
   },

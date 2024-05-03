@@ -121,7 +121,14 @@ const enLangData = {
             name: "Name",
             shareCode: "Access Code",
             expiry: "Expiration Time"
-        }
+        },
+        userManageSetting: {
+            title: "User Management",
+            canRegister: {
+                title: "Allow Registration",
+                description: "Enabling this allows registration of new users"
+            }
+        },
     }
 }
 

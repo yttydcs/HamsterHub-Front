@@ -205,7 +205,6 @@ export default {
 
     },
     handleRoute(rootName){
-      console.log(rootName)
       if(rootName === this.showRoot){
         return;
       }
@@ -241,7 +240,6 @@ export default {
   async mounted() {
     await this.fetchRoot()
     let path = this.$router.currentRoute.value.fullPath
-    console.log(path)
     this.checkUrl(path);
   },
   // activated() {
