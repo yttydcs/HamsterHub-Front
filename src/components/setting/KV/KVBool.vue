@@ -37,24 +37,26 @@ export default {
     title:String,
     description:String,
     configKey:String,
-    defaultValue:String,
     updateFunc:Function
   },
   methods:{
     async handle(value){
       let valueStr = value.toString();
       await config.set(this.configKey, valueStr);
+    },
+    setData(value){
+      this.data = value === "true";
     }
   },
+  async mounted() {
+    let configObj = await config.getObj()
+    this.setData(configObj[this.configKey].value)
+  },
 
-  setup(){
-    let theme = useThemeVars();
-    let defaultData = ref(false)
-    if(defaultData.value === "true"){
-      defaultData=true;
-    }
-    return{
-      data:defaultData,
+  setup() {
+
+    return {
+      data: ref(false),
     }
   }
 }

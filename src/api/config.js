@@ -2,7 +2,7 @@ import axois from "@/axios"
 
 export default {
 
-    query(){
+    query(hash){
         // 设置类不做兼容
         let type = 0;
 
@@ -11,14 +11,14 @@ export default {
 
 
         // 构造提交数据
-        // let d = {
-        //     "username":name,
-        //     "password":pwd
-        // }
+        let d = {
+            "hash":hash,
+        }
 
         return axois[type]({
             method:"get",
             url:u,
+            params:d
         })
 
     },
