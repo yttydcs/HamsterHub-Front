@@ -28,7 +28,7 @@ import {reactive, ref} from "vue";
 import config from "@/service/config";
 
 export default {
-  name: 'userSetting',
+  name: 'KVBool',
   components: {
     NSwitch,
     NThing, NListItem,
