@@ -24,11 +24,12 @@ async function query(){
         }
 
     }catch (e) {
-        console.log(e)
     }
 
     // 缓存数据
-    _saveData(res.data)
+    if(res.data!==null){
+        _saveData(res.data)
+    }
 
     return res
 }
@@ -39,7 +40,7 @@ async function loadData(){
     let localDate = null;
     try {
         let temp = JSON.parse(localStorage.getItem(localSaveKey));
-        
+
         if(temp){
             localDate = temp;
         }else{
@@ -55,7 +56,7 @@ async function loadData(){
         }
 
     }catch (e) {
-        console.log(e)
+
     }
 
     // 获取数据
