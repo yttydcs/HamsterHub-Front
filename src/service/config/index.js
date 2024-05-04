@@ -36,10 +36,17 @@ async function query(){
 
 // 读取本地数据，与默认值合并，返回vue3响应式数据
 async function loadData(){
-    let localDate = JSON.parse(localStorage.getItem(localSaveKey));
-
-    if(!localDate){
-        localDate = {};
+    let localDate = null;
+    try {
+        let temp = JSON.parse(localStorage.getItem(localSaveKey));
+        
+        if(temp){
+            localDate = temp;
+        }else{
+            localDate = {}
+        }
+    }catch (e) {
+        localDate = {}
     }
 
     try{
