@@ -66,7 +66,35 @@ function renderIcon(icon) {
 }
 
 const iconTypeIndex = {
-  txt:"text"
+  gif: "gif",
+  ico: "img",
+  jpeg: "img",
+  jpg: "img",
+  png: "img",
+  txt: "text",
+  yaml: "text",
+  cfg: "text",
+  md: "md",
+  m4a: "audio",
+  mp3: "audio",
+  wav: "audio",
+  ogg: "audio",
+  flac: "audio",
+  mp4: "video",
+  flv: "video",
+  xlsx: "excel",
+  xls: "excel",
+  pptx: "ppt",
+  ppt: "ppt",
+  docx: "word",
+  doc: "word",
+  java: "code",
+  c: "code",
+  'c++': "code",
+  cpp: "code",
+  pdf: "pdf",
+  zip: "zip",
+  rar: "zip",
 }
 
 export default {

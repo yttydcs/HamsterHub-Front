@@ -86,6 +86,7 @@ const openTypeIndex = {
   png: "img",
   txt: "text",
   yaml: "text",
+  cfg: "text",
   md: "md",
   m4a: "audio",
   mp3: "audio",
