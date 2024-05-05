@@ -79,6 +79,7 @@ import curLang from "@/common/lang";
 import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
 
 const openTypeIndex = {
+  gif: "img",
   ico: "img",
   jpeg: "img",
   jpg: "img",
