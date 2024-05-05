@@ -25,12 +25,12 @@
       </div>
       <div class="preview">
         <!--    文件夹的预览时    -->
-        <div class="file-img" v-if="previewType === 'dir'">
+        <div class="file-ico" v-if="previewType === 'dir'">
           <fileIcon file-type="dir" />
         </div>
 
         <!--    当没有可用的预览时    -->
-        <div class="file-img" v-if="previewType === 'file'">
+        <div class="file-ico" v-if="previewType === 'file'">
           <fileIcon file-type="file" />
         </div>
 
@@ -39,15 +39,28 @@
           {{text}}
         </div>
 
+        <!--    普通图片的预览    -->
+        <div class="file-img" v-if="previewType === 'img'">
+          <NImage class="shower" :src="url" object-fit="contain" :img-props="{'style': { 'width': '100%'}}"/>
+        </div>
+
         <!--    todo:md文本的预览    -->
         <div class="file-md" v-if="previewType === 'md'">
           <previewMarkdown :md-text="text" style="width: 100%"></previewMarkdown>
+        </div>
+
+        <!--    普通音频的预览    -->
+        <div class="file-video" v-if="previewType === 'audio'">
+          <audio :src="url" controls style="width: 100%"></audio>
         </div>
 
         <!--    普通视频的预览    -->
         <div class="file-video" v-if="previewType === 'video'">
           <video :src="url" controls style="width: 100%"></video>
         </div>
+
+
+
 
       </div>
     </div>
@@ -59,16 +72,27 @@
 import {computed, reactive, ref} from "vue";
 import {useThemeVars} from "naive-ui";
 import fileIcon from "@/components/explorer/FileIcon.vue";
-import { NButton, NIcon } from "naive-ui";
+import { NButton, NIcon, NImage } from "naive-ui";
 import { CloudDownloadOutline } from "@vicons/ionicons5";
 import download from "@/common/download"
 import curLang from "@/common/lang";
 import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
 
 const openTypeIndex = {
-  txt:"text",
-  md:"md",
-  mp4:"video",
+  ico: "img",
+  jpeg: "img",
+  jpg: "img",
+  png: "img",
+  txt: "text",
+  yaml: "text",
+  md: "md",
+  m4a: "audio",
+  mp3: "audio",
+  wav: "audio",
+  ogg: "audio",
+  flac: "audio",
+  mp4: "video",
+  flv: "video",
 }
 
 export default {
@@ -77,6 +101,7 @@ export default {
     fileIcon,
     NButton,
     NIcon,
+    NImage,
     CloudDownloadOutline,
     previewMarkdown
   },
@@ -196,7 +221,7 @@ export default {
   background-color: rgba(255,255,255,0.05);
 }
 
-.file-img{
+.file-ico{
   width: 100%;
   height: calc(100% - 40px);
   max-width: 250px;
@@ -209,7 +234,7 @@ export default {
   overflow: hidden;
 }
 
-.file-img svg{
+.file-ico svg{
   width: 100%;
   height: 100%;
 }
@@ -235,5 +260,19 @@ export default {
 .action{
   margin-right: 3px;
 }
+
+.file-img{
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+}
+
+.file-img .shower{
+  display: inline-block;
+  max-width: 100%;
+}
+
+
+
 
 </style>
