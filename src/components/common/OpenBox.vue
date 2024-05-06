@@ -31,7 +31,7 @@
 
         <!--    当没有可用的预览时    -->
         <div class="file-ico" v-if="previewType === 'file'">
-          <fileIcon file-type="file" />
+          <fileIcon :file-type="icoType" />
         </div>
 
         <!--    普通文本的预览    -->
@@ -60,8 +60,6 @@
         </div>
 
 
-
-
       </div>
     </div>
 
@@ -77,25 +75,8 @@ import { CloudDownloadOutline } from "@vicons/ionicons5";
 import download from "@/common/download"
 import curLang from "@/common/lang";
 import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
+import fileType from "@/common/fileType";
 
-const openTypeIndex = {
-  gif: "img",
-  ico: "img",
-  jpeg: "img",
-  jpg: "img",
-  png: "img",
-  txt: "text",
-  yaml: "text",
-  cfg: "text",
-  md: "md",
-  m4a: "audio",
-  mp3: "audio",
-  wav: "audio",
-  ogg: "audio",
-  flac: "audio",
-  mp4: "video",
-  flv: "video",
-}
 
 export default {
   name: 'OpenBox',
@@ -119,35 +100,21 @@ export default {
       if(this.isFolder){
         openType = "dir"
       }else{
-        openType = this.getOpenTypeByName(this.title)
+        openType = fileType.getOpenTypeByName(this.title)
       }
 
       this.handlePreviewIndex(openType)
       return openType;
     },
+    icoType(){
+      return  fileType.getIconTypeByName(this.title)
+    }
   },
   methods:{
     handleDownload(url){
       download.url(url)
     },
-    getOpenTypeByName(name){
-      if(!name){
-        return "file"
-      }
 
-      let arr = name.split(".");
-      if(arr.length <= 1){
-        return "file"
-      }
-
-      let suffix = arr.pop()
-
-      if(openTypeIndex.hasOwnProperty(suffix)){
-        return openTypeIndex[suffix]
-      }
-
-      return "file"
-    },
     handlePreviewIndex(openType){
       switch (openType) {
         case "text":

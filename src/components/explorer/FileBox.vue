@@ -55,47 +55,14 @@
 </template>
 
 <script>
-import {NLayout, NLayoutSider, NH2, NMenu, NIcon, NButton, useThemeVars} from "naive-ui";
-import {computed, h, nextTick, ref} from "vue";
-import {PersonOutline,Menu as DetailIcon} from "@vicons/ionicons5";
-import {fileContextMenuOption,openMenuByCondition} from "@/common/fileContextMenuOption";
+import { NIcon, NButton, useThemeVars} from "naive-ui";
+import { computed } from "vue";
+import { Menu as DetailIcon } from "@vicons/ionicons5";
+import { openMenuByCondition } from "@/common/fileContextMenuOption";
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import calc from "@/common/calc";
-function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
-}
+import fileType from "@/common/fileType";
 
-const iconTypeIndex = {
-  gif: "gif",
-  ico: "img",
-  jpeg: "img",
-  jpg: "img",
-  png: "img",
-  txt: "text",
-  yaml: "text",
-  cfg: "text",
-  md: "md",
-  m4a: "audio",
-  mp3: "audio",
-  wav: "audio",
-  ogg: "audio",
-  flac: "audio",
-  mp4: "video",
-  flv: "video",
-  xlsx: "excel",
-  xls: "excel",
-  pptx: "ppt",
-  ppt: "ppt",
-  docx: "word",
-  doc: "word",
-  java: "code",
-  c: "code",
-  'c++': "code",
-  cpp: "code",
-  pdf: "pdf",
-  zip: "zip",
-  rar: "zip",
-}
 
 export default {
   name: 'FileBox',
@@ -130,27 +97,14 @@ export default {
       this.showMenu(event)
       openMenuByCondition(1,data)
     },
-    getIconTypeByName(name){
-      let arr = name.split(".");
-      if(arr.length <= 1){
-        return "file"
-      }
 
-      let suffix = arr.pop()
-
-      if(iconTypeIndex.hasOwnProperty(suffix)){
-        return iconTypeIndex[suffix]
-      }
-
-      return "file"
-    }
   },
   computed: {
     calc() {
       return calc
     },
     iconType: function () {
-      return this.isDir?"dir":this.getIconTypeByName(this.fileName);
+      return this.isDir?"dir":fileType.getIconTypeByName(this.fileName);
     }
   },
   setup(){
