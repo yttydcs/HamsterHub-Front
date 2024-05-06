@@ -25,22 +25,22 @@
       </div>
       <div class="preview">
         <!--    文件夹的预览时    -->
-        <div class="file-ico" v-if="previewType === 'dir'">
+        <div class="file-ico pd" v-if="previewType === 'dir'">
           <fileIcon file-type="dir" />
         </div>
 
         <!--    当没有可用的预览时    -->
-        <div class="file-ico" v-if="previewType === 'file'">
+        <div class="file-ico pd" v-if="previewType === 'file'">
           <fileIcon :file-type="icoType" />
         </div>
 
         <!--    普通文本的预览    -->
-        <div class="file-text" v-if="previewType === 'text'">
+        <div class="file-text pd" v-if="previewType === 'text'">
           {{text}}
         </div>
 
         <!--    普通图片的预览    -->
-        <div class="file-img" v-if="previewType === 'img'">
+        <div class="file-img pd" v-if="previewType === 'img'">
           <NImage class="shower" :src="url" object-fit="contain" :img-props="{'style': { 'width': '100%'}}"/>
         </div>
 
@@ -50,14 +50,35 @@
         </div>
 
         <!--    普通音频的预览    -->
-        <div class="file-video" v-if="previewType === 'audio'">
+        <div class="file-audio pd" v-if="previewType === 'audio'">
           <audio :src="url" controls style="width: 100%"></audio>
         </div>
 
         <!--    普通视频的预览    -->
-        <div class="file-video" v-if="previewType === 'video'">
+        <div class="file-video pd" v-if="previewType === 'video'">
           <video :src="url" controls style="width: 100%"></video>
         </div>
+
+        <!--    docx的预览    -->
+        <div class="file-docx pd" v-if="previewType === 'docx'">
+          <previewDocx :url="url" />
+        </div>
+
+        <!--    xlsx的预览    -->
+        <div class="file-excel" v-if="previewType === 'xlsx'">
+          <previewExcel :url="url" :xls="false"/>
+        </div>
+
+        <!--    xlsx的预览    -->
+        <div class="file-excel" v-if="previewType === 'xls'">
+          <previewExcel :url="url" :xls="true"/>
+        </div>
+
+        <!--    pdf的预览    -->
+        <div class="file-excel pd" v-if="previewType === 'pdf'">
+          <previewPdf :url="url" />
+        </div>
+
 
 
       </div>
@@ -74,7 +95,10 @@ import { NButton, NIcon, NImage } from "naive-ui";
 import { CloudDownloadOutline } from "@vicons/ionicons5";
 import download from "@/common/download"
 import curLang from "@/common/lang";
-import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
+import previewMarkdown from "@/components/preview/previewMarkdown.vue";
+import previewDocx from "@/components/preview/previewDocx.vue";
+import previewExcel from "@/components/preview/previewExcel.vue";
+import previewPdf from "@/components/preview/previewPdf.vue";
 import fileType from "@/common/fileType";
 
 
@@ -86,7 +110,10 @@ export default {
     NIcon,
     NImage,
     CloudDownloadOutline,
-    previewMarkdown
+    previewMarkdown,
+    previewDocx,
+    previewExcel,
+    previewPdf
   },
   props: {
     title:String,
@@ -186,8 +213,11 @@ export default {
 }
 
 .preview{
-  padding: 20px;
   background-color: rgba(255,255,255,0.05);
+}
+
+.preview .pd{
+  padding: 20px;
 }
 
 .file-ico{

@@ -8,7 +8,7 @@ const iconTypeIndex = {
     txt: "text",
     yaml: "text",
     cfg: "text",
-    md: "md",
+    md: "text",
     m4a: "audio",
     mp3: "audio",
     wav: "audio",
@@ -29,6 +29,7 @@ const iconTypeIndex = {
     pdf: "pdf",
     zip: "zip",
     rar: "zip",
+    "7z": "zip",
 }
 
 // 预览方式的索引
@@ -49,6 +50,10 @@ const openTypeIndex = {
     flac: "audio",
     mp4: "video",
     flv: "video",
+    docx: "docx",
+    xlsx: "xlsx",
+    xls: "xls",
+    pdf: "pdf",
 }
 
 export default {

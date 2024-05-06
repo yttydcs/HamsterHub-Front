@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import previewMarkdown from "@/components/markdown/previewMarkdown.vue";
+import previewMarkdown from "@/components/preview/previewMarkdown.vue";
 import {NInput} from "naive-ui";
 import {ref} from "vue";
 

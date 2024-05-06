@@ -68,6 +68,8 @@ export default {
   vertical-align: top;
 }
 
+
+
 .catalog{
   top: 0;
   position: -webkit-sticky;

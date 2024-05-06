@@ -1942,6 +1942,21 @@
   dependencies:
     "@xicons/utils" "^0.1.4"
 
+"@vue-office/docx@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.npmmirror.com/@vue-office/docx/-/docx-1.6.1.tgz#98df74b528858db97a255ee58ecb7d83e7882f7b"
+  integrity sha512-DKB0F7b5tv4MvZO/nYdKiUUGXAD3LmZeHLQLodYg+c4Rap8w1EeU1DTJxXumq88xCggVrM69Qx+ocVIpq4eSYQ==
+
+"@vue-office/excel@^1.7.8":
+  version "1.7.8"
+  resolved "https://registry.npmmirror.com/@vue-office/excel/-/excel-1.7.8.tgz#3cd064b4d4003a9460ccddef06230e156e2cd70c"
+  integrity sha512-pQxogMRDECFElpDcZhQBDtM9GpL8d1/w+fjAXiqJRTIjzbrW/JiOURExgE5LoUkfc+cDhUfSGtfvCvwSx30yQw==
+
+"@vue-office/pdf@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.npmmirror.com/@vue-office/pdf/-/pdf-2.0.2.tgz#475010e4279c6dfb368e3dc7df81f56b597bd080"
+  integrity sha512-bQFqGxSOnKbvCS7OoJniYoTz1VIm1XOrRD27Msorxny9NFJ8RsQK1A4uhlnISJRFMaUwp1qlcVE9jMAhsiIyjg==
+
 "@vue/babel-helper-vue-jsx-merge-props@^1.4.0":
   version "1.4.0"
   resolved "https://registry.npmmirror.com/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.4.0.tgz#8d53a1e21347db8edbe54d339902583176de09f2"
@@ -6796,6 +6811,11 @@ vooks@^0.2.12, vooks@^0.2.4:
   integrity sha512-iox0I3RZzxtKlcgYaStQYKEzWWGAduMmq+jS7OrNdQo1FgGfPMubGL3uGHOU9n97NIvfFDBGnpSvkWyb/NSn/Q==
   dependencies:
     evtd "^0.2.2"
+
+vue-demi@^0.14.7:
+  version "0.14.7"
+  resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.7.tgz#8317536b3ef74c5b09f268f7782e70194567d8f2"
+  integrity sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==
 
 vue-eslint-parser@^8.0.1:
   version "8.3.0"
