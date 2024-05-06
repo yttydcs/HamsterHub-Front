@@ -1,8 +1,8 @@
 <template>
   <div class="box">
     <div class="text">
-      <span>{{title}}</span>
-      <span class="textData"> {{usedString}} / {{totalString}}</span>
+      <span  v-show="!mini">{{title}}</span>
+      <span class="textData"  v-show="!mini"> {{usedString}} / {{totalString}}</span>
 
     </div>
 
@@ -43,6 +43,7 @@ export default {
     title:String,
     total:String,
     free:String,
+    mini:Boolean,
   },
   setup(){
     return {

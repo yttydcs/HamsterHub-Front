@@ -21,12 +21,14 @@
           />
         </div>
 
-        <div class="DeviceUsageBox" v-if="!collapsed && showDevice">
+        <div class="DeviceUsageBox" v-if=" showDevice">
           <DeviceUsage
-              v-show="curStrategy.total!=='' && curStrategy.total!==0"
+            v-show="curStrategy.total!=='' && curStrategy.total!==0"
             :title = "curStrategy.title"
             :free = "curStrategy.free"
             :total = "curStrategy.total"
+            :mini = "collapsed"
+
           />
 
         </div>
@@ -296,7 +298,7 @@ export default {
 }
 
 .menuBox{
-  height: calc(100vh - 160px);
+  height: calc(100vh - 130px);
   overflow-y: auto;
 }
 
