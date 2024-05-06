@@ -1952,11 +1952,6 @@
   resolved "https://registry.npmmirror.com/@vue-office/excel/-/excel-1.7.8.tgz#3cd064b4d4003a9460ccddef06230e156e2cd70c"
   integrity sha512-pQxogMRDECFElpDcZhQBDtM9GpL8d1/w+fjAXiqJRTIjzbrW/JiOURExgE5LoUkfc+cDhUfSGtfvCvwSx30yQw==
 
-"@vue-office/pdf@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.npmmirror.com/@vue-office/pdf/-/pdf-2.0.2.tgz#475010e4279c6dfb368e3dc7df81f56b597bd080"
-  integrity sha512-bQFqGxSOnKbvCS7OoJniYoTz1VIm1XOrRD27Msorxny9NFJ8RsQK1A4uhlnISJRFMaUwp1qlcVE9jMAhsiIyjg==
-
 "@vue/babel-helper-vue-jsx-merge-props@^1.4.0":
   version "1.4.0"
   resolved "https://registry.npmmirror.com/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.4.0.tgz#8d53a1e21347db8edbe54d339902583176de09f2"
@@ -5511,6 +5506,11 @@ path-type@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmmirror.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
+
+pdf-vue3@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.npmmirror.com/pdf-vue3/-/pdf-vue3-1.0.12.tgz#8b2c4346cd75a7d3307aa6117c591c047549f4ed"
+  integrity sha512-7SMTx1RfRwdc+2WPniDzqM8MxJLqTNNzdyV0SeQTxeRLJGndb5Wv/fz5afO13oBSIvvaqcbZ/S3gF+XjqkSb9g==
 
 picocolors@^0.2.1:
   version "0.2.1"

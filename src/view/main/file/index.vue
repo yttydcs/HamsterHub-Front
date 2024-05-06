@@ -29,16 +29,4 @@ export default {
 </script>
 
 <style>
-.menu-left{
-  text-align: left;
-}
-
-.DeviceUsageBox{
-  padding: 10px;
-}
-
-.menuBox{
-  height: calc(100vh - 140px);
-  overflow-y: auto;
-}
 </style>

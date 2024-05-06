@@ -32,7 +32,7 @@
         </div>
 
       </n-layout-sider>
-      <n-layout style="padding:0 12px 24px 12px;height: 100%" :native-scrollbar="true">
+      <n-layout class="main-layout" :native-scrollbar="true">
         <router-view></router-view>
       </n-layout>
     </n-layout>
@@ -199,7 +199,7 @@ export default {
         this.switchToRoot(ob.data);
         this.showDevice = true;
       }else{
-        this.$router.push(key);
+        this.$router.push("/" + key);
         this.showDevice = false;
       }
 
@@ -286,7 +286,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .menu-left{
   text-align: left;
 }
@@ -296,7 +296,12 @@ export default {
 }
 
 .menuBox{
-  height: calc(100vh - 140px);
+  height: calc(100vh - 160px);
   overflow-y: auto;
+}
+
+.main-layout{
+  padding:0 12px 24px 12px;
+  height: calc( 100% - 40px)
 }
 </style>

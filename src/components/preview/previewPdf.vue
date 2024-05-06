@@ -1,17 +1,16 @@
 <template>
   <div class="pdfBox">
-    <VueOfficePdf :src="url" />
+    <PDF class="pdf" :src="url" />
   </div>
 
 </template>
 
 <script>
-import VueOfficePdf from '@vue-office/pdf'
-
+import PDF from "pdf-vue3";
 export default {
   name: 'pdfBox',
   components: {
-    VueOfficePdf,
+    PDF
   },
   props:{
     url:String,
@@ -24,7 +23,8 @@ export default {
 </script>
 
 <style scoped>
-
-
+.pdfBox{
+  height: calc(100vh - 250px) ;
+}
 
 </style>

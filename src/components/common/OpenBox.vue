@@ -79,8 +79,6 @@
           <previewPdf :url="url" />
         </div>
 
-
-
       </div>
     </div>
 
