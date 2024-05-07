@@ -188,11 +188,17 @@ export default {
         aim = ob
       }
 
-      let strategySize = (await strategy.getStrategySize(aim.id)).data
+      try {
+        let strategySize = (await strategy.getStrategySize(aim.id)).data
 
-      this.curStrategy.title = aim.name;
-      this.curStrategy.free = strategySize.usable;
-      this.curStrategy.total = strategySize.total;
+        this.curStrategy.title = aim.name;
+        this.curStrategy.free = strategySize.usable;
+        this.curStrategy.total = strategySize.total;
+      }catch (e) {
+        // 隐藏剩余空间组件
+        this.curStrategy.total = 0
+      }
+
     },
     handleMenuSelect(key,ob){
       if(key.substr(0,4)==="root"){
