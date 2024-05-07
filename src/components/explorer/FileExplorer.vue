@@ -4,8 +4,15 @@
 
         <n-breadcrumb class="path-breadcrumb" >
           <n-breadcrumb-item>
-            <n-icon :component="HomeOutline" @click="pathClick(-1)" /> </n-breadcrumb-item>
-          <n-breadcrumb-item v-for="(path,index) in fileData.path" :key="index" @click="pathClick(index)">{{ path["label"] }}</n-breadcrumb-item>
+            <n-icon :component="HomeOutline" @click="pathClick(-1)" @drop.prevent="dragDrop($event,-1)"/>
+          </n-breadcrumb-item>
+          <n-breadcrumb-item
+              v-for="(path,index) in fileData.path"
+              :key="index" @click="pathClick(index)"
+              @drop.prevent="dragDrop($event,index)"
+          >
+            {{ path["label"] }}
+          </n-breadcrumb-item>
         </n-breadcrumb>
 
       <div class="path-control">
@@ -52,6 +59,7 @@
             :file-click="setFileSelect"
             :show-menu="handleContextMenuShow"
             :box-style="boxStyle"
+            :move-func="fileMove"
         />
 
       </n-layout>
@@ -168,9 +176,7 @@ import {ref, computed, watch, reactive, nextTick, toRefs} from "vue";
 
 import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
-import share from "@/api/share";
 import {useRoute, useRouter} from "vue-router";
-import hash from "@/common/hash";
 import {addTasks} from "@/common/task/uploadTask";
 
 import {
@@ -264,6 +270,10 @@ export default {
     async handleDrop(event){// 文件拖拽上传
       event.preventDefault();
       const  {files,items} = event.dataTransfer;
+
+      if(files.length <= 0){
+        return
+      }
 
       let root = this.fileService.getCurRoot()
       let parent = (await this.fileService.getCurPathNode()).id
@@ -432,7 +442,38 @@ export default {
     setMenu(){
       this.contextMenu.options.length = 0;
       this.contextMenu.options.push(...this.fileMenu)
-    }
+    },
+    async dragDrop(e,index){
+      let to = (await this.fileService.getPathNodeByIndex(index)).id;
+      let str = e.dataTransfer.getData('dragFile')
+      if(!str ){
+        return;
+      }
+      let files = str.split(",");
+      if(files.length <= 0){
+        return;
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        let from = files[i];
+        if(from === to){
+          continue;
+        }
+        await this.fileMove(from, to);
+      }
+    // },
+    },
+    async fileMove(target,parentId){
+      if(!target || !parentId){
+        return;
+      }
+      if(target === parentId){
+        window.$message.info("不能自己向自己移动哦")
+        return;
+      }
+      await this.fileService.moveFile(target,parentId)
+      this.getFileData()
+    },
   },
   mounted() {
     this.setMenu()

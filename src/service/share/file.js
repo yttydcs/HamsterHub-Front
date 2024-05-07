@@ -28,10 +28,17 @@ function getPathString(){
     return res
 }
 
-function getPathStringNoneLast(){
+function getPathStringNoneLast(pos=null){
     let arr = fileList.path
     let res = ""
-    for (let i = 0; i < arr.length; i++) {
+    let index= arr.length
+    if(!index){
+        if(index>pos){
+            index = pos
+        }
+    }
+
+    for (let i = 0; i < index; i++) {
         res = res + "/" + arr[i].label
     }
     return res
@@ -115,6 +122,22 @@ async function getCurPathNode(){
     }
 
     return fileList.path[fileList.path.length-1]
+}
+
+async function getPathNodeByIndex(index){
+    if(fileList.path.length <= 0 || index <0){
+        return {label:"root",id:"0"}
+    }
+
+    // 如果没有父目录id的缓存
+    if(fileList.path[index].id === "-1"){
+        let data = await getDetail({"root":fileList.root,"url":getPathStringNoneLast(index)});
+        if("data" in data &&"type" in data.data[0] && "id" in data.data[0] &&data.data[0].type === 0){
+            fileList.path[index].id = data.data[0].id
+        }
+    }
+
+    return fileList.path[index]
 }
 
 function addPath(label,id){
@@ -357,6 +380,8 @@ export default {
         // console.log(history)
 
         window.history.pushState({...history.state}, '', urlString);
-    }
+    },
+
+    getPathNodeByIndex
 
 }

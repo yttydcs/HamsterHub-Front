@@ -19,7 +19,10 @@
                  :box-style="boxStyle"
                  :size="file.size"
                  :modified="file.modified"
-
+                 :draggable="fileList.writable"
+                 @dragend="dragend"
+                 @dragstart="(e)=>dragstart(e,file)"
+                 @drop.prevent="(e)=>dragDrop(e,file)"
         />
       </n-grid-item>
     </n-grid>
@@ -40,18 +43,19 @@
                :box-style="boxStyle"
                :size="file.size"
                :modified="file.modified"
+               :draggable="fileList.writable"
+               @dragend="dragend"
+               @dragstart="(e)=>dragstart(e,file)"
+               @drop.prevent="(e)=>dragDrop(e,file)"
       />
 
     </div>
-
-<!--    <br>-->
-<!--    <br>-->
   </div>
 </template>
 
 <script>
 import {NGridItem,NGrid} from "naive-ui";
-import {h, ref} from "vue";
+import {h, reactive, ref} from "vue";
 import { addPath } from "@/common/fileList"
 
 import FileBox from "@/components/explorer/FileBox.vue";
@@ -68,10 +72,52 @@ export default {
     fileClick:Function,
     enterPath:Function,
     showMenu:Function,
-    boxStyle:String
+    boxStyle:String,
+    moveFunc:Function,
+  },
+  methods: {
+    dragstart(e,file){
+      let target = []
+      if(file.selected){
+        let files = this.fileList.file
+        for (let i = 0; i < files.length; i++) {
+          if(files[i].selected){
+            target.push(files[i].other.id)
+          }
+        }
+      }else{
+        target.push(file.other.id)
+      }
+      e.dataTransfer.setData('dragFile', target)
+    },
+    dragend(e){
+      // 防止下次移动冲突
+      this.dragFile.length=0;
+    },
+    dragDrop(e,file){
+      if(!file.isDir){
+        return;
+      }
+      let to = file.other.id;
+      let str = e.dataTransfer.getData('dragFile')
+      if(!str ){
+        return
+      }
+      let files = str.split(",");
+      if(files.length <= 0){
+        return;
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        let from = files[i]
+        this.moveFunc(from ,to );
+      }
+    },
+
   },
   setup(){
     return{
+      dragFile:[]
     }
   }
 }

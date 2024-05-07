@@ -21,16 +21,14 @@
           />
         </div>
 
-        <div class="DeviceUsageBox" v-if=" showDevice">
+        <div class="DeviceUsageBox" v-if="showDevice">
           <DeviceUsage
             v-show="curStrategy.total!=='' && curStrategy.total!==0"
             :title = "curStrategy.title"
             :free = "curStrategy.free"
             :total = "curStrategy.total"
             :mini = "collapsed"
-
           />
-
         </div>
 
       </n-layout-sider>
