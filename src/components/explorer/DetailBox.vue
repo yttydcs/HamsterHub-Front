@@ -50,10 +50,6 @@ export default {
   name: 'mainDetail',
   methods: {
     async flushData(fileObj){
-      // let root = this.fileService.getCurRoot();
-      // let path = (await this.fileService.getPathString()).slice(0, -1);
-      // let data = (await file.getDetail(root,path)).data;
-      // console.log(fileObj)
       let data = fileObj;
 
       for (let i = 0; i < data.length; i++) {

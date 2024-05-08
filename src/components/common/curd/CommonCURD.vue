@@ -443,12 +443,10 @@ export default {
       this.kvBox.template = create(d);
       this.kvBox.title = index;
       this.kvBox.oldValue = this.formData[index]
-      // this.$refs.KVInput.setOldValue(this.formData[index])
 
       this.kvBox.handle = (data)=>{
         this.kvBox.show = false;
         this.formData[index] = JSON.stringify(data)
-        console.log(this.formData)
       }
 
     },

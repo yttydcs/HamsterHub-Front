@@ -209,20 +209,6 @@ export default {
             return
         }
 
-        // let urlString
-        // if (fileList.isFile){
-        //     urlString = getUrlString().slice(0, -1)
-        // }else{
-        //     urlString = getUrlString()
-        // }
-        // //
-        // // router.push(urlString);
-        // // console.log(history.state)
-        // // history.state.position++;
-        // // history.state.back = history.state.current;
-        // // history.state = urlString;
-        // window.history.pushState({...history.state}, '', urlString);
-
         let curParent = (await getCurPathNode()).id
 
         // 目录可能已经不存在
@@ -348,10 +334,6 @@ export default {
         }else{
             urlString = getUrlString()
         }
-        //
-        // router.push(urlString);
-
-        // console.log(history)
 
         window.history.pushState({...history.state}, '', urlString);
     },

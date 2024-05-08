@@ -562,7 +562,7 @@ export default {
 
 .explorer-box{
   width: 100%;
-
+  min-height: calc( 100vh - 110px );
 
 }
 
@@ -607,7 +607,7 @@ export default {
 }
 
 .file-list-p{
-  height: calc( 100% - 90px );
+  min-height: calc( 100vh - 110px );
   overflow: hidden;
 }
 

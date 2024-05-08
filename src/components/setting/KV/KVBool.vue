@@ -3,9 +3,11 @@
     <n-list-item>
       <n-thing :title="title" :description="description" />
       <template #suffix>
-        <n-switch :round="false"
-                  @update:value="handle"
-                  v-model:value="data"
+        <n-switch
+            :round="false"
+            :loading="loading"
+            @update:value="handle"
+            v-model:value="data"
 
         />
       </template>
@@ -42,7 +44,13 @@ export default {
   methods:{
     async handle(value){
       let valueStr = value.toString();
-      await config.set(this.configKey, valueStr);
+      this.loading = true
+      try {
+        await config.set(this.configKey, valueStr);
+      }catch (e) {
+
+      }
+      this.loading = false
     },
     setData(value){
       this.data = value === "true";
@@ -57,6 +65,7 @@ export default {
 
     return {
       data: ref(false),
+      loading:ref(false),
     }
   }
 }
