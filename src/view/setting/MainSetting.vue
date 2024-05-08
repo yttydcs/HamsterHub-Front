@@ -34,7 +34,11 @@
 
       </n-list>
     </div>
+
     <UserManageSetting />
+
+    <StoreSetting :curd-handle="curdHandle" />
+
     <UserSetting />
 
     <!--    todo: use route    -->
@@ -59,10 +63,6 @@ import {
   NListItem,
   NThing,
   NSwitch,
-  NGridItem,
-  NFormItemRow,
-  NSelect,
-  NForm,
   NModal,
   NInput
 } from "naive-ui";
@@ -71,10 +71,11 @@ import curLang from "@/common/lang";
 import {optionList} from "@/common/setting/option";
 import device from "@/api/device";
 import {reactive, ref, watch} from "vue";
-import CommonCURD from "@/components/common/CommonCURD.vue";
-import {deviceConfig} from "@/common/curd/deviceConfig";
+import CommonCURD from "@/components/common/curd/CommonCURD.vue";
+import {deviceConfig} from "@/common/curd/option/deviceConfig";
 import UserSetting from "@/components/setting/UserSetting.vue";
 import UserManageSetting from "@/components/setting/UserManageSetting.vue";
+import StoreSetting from "@/components/setting/StoreSetting.vue";
 
 export default {
   name: 'mainSetting',
@@ -92,6 +93,7 @@ export default {
     NModal,
     UserSetting,
     UserManageSetting,
+    StoreSetting,
     NList, NButton, NListItem, NThing, NSwitch
   },
   mounted() {

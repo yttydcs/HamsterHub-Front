@@ -1,6 +1,6 @@
 import {reactive, toRefs} from "vue";
-import {deviceConfig} from "@/common/curd/deviceConfig";
-import {strategyConfig} from "@/common/curd/strategyConfig";
+import {deviceConfig} from "@/common/curd/option/deviceConfig";
+import {strategyConfig} from "@/common/curd/option/strategyConfig";
 import {setDark} from "@/common/theme";
 import curLang from "@/common/lang";
 
@@ -63,27 +63,6 @@ export const optionList = reactive([
             //     valueType: "curd",
             //     value: "",
             // },
-        ]
-    },
-    {
-        type: "group",
-        text: curLang.lang.storeSetting,
-        title : "存储",
-        description: "",
-        list:[
-            {
-                type: "item",
-                text:curLang.lang.storeSetting.device,
-                key: "settingKey",
-                valueType: "curd",
-                value: deviceConfig,
-            },{
-                type: "item",
-                text:curLang.lang.storeSetting.strategy,
-                key: "settingKey",
-                valueType: "curd",
-                value: strategyConfig,
-            },
         ]
     },
 ]);

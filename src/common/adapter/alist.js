@@ -1,5 +1,4 @@
 import loginData, {saveLoginData} from "@/common/loginData";
-import { fileList } from"@/common/fileList"
 
 // 用于Alist的登录适配方案
 
@@ -19,7 +18,7 @@ export default {
         // 持久化
         saveLoginData()
     },
-    setFileData(data){
+    setFileData(data,fileList){
         fileList.device = 1;
         fileList.writable = data.data.write;
 

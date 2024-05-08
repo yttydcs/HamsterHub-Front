@@ -51,7 +51,6 @@ import {BanOutline, CloudDownloadOutline} from "@vicons/ionicons5";
 import calc from "@/common/calc";
 import download from "@/common/download"
 import { LockClosed as lockIcon } from "@vicons/ionicons5";
-import {getUrlString} from "@/common/fileList";
 import FileExplorer from "@/components/explorer/FileExplorer.vue";
 import fileService from "@/service/share/file"
 import fileMenu from "@/service/share/fileMenu"

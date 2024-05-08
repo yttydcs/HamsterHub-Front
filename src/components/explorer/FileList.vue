@@ -55,8 +55,6 @@
 
 <script>
 import {NGridItem,NGrid} from "naive-ui";
-import {h, reactive, ref} from "vue";
-import { addPath } from "@/common/fileList"
 
 import FileBox from "@/components/explorer/FileBox.vue";
 

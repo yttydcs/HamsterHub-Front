@@ -62,7 +62,6 @@ import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
-import {fileContextMenuOption} from "@/common/fileContextMenuOption";
 
 
 const MenuOption = reactive(

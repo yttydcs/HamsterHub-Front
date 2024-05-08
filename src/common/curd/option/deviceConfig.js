@@ -1,5 +1,6 @@
 import device from "@/api/device";
 import {getEnum} from "@/common/enums";
+import {createTemplate} from "@/common/curd/kv/device";
 
 let enumDevice = getEnum("enumDevice")
 
@@ -35,7 +36,9 @@ const formModel = [
     },{
         title: "param",
         key: "param",
-        type: "text",
+        type: "kv",
+        require: "name",
+        typeValue:createTemplate,
         show: false,
         create: true,
         modify: true,

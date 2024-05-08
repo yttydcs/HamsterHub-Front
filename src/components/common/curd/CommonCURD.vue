@@ -60,7 +60,13 @@
           />
         </n-form-item-row>
 
-
+        <!--    kvBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='kv'" >
+          <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput" :disabled="true"/>
+          <n-button style="margin-left: 2px" @click="openKvHandle(item.typeValue,formData)">
+            {{ curLang.lang.settingBtn }}
+          </n-button>
+        </n-form-item-row>
       </n-form>
 
       <n-space align="stretch" justify="end">
@@ -87,7 +93,10 @@
 
         <!--    textBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='text'">
-          <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput"/>
+          <n-input
+              v-model:value="formData[item.key]"
+              :placeholder="curLang.lang.plsInput"
+          />
         </n-form-item-row>
 
         <!--    enumBox    -->
@@ -113,6 +122,14 @@
               @update:show="show => arraySelectHandle(show,item.typeValue,item.key)"
           />
         </n-form-item-row>
+
+        <!--    kvBox    -->
+        <n-form-item-row :label="item.title" v-if="item.type==='kv'" >
+          <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput" :disabled="true"/>
+          <n-button style="margin-left: 2px" @click="openKvHandle(item.typeValue,formData,item.key)">
+            {{ curLang.lang.settingBtn }}
+          </n-button>
+        </n-form-item-row>
       </n-form>
 
       <n-space align="stretch" justify="end">
@@ -123,6 +140,27 @@
           {{ curLang.lang.curd.cancelBtn }}
         </n-button>
       </n-space>
+    </n-modal>
+
+
+
+    <!--    kvBox    -->
+    <n-modal
+        v-model:show="kvBox.show"
+        class="alertBox"
+        preset="card"
+        :title="kvBox.title"
+        size="medium"
+        :bordered="false"
+    >
+      <KVInput
+          ref="KVInput"
+          :template="kvBox.template"
+          :modify-handle="kvBox.handle"
+          :cancel-handle="()=>{kvBox.show = false}"
+          :old-value="kvBox.oldValue"
+
+      />
     </n-modal>
 
   </div>
@@ -144,6 +182,7 @@ import {
   NTag
 } from "naive-ui";
 import curLang from "@/common/lang";
+import KVInput from "@/components/common/curd/KVInput.vue";
 
 // 从formModel中构建出增加表单和删除表单的数据
 const createFormByModel = (model,checkIndex="show")=>{
@@ -157,10 +196,11 @@ const createFormByModel = (model,checkIndex="show")=>{
         key: model[i].key,
         modifyHide: model[i]["modifyHide"],
         type: model[i]["type"],
+        require: model[i]["require"],
       }
 
-      // 如果是"enum" 构建 option
-      if(model[i]["type"] === "enum" || model[i]["type"] === "array"){
+      // 如果是"enum" 构建 option，其余直接赋值
+      if(model[i]["type"] === "enum" || model[i]["type"] === "array" || model[i]["type"] === "kv"){
         if(model[i]["typeValue"] instanceof Array ){
           o["typeValue"] = createOptionByArray(model[i]["typeValue"])
         }else{
@@ -280,6 +320,7 @@ export default {
     NButton,
     NModal,
     NSelect,
+    KVInput,
   },
   methods:{
     createListByModel (model,checkIndex="show"){// 从formModel中构建出增加表单和删除表单的数据
@@ -397,6 +438,20 @@ export default {
       this.createBox = false;
       this.modifyBox = false;
     },
+    openKvHandle(create,d,index){
+      this.kvBox.show = true;
+      this.kvBox.template = create(d);
+      this.kvBox.title = index;
+      this.kvBox.oldValue = this.formData[index]
+      // this.$refs.KVInput.setOldValue(this.formData[index])
+
+      this.kvBox.handle = (data)=>{
+        this.kvBox.show = false;
+        this.formData[index] = JSON.stringify(data)
+        console.log(this.formData)
+      }
+
+    },
     handleCheck(rowKeys) {
       this.curRow = rowKeys[0]
     },
@@ -452,6 +507,7 @@ export default {
       pagination: true,
       createBox: ref(false),
       modifyBox: ref(false),
+      kvBox:reactive({show:false,title:"",oldValue:"",handle:Function,template:{}}),
       curRow: ref(1),
       checkedRowKeys:ref([1]),
       arrayBox: reactive({
