@@ -93,11 +93,12 @@ export default {
       this.dragFile.length=0;
     },
     dragDrop(e,file){
-      if(!file.isDir){
+      if(!file.is_dir){
         return;
       }
       let to = file.other.id;
       let str = e.dataTransfer.getData('dragFile')
+      console.log(str)
       if(!str ){
         return
       }

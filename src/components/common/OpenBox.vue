@@ -54,9 +54,9 @@
           <audio :src="url" controls style="width: 100%"></audio>
         </div>
 
-        <!--    普通视频的预览    -->
+        <!--    视频的预览    -->
         <div class="file-video pd" v-if="previewType === 'video'">
-          <video :src="url" controls style="width: 100%"></video>
+          <previewVideo :src="url" :key="flushKey" :saved-time-key="title"/>
         </div>
 
         <!--    docx的预览    -->
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import {computed, reactive, ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 import {useThemeVars} from "naive-ui";
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import { NButton, NIcon, NImage } from "naive-ui";
@@ -97,6 +97,7 @@ import previewMarkdown from "@/components/preview/previewMarkdown.vue";
 import previewDocx from "@/components/preview/previewDocx.vue";
 import previewExcel from "@/components/preview/previewExcel.vue";
 import previewPdf from "@/components/preview/previewPdf.vue";
+import previewVideo from "@/components/preview/previewVideo.vue";
 import fileType from "@/common/fileType";
 
 
@@ -111,7 +112,8 @@ export default {
     previewMarkdown,
     previewDocx,
     previewExcel,
-    previewPdf
+    previewPdf,
+    previewVideo
   },
   props: {
     title:String,
@@ -169,8 +171,14 @@ export default {
   },
   setup(){
     let theme = useThemeVars();
+    let flushKey = ref(0);
+    watch(curLang.lang.video, () => {
+      // 由于plyr修改config不直接应用，所以强制重新加载
+      flushKey.value++
+    });
     return {
       curLang,
+      flushKey,
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
       text: ref(""),

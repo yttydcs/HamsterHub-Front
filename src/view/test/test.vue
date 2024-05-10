@@ -1,20 +1,18 @@
 <template>
   <div class="container">
-    <div class="children" draggable="true">aaa</div>
+<!--    <previewVideo url="http://127.0.0.1:8088/api/download?ticket=egivvpvVgJ&fileName=QQ2024510-153114.mp4" />-->
   </div>
 
 </template>
 
 <script>
-import previewMarkdown from "@/components/preview/previewMarkdown.vue";
-import {NInput} from "naive-ui";
-import {ref} from "vue";
+import previewVideo from "@/components/preview/previewVideo.vue";
 
 
 export default {
   name: 'testPage',
   components: {
-
+    // previewVideo
   },
   methods: {
     test(){
@@ -31,9 +29,5 @@ export default {
 
 <style>
 
-
-.children{
-  background: #bf2525;
-}
 
 </style>

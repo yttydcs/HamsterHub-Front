@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div class="file-open" @contextmenu="handleContextMenuShow" v-if="fileData.isFile">
+    <div class="file-open"  v-if="fileData.isFile">
       <n-layout :native-scrollbar="false" style="height: 100%">
         <DetailBox
             ref="detailBox"
