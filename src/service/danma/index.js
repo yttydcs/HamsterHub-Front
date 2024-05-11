@@ -2,7 +2,6 @@ import download from "@/common/download";
 import danma from "@/api/danma"
 
 async function getXmlByUrl(url){
-    await download.getOther()
     return await download.getOther(url)
 }
 
@@ -61,22 +60,13 @@ async function parseXmlForBili(text,addFunc){
 
 
 async function parseJsonForDanDan(json,addFunc){
-    console.log(text)
 
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(text, "text/xml");
-    console.log(xmlDoc)
+    let comments = json.comments;
+    for (let i = 0; i < comments.length; i++) {
 
 
-    let childNodes = xmlDoc.documentElement.childNodes;
-    for (let i = 0; i < childNodes.length; i++) {
-        // 检查是否是元素节点
-        if(childNodes[i].nodeName !== "d"){
-            continue;
-        }
-
-        let text = childNodes[i].textContent
-        let data = childNodes[i].getAttribute("p")
+        let text = comments[i].m
+        let data = comments[i].p
 
         // insertBiliDanMa(text,mode,time,color)
 
@@ -90,7 +80,7 @@ async function parseJsonForDanDan(json,addFunc){
 
         let time = parseFloat(arr[0])
         let mode = arr[1]
-        let color = decimalToHexColor(arr[3])
+        let color = decimalToHexColor(arr[2])
 
         addFunc(text,mode,time,color)
         // console.log(text,mode,time,color)
@@ -104,7 +94,6 @@ async function parseJsonForDanDan(json,addFunc){
 export function decimalToHexColor(decimalColorString) {
     const decimalColor = parseInt(decimalColorString, 10);
 
-    // 确保输入是一个十进制数
     if (isNaN(decimalColor)) {
         // 否则输出默认值
         return "#ffffff";
@@ -122,9 +111,34 @@ export function decimalToHexColor(decimalColorString) {
     return '#' + hexColor;
 }
 
+
+
+export async function loadDanmakuForBiliByUrl(value,addFunc){
+    // "https://danmaku.vercel.app/api/bilibili/danmaku?cid=1526805156"
+    let res = await getXmlByUrl(value)
+    await parseXmlForBili(res,addFunc)
+}
+
+export async function loadDanmakuForDanDanByUrl(value,addFunc){
+    // "https://api.dandanplay.net/api/v2/comment/12270001?withRelated=true"
+    let res = await getXmlByUrl(value)
+    await parseJsonForDanDan(res,addFunc)
+}
+
+const typeIndex={
+    "BiliBili By Url" : loadDanmakuForBiliByUrl,
+    "DanDan By Url" : loadDanmakuForDanDanByUrl
+}
+
+export async function loadDanmaku(type,value,addFunc){
+    let func = typeIndex[type]
+    if(func){
+        await func(value,addFunc);
+    }
+}
+
 export default {
-    getXmlByCidForBili,
-    getCidForBili,
-    getXmlByUrl,
-    parseXmlForBili
+    loadDanmakuForBiliByUrl,
+    loadDanmakuForDanDanByUrl,
+    loadDanmaku,
 }

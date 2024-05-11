@@ -1,16 +1,12 @@
 <template>
   <div ref="playContainer" class="videoBox">
     <video ref="player-box" id="player-box" class="player" playsinline controls :src="src">
-
-
       <!-- Captions are optional -->
       <!--      <track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default />-->
     </video>
     <Teleport to=".plyr" v-if="ready">
-
-    <div ref="danmakuContainer" id="dan-mu-box">
-
-    </div>
+      <div ref="danmakuContainer" id="dan-mu-box">
+      </div>
     </Teleport>
 
   </div>
@@ -19,7 +15,7 @@
 
 <script>
 import curLang from "@/common/lang";
-import danma from "@/service/danma";
+import danma, {loadDanmaku} from "@/service/danma";
 import {reactive, ref, watch} from "vue";
 
 // 提供播放器支持
@@ -31,19 +27,13 @@ import Danmaku from 'danmaku/dist/esm/danmaku.dom.js';
 
 export default {
   name: 'videoBox',
-  components: {
-
-  },
   mounted() {
     this.initPlyr();
-    ;
     this.ready = true;
     this.$nextTick(this.initDanMa);
 
     this.resizeObserver = new ResizeObserver(this.debounce(this.handleResize, 500))
     this.resizeObserver.observe(this.$refs["player-box"]);
-
-
   },
   beforeUnmount() {
     if (this.resizeObserver) {
@@ -96,6 +86,7 @@ export default {
       if (savedTime) {
         // 仅在第一次回复位置
         this.playerObj.plyr.once("playing", ()=>{
+          window.$message.info(curLang.lang.video.autoGo)
           this.playerObj.plyr.currentTime = parseFloat(savedTime);
         })
       }
@@ -136,12 +127,12 @@ export default {
       this.playerObj.danmaku.resize();
     },
     async loadDanMa(){
-      // console.log(await danma.getCidForBili("BV1di421C7ZY"))
-      // let res = await danma.getXmlByUrl("https://api.dandanplay.net/api/v2/comment/12270001?withRelated=true")
-
-      let res = await danma.getXmlByUrl("https://danmaku.vercel.app/api/bilibili/danmaku?cid=1526805156")
-      await danma.parseXmlForBili(res,this.insertBiliDanMa)
-
+      if(!this.danMaType || !this.danMaUrl){
+        return
+      }
+      // 清除原先弹幕
+      this.playerObj.danmaku.clear();
+      await loadDanmaku(this.danMaType,this.danMaUrl,this.insertBiliDanMa);
     },
     insertBiliDanMa(text,mode,time,color){
       let _mode = 'rtl'

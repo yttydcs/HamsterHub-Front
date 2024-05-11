@@ -8,6 +8,11 @@ const enLangData = {
         settingBtn:"Setting",
         validateError: "Input data contains errors",
         processing:"Processing, please wait",
+        danmakuSetting: {
+            title: "Danmaku Setting",
+            type:"Type",
+            url:"Url"
+        },
         leftMenu:{
             file: "File",
             share: "Share",
@@ -130,6 +135,7 @@ const enLangData = {
             }
         },
         video: {
+            autoGo:"Automatically jump to the last viewed position",
             restart: 'Restart',
             rewind: 'Rewind {seektime}s',
             play: 'Play',

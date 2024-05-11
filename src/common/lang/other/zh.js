@@ -10,6 +10,11 @@ const zhLangData = {
         settingBtn:"设置",
         validateError:"输入数据存在异常",
         processing:"正在处理请稍后",
+        danmakuSetting: {
+            title: "弹幕设置",
+            type:"类型",
+            url:"参数"
+        },
         leftMenu:{
             file :"文件",
             share :"分享",
@@ -132,6 +137,7 @@ const zhLangData = {
             }
         },
         video: {
+            autoGo:"自动跳转至上次观看位置",
             restart: '重新播放',
             rewind: '后退 {seektime}s',
             play: '播放',
@@ -160,10 +166,10 @@ const zhLangData = {
             normal: '正常',
             quality: '画质',
             loop: '循环',
-            start: 'Start',
-            end: 'End',
+            start: '开始',
+            end: '结束',
             all: 'All',
-            reset: 'Reset',
+            reset: '重置',
             disabled: '禁用',
             enabled: '启用',
             advertisement: '广告',
