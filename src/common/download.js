@@ -67,5 +67,27 @@ export default {
             responseType: 'text',
             withCredentials: false
         })
+    },
+
+    getTextOther(url){
+
+        let u = url
+
+        return axois[2]({
+            method:"get",
+            url:u,
+            responseType: 'text',
+            withCredentials: false
+        })
+    },
+
+    getOther(url){
+
+        let u = url
+
+        return axois[2]({
+            method:"get",
+            url:u,
+        })
     }
 }
