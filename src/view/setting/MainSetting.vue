@@ -119,7 +119,7 @@ export default {
 <style>
 
 .settingParent{
-
+  padding: 0 10px;
 }
 
 .settingBox{

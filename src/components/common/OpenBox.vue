@@ -372,7 +372,9 @@ export default {
   max-width: 100%;
 }
 
-
+.btn{
+  margin-left: 2px;
+}
 
 
 </style>

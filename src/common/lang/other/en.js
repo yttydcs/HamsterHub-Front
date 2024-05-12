@@ -8,6 +8,10 @@ const enLangData = {
         settingBtn:"Setting",
         validateError: "Input data contains errors",
         processing:"Processing, please wait",
+        shareList:{
+            code:"Code",
+            expired:"Expired"
+        },
         danmakuSetting: {
             title: "Danmaku Setting",
             type:"Type",

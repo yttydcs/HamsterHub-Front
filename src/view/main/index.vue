@@ -28,6 +28,7 @@
             :free = "curStrategy.free"
             :total = "curStrategy.total"
             :mini = "collapsed"
+            @click="()=>{collapsed = !collapsed}"
           />
         </div>
 

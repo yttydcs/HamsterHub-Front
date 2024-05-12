@@ -98,7 +98,7 @@ export default {
       }
       let to = file.other.id;
       let str = e.dataTransfer.getData('dragFile')
-      console.log(str)
+
       if(!str ){
         return
       }

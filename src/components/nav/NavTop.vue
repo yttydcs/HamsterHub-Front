@@ -2,28 +2,28 @@
   <div class="nav-top">
     <div class="nav-logo">
       <img src="/favicon.ico" alt="">
-      {{ appName }}
+      <span class="nav-name">{{ appName }}</span>
+
 
     </div>
-    <div class="nav-left">
+    <div class="nav-left" v-show="false">
       <n-input v-model:value="searchText" type="text" :placeholder="curLang.lang.searchBoxPlaceholder" >
         <template #prefix>
           <n-icon :component="SearchOutline" />
         </template>
       </n-input>
-
-
     </div>
+
     <div class="nav-right">
       <n-space align="stretch">
 
-        <n-button text style="font-size: 24px" @click="switchThemeFunc" >
+        <n-button class="switch-theme" text style="font-size: 24px" @click="switchThemeFunc" >
           <n-icon>
             <Contrast />
           </n-icon>
         </n-button>
 
-        <n-button text style="font-size: 24px" @click="switchLanguage">
+        <n-button class="switch-language" text style="font-size: 24px" @click="switchLanguage">
           <n-icon>
             <LanguageOutline />
           </n-icon>
@@ -304,5 +304,31 @@ export default defineComponent({
   font-weight: lighter;
   font-size: 16px;
 }
+
+.nav-name{
+  margin-left: 6px;
+}
+
+/* 改善小屏幕的体验 */
+@media all and (max-width: 550px){
+  .nav-name{
+    display: none;
+  }
+
+  .nav-logo{
+    width: 30px;
+  }
+}
+
+@media all and (max-width: 340px){
+  .switch-theme{
+    display: none;
+  }
+
+  .switch-language{
+    display: none;
+  }
+}
+
 
 </style>

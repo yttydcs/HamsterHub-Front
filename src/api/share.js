@@ -111,7 +111,24 @@ export default {
     },
 
     async download(ticket,key,vFileId){
-        let url = await this.getDownloadUrl(ticket,key,vFileId);
+        let url = ""
+        try {
+            let data = (await this.getShare(ticket, key, vFileId)).data
+            // 不能下载文件夹
+            if(data.type===0){
+                window.$message.error ("无法下载文件夹")
+                return;
+            }
+
+            url = await this.getDownloadUrl(ticket,key,vFileId);
+        }catch (e) {
+
+        }
+
+        if (url === undefined){
+            return;
+        }
+
         download.url(url)
     },
 

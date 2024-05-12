@@ -10,6 +10,10 @@ const zhLangData = {
         settingBtn:"设置",
         validateError:"输入数据存在异常",
         processing:"正在处理请稍后",
+        shareList:{
+            code:"密码",
+            expired:"过期时间"
+        },
         danmakuSetting: {
             title: "弹幕设置",
             type:"类型",

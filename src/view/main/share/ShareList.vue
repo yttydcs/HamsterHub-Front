@@ -2,22 +2,31 @@
   <div class="shareLayout">
 
     <div class="list">
-      <div class="item-box switchTheme box-unselected">
-        <!--    todo:lang    -->
-        <div class="item-name">Name</div>
-        <div class="item-ticket">Ticket</div>
-        <div class="item-expiry">Expiry</div>
-        <div class="item-action">Action</div>
-      </div>
+<!--      <div class="item-box switchTheme box-unselected">-->
+<!--        &lt;!&ndash;    todo:lang    &ndash;&gt;-->
+<!--        <div class="item-name">Name</div>-->
+<!--        <div class="item-ticket">Ticket</div>-->
+<!--        <div class="item-expiry">Expiry</div>-->
+<!--        <div class="item-action">Action</div>-->
+<!--      </div>-->
       <div
           class="item-box borderHover switchTheme box-unselected"
           v-for="(item,index) in shareListData.data"
           :key="index"
       >
         <!--    todo:icon    -->
-        <div class="item-name">{{item.id}}</div>
-        <div class="item-ticket">{{item.ticket}}</div>
-        <div class="item-expiry">{{item.expiry.replace("T"," ")}}</div>
+
+
+
+        <div class="item-left">
+          <div class="item-top">
+            <div class="item-name">{{item.id}}</div>
+          </div>
+          <div class="item-bottom">
+            <div class="item-ticket"> {{ curLang.lang.shareList.code }}: {{item.ticket}}</div>
+            <div class="item-expiry">{{ curLang.lang.shareList.expired }}: {{item.expiry.replace("T"," ")}}</div>
+          </div>
+        </div>
         <div class="item-action">
           <n-space align="stretch"  style="width: 100%; height: 100%">
             <n-button class="button" text @click="handleDelete(item.id)">
@@ -51,6 +60,9 @@
 
 
         </div>
+
+
+
       </div>
     </div>
 
@@ -64,7 +76,7 @@ import {NButton, NDataTable, NIcon, NSpace, useThemeVars} from "naive-ui";
 import {computed, reactive, ref} from "vue";
 import share from "@/api/share";
 import {BanOutline, CloudDownloadOutline, OpenOutline} from "@vicons/ionicons5";
-
+import curLang from "@/common/lang";
 
 
 
@@ -95,7 +107,12 @@ export default {
     },
     handleDownload(ticket,key){
       let that = this
-      share.download(ticket,key)
+      try {
+        share.download(ticket,key)
+      }catch (e) {
+
+      }
+
     }
   },
   mounted() {
@@ -107,6 +124,7 @@ export default {
   setup(){
     let theme = useThemeVars();
     return{
+      curLang,
       borderColor : computed(() => theme.value.borderColor),
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),
@@ -137,40 +155,47 @@ export default {
 }
 
 .item-box{
-  border-width: 1px;
-  border-style: solid;
+  margin-top: 4px;
   border-radius: 5px;
   width: 100%;
-  height: 40px;
-  line-height: 40px;
   text-align: left;
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.item-top,.item-bottom{
+  padding-left: 20px;
+  width: calc(100% - 20px);
+  line-height: 24px;
+  overflow: hidden;
+}
+
+.item-name,.item-ticket,.item-expiry,.item-action{
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.item-ticket{
+  width: 150px;
+}
+
+.item-name{
+  font-weight: 700;
+}
+
+.item-left{
+  display: inline-block;
+  width: calc(100% - 90px);
+  vertical-align: middle;
+}
+
+.item-action{
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .switchTheme{
   transition:all 0.3s v-bind(cubicBezierEaseInOut);
-}
-
-.item-name{
-  margin-left: 5px;
-  flex:1 1 100px
-}
-
-.item-ticket{
-  margin-left: 5px;
-  flex:1 1 80px
-}
-
-.item-expiry{
-  margin-left: 5px;
-  flex:1 1 140px
-}
-
-.item-action{
-  margin-left: 5px;
-  flex:0 0 150px
 }
 
 .button{
