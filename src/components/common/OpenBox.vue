@@ -5,9 +5,9 @@
         <div class="title">
           {{title}}
         </div>
-        <div id="msg" class="msg">
-          {{msg}}
-        </div>
+<!--        <div id="msg" class="msg">-->
+<!--          {{msg}}-->
+<!--        </div>-->
         <div class="action">
           <n-button v-if="settingFunc" quaternary class="btn" @click="settingFunc" :disabled="videoSettingDisable">
             <template #icon>

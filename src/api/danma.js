@@ -34,7 +34,7 @@ export default {
         let d = {}
 
         if(cid){
-            d["cid"] = aid;
+            d["cid"] = cid;
         }
 
         return axois[2]({

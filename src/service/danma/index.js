@@ -18,7 +18,7 @@ async function getCidForBili(bvid){
 async function getXmlByCidForBili(cid){
     let res = "";
     try {
-        res =await danma.queryXmlForBili(cid)
+        res = await danma.queryXmlForBili(cid)
     }catch(err){
         res = "";
     }
@@ -64,11 +64,8 @@ async function parseJsonForDanDan(json,addFunc){
     let comments = json.comments;
     for (let i = 0; i < comments.length; i++) {
 
-
         let text = comments[i].m
         let data = comments[i].p
-
-        // insertBiliDanMa(text,mode,time,color)
 
         // 防止为空
         if(!data || !text){
@@ -83,9 +80,6 @@ async function parseJsonForDanDan(json,addFunc){
         let color = decimalToHexColor(arr[2])
 
         addFunc(text,mode,time,color)
-        // console.log(text,mode,time,color)
-
-
     }
 }
 
@@ -111,7 +105,18 @@ export function decimalToHexColor(decimalColorString) {
     return '#' + hexColor;
 }
 
+export async function loadDanmakuForBiliById(value,addFunc){
+    // "BV1Mx4y1i7Ny"
+    let cid = await getCidForBili(value);
 
+    if(!cid){
+        return 0;
+    }
+
+    let res = await getXmlByCidForBili(cid)
+
+    await parseXmlForBili(res,addFunc)
+}
 
 export async function loadDanmakuForBiliByUrl(value,addFunc){
     // "https://danmaku.vercel.app/api/bilibili/danmaku?cid=1526805156"
@@ -126,6 +131,7 @@ export async function loadDanmakuForDanDanByUrl(value,addFunc){
 }
 
 const typeIndex={
+    "BiliBili By Id" : loadDanmakuForBiliById,
     "BiliBili By Url" : loadDanmakuForBiliByUrl,
     "DanDan By Url" : loadDanmakuForDanDanByUrl
 }
@@ -138,6 +144,7 @@ export async function loadDanmaku(type,value,addFunc){
 }
 
 export default {
+    loadDanmakuForBiliById,
     loadDanmakuForBiliByUrl,
     loadDanmakuForDanDanByUrl,
     loadDanmaku,
