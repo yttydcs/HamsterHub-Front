@@ -1,39 +1,41 @@
 <template>
   <div class="settingParent">
 
-    <div class="settingBox" v-for="(group,index) in optionList" :key="index">
-      <n-list hoverable bordered>
-        <template #header>
-          <n-thing :title="group.text.title" />
-        </template>
+<!--    <div class="settingBox" v-for="(group,index) in optionList" :key="index">-->
+<!--      <n-list hoverable bordered>-->
+<!--        <template #header>-->
+<!--          <n-thing :title="group.text.title" />-->
+<!--        </template>-->
 
-        <n-list-item v-for="(item,itemIndex) in group.list" :key="itemIndex">
-          <n-thing :title="item.text.title" :description="item.text.description" />
-          <template #suffix>
-            <n-switch :round="false"
-                      v-if="item.valueType === 'boolean'"
-                      @update:value="item.handle"
-                      v-model:value="item.data"
+<!--        <n-list-item v-for="(item,itemIndex) in group.list" :key="itemIndex">-->
+<!--          <n-thing :title="item.text.title" :description="item.text.description" />-->
+<!--          <template #suffix>-->
+<!--            <n-switch :round="false"-->
+<!--                      v-if="item.valueType === 'boolean'"-->
+<!--                      @update:value="item.handle"-->
+<!--                      v-model:value="item.data"-->
 
-            />
-            <!--                      -->
-            <n-button v-if="item.type === 'group' ">
-              {{ curLang.lang.settingBtn }}
-            </n-button>
+<!--            />-->
+<!--            &lt;!&ndash;                      &ndash;&gt;-->
+<!--            <n-button v-if="item.type === 'group' ">-->
+<!--              {{ curLang.lang.settingBtn }}-->
+<!--            </n-button>-->
 
-            <n-button v-if="item.valueType === 'curd' " @click="curdHandle(item.text.title,item.value.model,item.value.fun)">
-              {{ curLang.lang.settingBtn }}
-            </n-button>
+<!--            <n-button v-if="item.valueType === 'curd' " @click="curdHandle(item.text.title,item.value.model,item.value.fun)">-->
+<!--              {{ curLang.lang.settingBtn }}-->
+<!--            </n-button>-->
 
-            <n-button v-if="item.valueType === 'input' ">
-              {{ curLang.lang.settingBtn }}
-            </n-button>
+<!--            <n-button v-if="item.valueType === 'input' ">-->
+<!--              {{ curLang.lang.settingBtn }}-->
+<!--            </n-button>-->
 
-          </template>
-        </n-list-item>
+<!--          </template>-->
+<!--        </n-list-item>-->
 
-      </n-list>
-    </div>
+<!--      </n-list>-->
+<!--    </div>-->
+
+    <localSetting />
 
     <UserManageSetting />
 
@@ -57,25 +59,16 @@
 </template>
 
 <script>
-import {
-  NList,
-  NButton,
-  NListItem,
-  NThing,
-  NSwitch,
-  NModal,
-  NInput
-} from "naive-ui";
-
+import { NModal } from "naive-ui";
 import curLang from "@/common/lang";
 import {optionList} from "@/common/setting/option";
-import device from "@/api/device";
 import {reactive, ref, watch} from "vue";
 import CommonCURD from "@/components/common/curd/CommonCURD.vue";
 import {deviceConfig} from "@/common/curd/option/deviceConfig";
 import UserSetting from "@/components/setting/UserSetting.vue";
 import UserManageSetting from "@/components/setting/UserManageSetting.vue";
 import StoreSetting from "@/components/setting/StoreSetting.vue";
+import localSetting from "@/components/setting/LocalSetting.vue";
 
 export default {
   name: 'mainSetting',
@@ -90,17 +83,13 @@ export default {
   components: {
     CommonCURD,
     // NInput,
+    // NList, NButton, NListItem, NThing, NSwitch
     NModal,
     UserSetting,
     UserManageSetting,
     StoreSetting,
-    NList, NButton, NListItem, NThing, NSwitch
+    localSetting,
   },
-  mounted() {
-
-  },
-
-
   setup() {
     return {
       curLang,

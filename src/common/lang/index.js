@@ -1,9 +1,16 @@
-import { reactive } from "vue";
+import {reactive, ref} from "vue";
 import en from "./other/en"
 import zh from "./other/zh"
 // 语言选项
 
 const langSet = [zh,en];
+
+export const langSelectOption = [
+    { label: "中文", value: 0 },
+    { label: "English", value: 1 },
+]
+
+export const curLangIndex = ref(0)
 
 function loadData(){
     let res = JSON.parse(JSON.stringify(langSet[0]))
@@ -15,6 +22,7 @@ function loadData(){
             if(langSet[i].name === language){
                 res.name = langSet[i].name
                 copyObj(res.lang,langSet[i].lang)
+                curLangIndex.value = i
                 break;
             }
         }
@@ -26,6 +34,7 @@ function loadData(){
 }
 
 const curLang = loadData()
+
 
 function copyObj(target,origin){
     for (let key in origin) {

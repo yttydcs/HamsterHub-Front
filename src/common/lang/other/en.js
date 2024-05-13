@@ -80,6 +80,10 @@ const enLangData = {
                 title:"Dark Mode",
                 description:"Go dark.",
             },
+            languageSwitch: {
+                title: "Language",
+                description: "Some content may require refreshing to take effect"
+            },
         },
         storeSetting:{
             title: "Storage Settings",

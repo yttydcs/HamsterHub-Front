@@ -161,7 +161,7 @@ export default {
   width: 100%;
   text-align: left;
   position: relative;
-  padding-top: 8px;
+  padding-top: 10px;
   padding-bottom: 12px;
 }
 
@@ -198,7 +198,8 @@ export default {
 }
 
 .item-name{
-  font-weight: 700;
+  font-size: 16px;
+
 }
 
 .item-left{

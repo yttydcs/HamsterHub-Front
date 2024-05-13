@@ -5,12 +5,12 @@ import {optionList} from "@/common/setting/option";
 export function switchTheme() {
     if (theme.data !== null) {
         theme.data = null;
-        optionList[0].list[0].data = false
+        theme.data = false
         theme.mdTheme = "light"
     } else {
 
         theme.data = darkTheme;
-        optionList[0].list[0].data = true
+        theme.data = true
         theme.mdTheme = "dark"
     }
 }
@@ -26,4 +26,4 @@ export function setDark(isDark) {
 }
 
 
-export const theme = reactive({ data:null,mdTheme:"light" });
+export const theme = reactive({ data:null, mdTheme:"light", settingData:true });

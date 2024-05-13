@@ -78,9 +78,13 @@ const zhLangData = {
         },
         localSetting:{
             title:"本地设置",
-            darkMode:{
+            darkMode: {
                 title:"黑暗模式",
                 description:"黑黑黑",
+            },
+            languageSwitch: {
+                title:"语言",
+                description:"部分内容需要刷新才能生效",
             },
         },
         storeSetting:{
