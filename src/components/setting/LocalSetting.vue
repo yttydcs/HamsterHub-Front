@@ -53,28 +53,19 @@
 
 <script>
 import {
-  NLayout,
-  NLayoutSider,
-  NH2,
-  NMenu,
-  NIcon,
-  NButton,
-  useThemeVars,
   NListItem,
   NList,
   NThing,
-  NAvatar, NFormItemRow, NModal, NForm, NInput, NSelect, NSwitch,
+  NSelect, NSwitch,
 } from "naive-ui";
-import curLang from "../../common/lang";
+import curLang from "@/common/lang";
 import {setDark,theme} from "@/common/theme";
-import { switchLang , langSelectOption, curLangIndex} from "../../common/lang";
+import { switchLang , langSelectOption, curLangIndex} from "@/common/lang";
 
 export default {
   name: 'localSetting',
   components: {
-    NSwitch,
-    // NSelect,
-    NThing, NList, NListItem, NSelect
+    NSwitch, NThing, NList, NListItem, NSelect
   },
   methods:{
     setDark,
@@ -92,7 +83,5 @@ export default {
 </script>
 
 <style scoped>
-
-
 
 </style>

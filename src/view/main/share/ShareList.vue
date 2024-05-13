@@ -1,23 +1,12 @@
 <template>
   <div class="shareLayout">
-
     <div class="list">
-<!--      <div class="item-box switchTheme box-unselected">-->
-<!--        &lt;!&ndash;    todo:lang    &ndash;&gt;-->
-<!--        <div class="item-name">Name</div>-->
-<!--        <div class="item-ticket">Ticket</div>-->
-<!--        <div class="item-expiry">Expiry</div>-->
-<!--        <div class="item-action">Action</div>-->
-<!--      </div>-->
       <div
           class="item-box borderHover switchTheme box-unselected"
           v-for="(item,index) in shareListData.data"
           :key="index"
       >
         <!--    todo:icon    -->
-
-
-
         <div class="item-left">
           <div class="item-top">
             <div class="item-name">{{ item.name?item.name:item.id}}</div>
@@ -60,27 +49,18 @@
 
 
         </div>
-
-
-
       </div>
     </div>
-
   </div>
-
 
 </template>
 
 <script>
-import {NButton, NDataTable, NIcon, NSpace, useThemeVars} from "naive-ui";
+import {NButton, NIcon, NSpace, useThemeVars} from "naive-ui";
 import {computed, reactive, ref} from "vue";
 import share from "@/api/share";
 import {BanOutline, CloudDownloadOutline, OpenOutline} from "@vicons/ionicons5";
 import curLang from "@/common/lang";
-
-
-
-
 
 export default {
   name: 'ShareLayout',
@@ -213,8 +193,6 @@ export default {
   vertical-align: middle;
 }
 
-
-
 .switchTheme{
   transition:all 0.3s v-bind(cubicBezierEaseInOut);
 }
@@ -223,6 +201,5 @@ export default {
   height: 100%;
   font-size: 16px
 }
-
 
 </style>
