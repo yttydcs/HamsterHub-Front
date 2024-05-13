@@ -140,6 +140,10 @@ const enLangData = {
             canRegister: {
                 title: "Allow Registration",
                 description: "Enabling this allows registration of new users"
+            },
+            curdUser: {
+                title: "Modify User Data",
+                description: "Hopefully unnecessary; not user-friendly"
             }
         },
         video: {

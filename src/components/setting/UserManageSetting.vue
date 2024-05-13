@@ -11,6 +11,26 @@
           configKey="user.register"
       />
 
+      <n-list-item >
+        <n-thing
+            :title="curLang.lang.userManageSetting.curdUser.title"
+            :description="curLang.lang.userManageSetting.curdUser.description"
+        />
+        <template #suffix>
+
+          <n-button
+              @click="curdHandle(
+                  curLang.lang.userManageSetting.curdUser.title,
+                  userManageConfig.model,
+                  userManageConfig.fun
+              )"
+          >
+            {{ curLang.lang.settingBtn }}
+          </n-button>
+
+        </template>
+      </n-list-item>
+
     </n-list>
   </div>
 
@@ -28,16 +48,18 @@ import {
 
 import curLang from "../../common/lang";
 import KVBool from "@/components/setting/KV/KVBool.vue";
+import {userManageConfig} from "@/common/curd/option/userManageConfig";
 
 export default {
   name: 'userManageSetting',
   components: {
     KVBool,
     NThing, NList,
-    // NListItem
+    NListItem,
+    NButton,
   },
   props:{
-
+    curdHandle:Function
   },
   methods:{
 
@@ -48,7 +70,7 @@ export default {
     let theme = useThemeVars();
     return{
       curLang,
-
+      userManageConfig,
     }
   }
 }

@@ -142,6 +142,10 @@ const zhLangData = {
             canRegister: {
                 title: "允许注册",
                 description: "启用之后则允许注册新用户",
+            },
+            curdUser: {
+                title: "修改用户数据",
+                description: "希望用不上，这对使用者很不友好",
             }
         },
         video: {

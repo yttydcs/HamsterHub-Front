@@ -3,7 +3,7 @@
 
     <localSetting />
 
-    <UserManageSetting />
+    <UserManageSetting :curd-handle="curdHandle" />
 
     <StoreSetting :curd-handle="curdHandle" />
 
