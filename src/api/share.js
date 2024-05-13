@@ -45,7 +45,7 @@ export default {
 
     },
 
-    create(id,key=null,expiry=""){
+    create(id,key=null,expiry="", name=""){
 
         let u = "/api/share"
 
@@ -57,7 +57,8 @@ export default {
         let d = {
             vFileId:id,
             key:key,
-            expiry:expiry
+            expiry:expiry,
+            name:name
         }
 
         return axois[type]({

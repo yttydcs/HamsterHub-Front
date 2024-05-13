@@ -20,7 +20,7 @@
 
         <div class="item-left">
           <div class="item-top">
-            <div class="item-name">{{item.id}}</div>
+            <div class="item-name">{{ item.name?item.name:item.id}}</div>
           </div>
           <div class="item-bottom">
             <div class="item-ticket"> {{ curLang.lang.shareList.code }}: {{item.ticket}}</div>
@@ -129,6 +129,7 @@ export default {
       borderHover : computed(() => theme.value.primaryColorHover),
       borderSelected : computed(() => theme.value.primaryColorSuppl),
       hoverColor : computed(() => theme.value.hoverColor),
+      textColor : computed(() => theme.value.textColor3),
       cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
       fileSelect: false,
       shareListData:reactive({
@@ -184,8 +185,16 @@ export default {
   vertical-align: middle;
   overflow: hidden;
 }
+
 .item-ticket{
+  font-size: 14px;
+  color: v-bind(textColor);
   width: 150px;
+}
+
+.item-expiry{
+  font-size: 14px;
+  color: v-bind(textColor);
 }
 
 .item-name{
@@ -202,6 +211,8 @@ export default {
   display: inline-block;
   vertical-align: middle;
 }
+
+
 
 .switchTheme{
   transition:all 0.3s v-bind(cubicBezierEaseInOut);

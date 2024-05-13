@@ -99,15 +99,19 @@
         v-model:show="shareBoxShow"
         class="alertBox"
         preset="card"
-        :title="curLang.lang.explorerMenu.share  + ': '+ shareModel.name"
+        :title="curLang.lang.explorerMenu.share  + ': '+ shareModel.fileName"
         size="medium"
     >
-      <n-form v-model:model="shareModel" label-placement="left">
+      <n-form v-model:model="shareModel" label-placement="top">
+        <n-form-item path="name" :label="curLang.lang.form.name">
+          <n-input  v-model:value="shareModel.name" type="text" />
+        </n-form-item>
+
         <n-form-item path="key" :label="curLang.lang.form.shareCode">
           <n-input  v-model:value="shareModel.key" type="text" />
         </n-form-item>
 
-        <n-form-item path="key" :label="curLang.lang.form.expiry">
+        <n-form-item path="expiry" :label="curLang.lang.form.expiry">
           <n-input  v-model:value="shareModel.expiry" type="text" />
         </n-form-item>
       </n-form>
@@ -374,6 +378,7 @@ export default {
     },
     async handleShare(key){ // 打开分享窗口
       let vFile = this.getFileByKey(key);
+      this.shareModel.fileName = vFile.name;
       this.shareModel.name = vFile.name;
       this.shareModel.vFileId = vFile.other.id;
       this.shareBoxShow = true;
@@ -394,7 +399,7 @@ export default {
       this.copyBoxShow = true;
     },
     async confirmShare(){
-      this.fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry);
+      this.fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry,this.shareModel.name);
       this.shareModel.key = "";
       this.shareModel.expiry = "";
       this.shareBoxShow = false;
@@ -543,7 +548,7 @@ export default {
       }),
       inputShow:ref(false),
       shareBoxShow:ref(false),
-      shareModel:reactive({name:"",vFileId:"",key:"",expiry:""}),
+      shareModel:reactive({fileName:"",name:"",vFileId:"",key:"",expiry:""}),
       moveBoxShow:ref(false),
       moveModel:reactive({name:"",vFileId:"",}),
       copyBoxShow:ref(false),
