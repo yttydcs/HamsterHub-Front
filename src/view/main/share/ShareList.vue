@@ -155,12 +155,13 @@ export default {
 }
 
 .item-box{
-  margin-top: 4px;
+  margin: 8px 0;
   border-radius: 5px;
   width: 100%;
   text-align: left;
   position: relative;
-  padding: 6px 0;
+  padding-top: 8px;
+  padding-bottom: 12px;
 }
 
 .item-top,.item-bottom{
@@ -168,6 +169,14 @@ export default {
   width: calc(100% - 20px);
   line-height: 24px;
   overflow: hidden;
+}
+
+.item-top{
+  margin-bottom: -4px;
+}
+
+.item-bottom{
+  margin-bottom: -4px;
 }
 
 .item-name,.item-ticket,.item-expiry,.item-action{
