@@ -7,17 +7,17 @@ yarn install
 
 ### 开发环境运行 Compiles and hot-reloads for development
 ```
-npm run serve
+yarn run serve
 ```
 
 ### 打包 Compiles and minifies for production
 ```
-npm run build
+yarn build
 ```
 
 ### 格式化 Lints and fixes files
 ```
-npm run lint
+yarn run lint
 ```
 
 ### Customize configuration
