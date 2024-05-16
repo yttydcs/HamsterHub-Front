@@ -374,10 +374,6 @@ export default {
         }else{
             urlString = getUrlString()
         }
-        //
-        // router.push(urlString);
-
-        // console.log(history)
 
         window.history.pushState({...history.state}, '', urlString);
     },

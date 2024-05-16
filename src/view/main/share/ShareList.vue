@@ -178,8 +178,7 @@ export default {
 }
 
 .item-name{
-  font-size: 16px;
-
+  font-size: 14px;
 }
 
 .item-left{
