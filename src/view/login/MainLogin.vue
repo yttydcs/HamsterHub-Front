@@ -30,13 +30,13 @@
               <br>
             </n-form>
             <n-button type="primary" block secondary strong @click="userLogin">
-              {{curLang.lang.user.login}}
+              {{ curLang.lang.user.login }}
             </n-button>
           </n-tab-pane>
-          <n-tab-pane name="signUp" :tab="curLang.lang.user.register">
+          <n-tab-pane name="signUp" :tab="curLang.lang.user.register" v-if="configData['user.register']">
             <n-form ref="registerForm" :model="formData" :rules="registerRules">
               <n-form-item-row :label="curLang.lang.user.username" path="name">
-                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput" />
+                <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password" path="pwd">
                 <n-input
@@ -61,17 +61,18 @@
 
               <n-form-item-row :label="curLang.lang.user.code" path="code">
                 <n-input v-model:value="formData.code" :placeholder="curLang.lang.plsInput"/>
-                <n-button strong style="width: 70px;margin-left: 3px" v-if="sendCodeTime<=0" @click="sendCode" :disabled="waiting" >
-                  {{curLang.lang.user.sendCodeBtn }}
+                <n-button strong style="width: 70px;margin-left: 3px" v-if="sendCodeTime<=0" @click="sendCode"
+                          :disabled="waiting">
+                  {{ curLang.lang.user.sendCodeBtn }}
                 </n-button>
 
-                <n-button strong style="width: 70px;margin-left: 3px" disabled v-else >
+                <n-button strong style="width: 70px;margin-left: 3px" disabled v-else>
                   {{ sendCodeTime }}
                 </n-button>
               </n-form-item-row>
             </n-form>
-            <n-button type="primary" block secondary strong @click="userRegister" >
-              {{curLang.lang.user.register}}
+            <n-button type="primary" block secondary strong @click="userRegister">
+              {{ curLang.lang.user.register }}
             </n-button>
           </n-tab-pane>
         </n-tabs>
@@ -80,18 +81,19 @@
   </div>
 </template>
 
-<script>
+
 import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox, useThemeVars} from "naive-ui";
 import login from "@/api/login";
 import {computed, ref} from "vue";
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
+
 const _adapters = [hamster, alist];
 import curLang from "@/common/lang";
 import loginRules from "@/common/rules/login";
 import registerRules from "@/common/rules/register";
-
+import config from "@/service/config";
 
 
 function isPhoneNumber(phoneNumber) { // 验证手机号
@@ -106,7 +108,7 @@ export default {
       const loginOption = 0
       const that = this
 
-      this.$refs.loginForm.validate().then(()=>{
+      this.$refs.loginForm.validate().then(() => {
         login.login(this.formData.name, this.formData.pwd, this.formData.lasting, loginOption)
             .then(function (response) {
               if (that.adapters[loginOption].judgeLoginCode(response.code)) {
@@ -115,7 +117,7 @@ export default {
               }
             });
 
-      }).catch((err)=>{
+      }).catch((err) => {
         window.$message.error(curLang.lang.validateError);
       })
 
@@ -123,15 +125,15 @@ export default {
     userRegister() {
       const loginOption = 0
       const that = this
-      this.$refs.registerForm.validate().then(()=>{
-        login.register(this.formData.name, this.formData.pwd,this.formData.address,this.formData.code, loginOption)
+      this.$refs.registerForm.validate().then(() => {
+        login.register(this.formData.name, this.formData.pwd, this.formData.address, this.formData.code, loginOption)
             .then(function (response) {
               if (that.adapters[loginOption].judgeLoginCode(response.code)) {
                 that.adapters[loginOption].setLoginDate(that.formData.name, response)
                 that.$router.push("/")
               }
             })
-      }).catch((err)=>{
+      }).catch((err) => {
         window.$message.error(curLang.lang.validateError);
       })
 
@@ -141,42 +143,42 @@ export default {
       const waitTime = 120
       const that = this
 
-      if(!isPhoneNumber(this.formData.address)){
+      if (!isPhoneNumber(this.formData.address)) {
         window.$message.error(curLang.lang.registerRules.addressNotPhone);
         return;
-      }else if (this.sendCodeTime !==0){
+      } else if (this.sendCodeTime !== 0) {
         window.$message.error(curLang.lang.registerRules.cooldown);
         return;
       }
 
-      if(this.waiting){
+      if (this.waiting) {
         window.$message.error(curLang.lang.registerRules.processing);
         return;
-      }else{
+      } else {
         this.waiting = true
       }
 
       let timerHandle = 0;
 
-      function timer(){
+      function timer() {
         that.sendCodeTime--;
-        if(that.sendCodeTime<=0){
+        if (that.sendCodeTime <= 0) {
           that.sendCodeTime = 0;
           clearInterval(timerHandle);
         }
       }
 
-      login.sendCode(this.formData.address, loginOption).then(()=>{
+      login.sendCode(this.formData.address, loginOption).then(() => {
         that.sendCodeTime = waitTime;
         timerHandle = setInterval(timer, 1000);
         that.waiting = false
-      }).catch(err=>{
+      }).catch(err => {
         that.waiting = false
       })
 
     },
     isPasswordSame(rule, value) {
-      if(!value){
+      if (!value) {
         return true
       }
       return value === this.formData.pwd;
@@ -195,21 +197,22 @@ export default {
       name: "",
       pwd: "",
       checkPwd: "",
-      code:"",
-      address:"",
-      lasting:false
+      code: "",
+      address: "",
+      lasting: false
     })
 
     let theme = useThemeVars();
     return {
-      boxShadow : computed(() => theme.value.boxShadow3),
+      boxShadow: computed(() => theme.value.boxShadow3),
       formData: loginData,
       adapters: _adapters,
       curLang,
-      waiting:ref(false),
-      sendCodeTime:ref(0),
+      waiting: ref(false),
+      sendCodeTime: ref(0),
       loginRules,
       registerRules,
+      configData: config.getObj()
     }
   }
 }
@@ -220,7 +223,6 @@ export default {
   width: 100%;
   height: calc(100vh - 65px);
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;

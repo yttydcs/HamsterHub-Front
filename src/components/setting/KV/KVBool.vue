@@ -19,12 +19,8 @@
 
 <script>
 import {
-  NButton,
-  useThemeVars,
   NListItem,
-  NList,
-  NThing,
-  NFormItemRow, NModal, NForm, NInput, NSwitch,
+  NThing, NSwitch,
 } from "naive-ui";
 import {reactive, ref} from "vue";
 import config from "@/service/config";

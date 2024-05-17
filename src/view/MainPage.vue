@@ -1,7 +1,7 @@
 <template>
   <n-layout style="height: 100%">
-    <n-layout-header style="height: 64px;" bordered>
-      <navTop :switch-theme-func="switchTheme" />
+    <n-layout-header bordered style="height: 64px;">
+      <navTop :switch-theme-func="switchTheme"/>
     </n-layout-header>
     <router-view></router-view>
   </n-layout>
@@ -13,10 +13,9 @@ import {NLayout, NLayoutHeader, useLoadingBar} from "naive-ui";
 import {switchTheme} from "@/common/theme";
 
 
-
 export default {
   name: 'mainPage',
-  methods:{
+  methods: {
     switchTheme: switchTheme
   },
   components: {
@@ -28,9 +27,8 @@ export default {
     // 设置全局的加载对象
     window.loading = useLoadingBar();
   },
-  setup(){
-    return{
-    }
+  setup() {
+    return {}
   }
 }
 </script>
