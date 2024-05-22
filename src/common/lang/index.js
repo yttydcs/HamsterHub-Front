@@ -52,6 +52,8 @@ export function switchLang(index){
     if(index > langSet.length){
         return false;
     }
+
+    curLangIndex.value = index;
     curLang.name = langSet[index].name
     copyObj(curLang.lang,langSet[index].lang)
 
