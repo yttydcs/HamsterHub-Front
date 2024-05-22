@@ -191,8 +191,9 @@ export default {
   },
   async mounted() {
     let configObj = await config.getObj()
+
     try {
-      this.canRegister = configObj['user.register'].value
+      this.canRegister = configObj['user.register'].value === "true";
     }catch (e) {
       this.canRegister = false
     }
