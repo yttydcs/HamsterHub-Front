@@ -1,6 +1,7 @@
 <template>
   <div class="mainLogin">
     <div class="loginPanel">
+
       <n-card>
         <n-tabs
             class="card-tabs"
@@ -11,6 +12,7 @@
             pane-wrapper-style="margin: 0 -4px"
             pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
         >
+
           <n-tab-pane name="signIn" :tab="curLang.lang.user.login">
             <n-form ref="loginForm" :model="formData" :rules="loginRules">
               <n-form-item-row :label="curLang.lang.user.username" path="name">
@@ -33,7 +35,7 @@
               {{ curLang.lang.user.login }}
             </n-button>
           </n-tab-pane>
-          <n-tab-pane name="signUp" :tab="curLang.lang.user.register" v-if="configData['user.register']">
+          <n-tab-pane name="signUp" :tab="curLang.lang.user.register" v-if="canRegister">
             <n-form ref="registerForm" :model="formData" :rules="registerRules">
               <n-form-item-row :label="curLang.lang.user.username" path="name">
                 <n-input v-model:value="formData.name" :placeholder="curLang.lang.plsInput"/>
@@ -80,11 +82,11 @@
     </div>
   </div>
 </template>
-
+<script>
 
 import {NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox, useThemeVars} from "naive-ui";
 import login from "@/api/login";
-import {computed, ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 
 import hamster from "@/common/adapter/hamster";
 import alist from "@/common/adapter/alist";
@@ -187,7 +189,14 @@ export default {
   components: {
     NCard, NTabs, NTabPane, NFormItemRow, NInput, NButton, NForm, NCheckbox
   },
-  mounted() {
+  async mounted() {
+    let configObj = await config.getObj()
+    try {
+      this.canRegister = configObj['user.register'].value
+    }catch (e) {
+      this.canRegister = false
+    }
+
     // 由于需要验证2次密码是否一致需要组件的环境，所以validator在这里传入
     this.registerRules.checkPwd[1].validator = this.isPasswordSame
   },
@@ -212,7 +221,7 @@ export default {
       sendCodeTime: ref(0),
       loginRules,
       registerRules,
-      configData: config.getObj()
+      canRegister:ref(false),
     }
   }
 }
