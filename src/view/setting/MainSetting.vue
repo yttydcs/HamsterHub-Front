@@ -3,11 +3,11 @@
 
     <localSetting />
 
-    <UserManageSetting :curd-handle="curdHandle" />
+    <UserManageSetting :curd-handle="curdHandle" v-if="hasPermission(0)"/>
 
-    <StoreSetting :curd-handle="curdHandle" />
+    <StoreSetting :curd-handle="curdHandle" v-if="hasPermission(0)"/>
 
-    <UserSetting />
+    <UserSetting v-if="loginData.loginState"/>
 
     <!--    todo: use route    -->
     <n-modal
@@ -35,10 +35,12 @@ import UserSetting from "@/components/setting/UserSetting.vue";
 import UserManageSetting from "@/components/setting/UserManageSetting.vue";
 import StoreSetting from "@/components/setting/StoreSetting.vue";
 import localSetting from "@/components/setting/LocalSetting.vue";
+import loginData, {hasPermission} from "@/common/loginData";
 
 export default {
   name: 'mainSetting',
   methods: {
+    hasPermission,
     curdHandle(title,model,fun){
       this.curdData.title = title
       this.curdData.model = model
@@ -64,6 +66,7 @@ export default {
         model: deviceConfig.model,
         fun: deviceConfig.fun
       }),
+      loginData: loginData,
     }
   }
 }

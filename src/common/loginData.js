@@ -16,7 +16,8 @@ function loadLoginData(){
         user: {
             id:0,
             name: null,
-            avatarSrc: "https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            avatarSrc: "https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg",
+            permission: -1,
         }
     }
 
@@ -45,6 +46,18 @@ export function removeLoginData(){
     loginData.user = {};
     localStorage.setItem("loginData", JSON.stringify(loginData));
     location.href="/login";
+}
+
+export function hasPermission(require){
+    console.log(loginData)
+    console.log()
+    if (require!== undefined && require!==null){
+        if(loginData.user.permission === require){
+            return true;
+        }
+    }
+
+    return false
 }
 
 export default loginData;

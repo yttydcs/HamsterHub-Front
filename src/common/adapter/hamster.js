@@ -16,6 +16,7 @@ export default {
         loginData.loginState = true;
         loginData.user.id = res.data.id;
         loginData.user.avatarSrc = window.targetUrl+ "api/queryAvatar?accountId="+loginData.user.id;
+        loginData.user.permission =  res.data.type
 
         // 持久化
         saveLoginData()
