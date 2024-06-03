@@ -9,6 +9,7 @@ const zhLangData = {
         plsInput:"请输入",
         settingBtn:"设置",
         validateError:"输入数据存在异常",
+        validateMissing:"缺少必要数据",
         processing:"正在处理请稍后",
         shareList:{
             code:"密码",

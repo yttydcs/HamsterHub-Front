@@ -222,7 +222,7 @@ export default {
     },
     confirmAddTask(){
       if(this.taskModel.showPosition ===""){
-        window.$message.warning("缺少必要参数");
+        window.$message.warning(curLang.lang.validateMissing);
         return;
       }
 
@@ -250,6 +250,8 @@ export default {
     },
   },
   mounted() {
+    // 避免延迟
+    this.flushData()
     // 轮询列表数据
     this.timerHandle = setInterval(this.flushData, 2000 )
   },

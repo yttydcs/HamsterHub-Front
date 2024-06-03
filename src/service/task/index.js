@@ -41,7 +41,8 @@ function getProgress(completed,total){
     if(!completed||!total){
         return 0;
     }
-    return completed / total;
+
+    return (completed*100 / total).toFixed(2);
 }
 
 export default { getTasks,addTask };

@@ -7,6 +7,7 @@ const enLangData = {
         plsInput:"Please input",
         settingBtn:"Setting",
         validateError: "Input data contains errors",
+        validateMissing: "Missing required data",
         processing:"Processing, please wait",
         shareList:{
             code:"Code",
