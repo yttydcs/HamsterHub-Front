@@ -3,9 +3,9 @@
 
     <localSetting />
 
-    <UserManageSetting :curd-handle="curdHandle" v-if="hasPermission(0)"/>
+    <UserManageSetting :curd-handle="curdHandle" v-if="hasPermission('0')"/>
 
-    <StoreSetting :curd-handle="curdHandle" v-if="hasPermission(0)"/>
+    <StoreSetting :curd-handle="curdHandle" v-if="hasPermission('0')"/>
 
     <UserSetting v-if="loginData.loginState"/>
 

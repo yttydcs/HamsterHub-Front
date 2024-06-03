@@ -49,8 +49,6 @@ export function removeLoginData(){
 }
 
 export function hasPermission(require){
-    console.log(loginData)
-    console.log()
     if (require!== undefined && require!==null){
         if(loginData.user.permission === require){
             return true;
