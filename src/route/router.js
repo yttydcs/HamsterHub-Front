@@ -10,6 +10,7 @@ import Test from "@/view/test/test.vue"
 import loginData from "@/common/loginData";
 import TaskLayout from "@/view/main/task/TaskLayout.vue";
 import UpLoadTask from "@/view/main/task/UpLoadTask.vue";
+import DownloadTask from "@/view/main/task/DownloadTask.vue";
 import FileLayout from "@/view/main/file"
 
 // 构建路由
@@ -39,6 +40,14 @@ const routes = [
                     {
                         path: 'upload',
                         component: UpLoadTask,
+                        meta:{
+                            needToken:true,
+                            title:"Upload",
+                        }
+                    },
+                    {
+                        path: 'download',
+                        component: DownloadTask,
                         meta:{
                             needToken:true,
                             title:"Upload",

@@ -4,7 +4,7 @@
       <h1>{{ curLang.lang.taskUpload.doing }}</h1>
     </div>
 
-    <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.doing" :key="index">
+    <div class="uploadTaskBox switchTran" v-for="(item,index) in downloadTasks.doing" :key="index">
       <div class="img">
         <fileIcon :file-type="item.type"></fileIcon>
       </div>
@@ -13,27 +13,27 @@
         <div class="upBox">
           <div class="name"><span class="status"> {{ item.status }} </span>{{ item.name }}</div>
           <div class="action">
-            <n-space justify="end"  style="width: 100%; height: 100%" v-show="false">
+            <n-space justify="end"  style="width: 100%; height: 100%" v-show="true">
 
-              <n-button class="button" text >
+              <n-button class="button" text @click="handleDel(item.index)">
                 <n-icon>
                   <Delete24Regular />
                 </n-icon>
               </n-button>
 
-              <n-button class="button" text >
+              <n-button class="button" text v-if="false" >
                 <n-icon>
-                  <ArrowClockwise24Regular />
+                  <ArrowClockwise24Regular v-if="false" />
                 </n-icon>
               </n-button>
 
-              <n-button class="button" text >
+              <n-button class="button" text v-if="false" >
                 <n-icon>
-                  <CaretForwardOutline />
+                  <CaretForwardOutline v-if="false"/>
                 </n-icon>
               </n-button>
 
-              <n-button class="button" text >
+              <n-button class="button" text v-if="false" >
                 <n-icon>
                   <PauseOutline />
                 </n-icon>
@@ -63,7 +63,7 @@
       <h1>{{ curLang.lang.taskUpload.done }}</h1>
     </div>
 
-    <div class="uploadTaskBox switchTran" v-for="(item,index) in uploadTask.done" :key="index">
+    <div class="uploadTaskBox switchTran" v-for="(item,index) in downloadTasks.done" :key="index">
       <div class="img">
         <fileIcon :file-type="item.type"></fileIcon>
       </div>
@@ -74,7 +74,7 @@
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%">
 
-              <n-button class="button" text  @click="delDone(index)">
+              <n-button class="button" text @click="handleDel(item.index)" >
                 <n-icon>
                   <Delete24Regular />
                 </n-icon>
@@ -98,7 +98,64 @@
 
 
 
+
     </div>
+
+
+    <n-modal
+        v-model:show="show"
+        class="alertBox"
+        preset="card"
+        title="添加任务"
+        size="medium"
+        :show-line="true"
+
+    >
+
+      <FolderSelect
+          ref="FolderSelect"
+          v-model:show="selectBoxShow"
+          title="选择"
+          :data="taskModel"
+          :cancelFunc="() =>{this.selectBoxShow=false;}"
+          :confirm-func="confirmSelect"
+      />
+
+      <n-form>
+
+        <n-form-item-row label="存放位置" >
+          <n-input v-model:value="taskModel.showPosition" :disabled="true" :placeholder="curLang.lang.plsInput"/>
+          <n-button @click="handleSelect">选择</n-button>
+        </n-form-item-row>
+
+        <n-form-item-row label="下载地址" >
+          <n-input v-model:value="taskModel.url" type="textarea" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
+      </n-form>
+
+      <n-space class="=control-btn" align="stretch" justify="end">
+        <n-button type="primary" block secondary strong @click="confirmAddTask" >
+          {{ curLang.lang.confirmBtn.ok }}
+        </n-button>
+        <n-button  type="primary" block secondary strong @click="show = false">
+          {{ curLang.lang.confirmBtn.cancel }}
+        </n-button>
+      </n-space>
+    </n-modal>
+
+
+    <!--   给浮动按钮留下空隙，防止部分项目被覆盖时且无法滚动的情况   -->
+    <br>
+    <br>
+    <!--  添加按钮  -->
+    <n-float-button :right="30" :bottom="30" shape="circle">
+      <n-icon>
+        <Add @click="show = true"/>
+      </n-icon>
+    </n-float-button>
+
+
   </div>
 
 
@@ -107,20 +164,32 @@
 </template>
 
 <script>
-import {NProgress, NIcon, useLoadingBar, useThemeVars, NButton, NSpace} from "naive-ui";
+import {
+  NProgress,
+  NIcon,
+  useLoadingBar,
+  useThemeVars,
+  NButton,
+  NSpace,
+  NFloatButton,
+  NModal,
+  NInput,
+  NForm, NSelect, NFormItemRow
+} from "naive-ui";
 import {computed, h, reactive, ref, watch} from "vue";
 import { BanOutline, PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
 import { Recycle } from "@vicons/tabler";
 import { Delete24Regular, ArrowClockwise24Regular, CaretRight24Regular, Pause20Regular } from "@vicons/fluent";
 
-
+import { Add, } from "@vicons/ionicons5";
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
 
 import fileIcon from "@/components/explorer/FileIcon.vue";
-import uploadTask, {delDone} from "@/common/task/uploadTask";
+import downloadTask,{delTask} from "@/service/task";
+import FolderSelect from "@/components/explorer/FolderSelect.vue";
 
 
 
@@ -129,8 +198,11 @@ function renderIcon(icon) {
 }
 
 export default {
-  name: 'UpLoadTask',
+  name: 'DownloadTask',
   components: {
+    FolderSelect,
+    NFormItemRow, NForm, NInput,
+    NModal,
     NSpace,
     NIcon,
     NButton,
@@ -140,13 +212,54 @@ export default {
     ArrowClockwise24Regular,
     CaretForwardOutline,
     PauseOutline,
+    Add,
+    NFloatButton,
   },
   methods:{
-    delDone,
+    handleDel(tag){
+      delTask(tag);
+      this.flushData();
+    },
+    confirmAddTask(){
+      if(this.taskModel.showPosition ===""){
+        window.$message.warning("缺少必要参数");
+        return;
+      }
+
+      console.log(this.taskModel)
+      downloadTask.addTask(this.taskModel.root,this.taskModel.parentId,this.taskModel.url)
+      this.show = false
+    },
+    confirmSelect(isSelect,root,parentId){
+      this.selectBoxShow = false;
+      if(!isSelect){
+        return;
+      }
+      this.taskModel.parentId = parentId;
+      this.taskModel.root = root;
+      this.taskModel.showPosition = "root: " + root + " parentId: " + parentId;
+
+    },
+    handleSelect(){
+      this.$refs.FolderSelect.flushData();
+      this.selectBoxShow = true;
+    },
+    async flushData() {
+      let data = await downloadTask.getTasks()
+      this.downloadTasks.done = data.done;
+      this.downloadTasks.doing = data.doing;
+    },
   },
   mounted() {
+    // 轮询列表数据
+    this.timerHandle = setInterval(this.flushData, 2000 )
   },
+
   activated() {
+  },
+
+  unmounted() {
+    clearInterval(this.timerHandle)
   },
 
   setup(){
@@ -160,7 +273,11 @@ export default {
       fileMenu,
       fileService,
       loading:useLoadingBar(),
-      uploadTask,
+      downloadTasks:reactive({done:[],doing:[]}),
+      show:ref(false),
+      selectBoxShow:ref(false),
+      taskModel:reactive({name:"", root:"",parentId:"", showPosition:"",url:""}),
+      timerHandle:ref(0),
     }
   }
 }
