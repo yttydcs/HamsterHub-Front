@@ -124,7 +124,13 @@ const enLangData = {
         taskDownload:{
             title: "Offline Download",
             doing: "In Progress",
-            done: "Done"
+            done: "Done",
+            addTask: "Add Task",
+            select: "Select",
+            selectBox: "Select Download Directory",
+            downloadPosition: "Storage Location",
+            placeholder: "Click to choose download location",
+            downloadUrl: "Download URL"
         },
         confirmBtn:{
             ok: "OK",

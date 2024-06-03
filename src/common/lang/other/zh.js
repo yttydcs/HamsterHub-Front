@@ -127,6 +127,12 @@ const zhLangData = {
             title:"离线下载",
             doing:"执行",
             done:"结束",
+            addTask:"添加任务",
+            select:"选择",
+            selectBox:"选择下载目录",
+            downloadPosition:"存放位置",
+            placeholder:"点击选择下载位置",
+            downloadUrl:"下载地址"
         },
         confirmBtn:{
             ok:"确定",

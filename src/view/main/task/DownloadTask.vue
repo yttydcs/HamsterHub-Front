@@ -1,7 +1,7 @@
 <template>
   <div class="main switchTran">
     <div class="title">
-      <h1>{{ curLang.lang.taskUpload.doing }}</h1>
+      <h1>{{ curLang.lang.taskDownload.doing }}</h1>
     </div>
 
     <div class="uploadTaskBox switchTran" v-for="(item,index) in downloadTasks.doing" :key="index">
@@ -60,7 +60,7 @@
     </div>
 
     <div class="title">
-      <h1>{{ curLang.lang.taskUpload.done }}</h1>
+      <h1>{{ curLang.lang.taskDownload.done }}</h1>
     </div>
 
     <div class="uploadTaskBox switchTran" v-for="(item,index) in downloadTasks.done" :key="index">
@@ -106,7 +106,7 @@
         v-model:show="show"
         class="alertBox"
         preset="card"
-        title="添加任务"
+        :title="curLang.lang.taskDownload.addTask"
         size="medium"
         :show-line="true"
 
@@ -115,7 +115,7 @@
       <FolderSelect
           ref="FolderSelect"
           v-model:show="selectBoxShow"
-          title="选择"
+          :title="curLang.lang.taskDownload.selectBox"
           :data="taskModel"
           :cancelFunc="() =>{this.selectBoxShow=false;}"
           :confirm-func="confirmSelect"
@@ -123,12 +123,12 @@
 
       <n-form>
 
-        <n-form-item-row label="存放位置" >
-          <n-input v-model:value="taskModel.showPosition" :disabled="true" :placeholder="curLang.lang.plsInput"/>
-          <n-button @click="handleSelect">选择</n-button>
+        <n-form-item-row :label="curLang.lang.taskDownload.downloadPosition" >
+          <n-input v-model:value="taskModel.showPosition" :disabled="true" :placeholder="curLang.lang.taskDownload.placeholder"/>
+          <n-button @click="handleSelect">{{ curLang.lang.taskDownload.select }}</n-button>
         </n-form-item-row>
 
-        <n-form-item-row label="下载地址" >
+        <n-form-item-row :label="curLang.lang.taskDownload.downloadUrl" >
           <n-input v-model:value="taskModel.url" type="textarea" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
@@ -226,7 +226,6 @@ export default {
         return;
       }
 
-      console.log(this.taskModel)
       downloadTask.addTask(this.taskModel.root,this.taskModel.parentId,this.taskModel.url)
       this.show = false
     },
