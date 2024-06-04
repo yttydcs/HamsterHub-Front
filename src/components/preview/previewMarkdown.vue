@@ -48,7 +48,7 @@ export default {
       curLang,
       id: ref('preview-only'),
       scrollElement ,
-      preTheme : window.config.mdTheme || defaultTheme,
+      preTheme : window.hamsterHubConfig.mdTheme || defaultTheme,
       theme
     }
   }

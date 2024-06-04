@@ -1,4 +1,5 @@
 import downloadTask from '@/api/downloadTask';
+import calc from "@/common/calc";
 
 export async function getTasks() {
     let res =(await downloadTask.query()).data;
@@ -12,7 +13,8 @@ export async function getTasks() {
             status:res[i].state,
             name:res[i].tag,
             progress:getProgress(res[i].completed , res[i].total),
-            type:"file"
+            type:"file",
+            total: calc.toSizeString(res[i].total),
         }
 
         if(res[i].name){

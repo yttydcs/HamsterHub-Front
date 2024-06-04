@@ -216,7 +216,7 @@ export default defineComponent({
   },
   computed:{
     appName(){
-      return window.config.name || process.env["VUE_APP_NAME"];
+      return window.hamsterHubConfig.name || process.env["VUE_APP_NAME"];
     },
   },
   setup() {
