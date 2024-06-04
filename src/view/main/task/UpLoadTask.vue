@@ -11,7 +11,11 @@
 
       <div class="detail">
         <div class="upBox">
-          <div class="name"><span class="status"> {{ item.status }} </span>{{ item.name }}</div>
+          <div class="name">
+            <span class="status"> {{ item.status }} </span>
+            {{ item.name }}
+            {{ item.total }}
+          </div>
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%" v-show="false">
 
@@ -70,7 +74,7 @@
 
       <div class="detail">
         <div class="upBox">
-          <div class="name">{{ item.name }}</div>
+          <div class="name">{{ item.name }} {{ item.total }}</div>
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%">
 

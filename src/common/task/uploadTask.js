@@ -2,6 +2,7 @@ import {reactive} from "vue";
 import fileService from "@/service/hamster/file"
 import file from "@/api/file/hamster/file";
 import hash from "@/common/hash";
+import calc from "@/common/calc";
 
 const KEY = "upload";
 
@@ -52,9 +53,7 @@ const uploadData = loadUploadData();
 export function addTask(root,parentUrl,name,fileEntry,parent = null,type="file"){
     uploadData.curOrderId++;
     let orderId = uploadData.curOrderId
-
-
-    uploadData.doing.push({
+    let item = {
         root:root,
         parent:parent,
         orderId:orderId,
@@ -65,7 +64,13 @@ export function addTask(root,parentUrl,name,fileEntry,parent = null,type="file")
         hash:"",
         parentUrl:parentUrl,
         fileEntry:fileEntry
+    }
+
+    fileEntry.file((temp)=>{
+        item.total = calc.toSizeString(temp.size)
     })
+
+    uploadData.doing.push(item)
 }
 
 export async function setTasksParent(){
