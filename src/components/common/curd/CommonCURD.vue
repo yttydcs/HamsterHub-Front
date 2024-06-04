@@ -63,7 +63,7 @@
         <!--    kvBox    -->
         <n-form-item-row :label="item.title" v-if="item.type==='kv'" >
           <n-input v-model:value="formData[item.key]" :placeholder="curLang.lang.plsInput" :disabled="true"/>
-          <n-button style="margin-left: 2px" @click="openKvHandle(item.typeValue,formData)">
+          <n-button style="margin-left: 2px" @click="openKvHandle(item.typeValue,formData,item.key)">
             {{ curLang.lang.settingBtn }}
           </n-button>
         </n-form-item-row>
