@@ -11,6 +11,7 @@ const zhLangData = {
         validateError:"输入数据存在异常",
         validateMissing:"缺少必要数据",
         processing:"正在处理请稍后",
+        submitBtn: "提交",
         shareList:{
             code:"密码",
             expired:"过期时间"

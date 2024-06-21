@@ -1,8 +1,6 @@
 <template>
   <div class="sharePage">
     <div class="main">
-<!--      {{ dataRoute.params }}-->
-<!--      {{ shareData.data  }}-->
       <div class="file" v-if="isExist && unlock && isDir===false">
         <OpenBox
             :title="shareData.data.name"
@@ -21,12 +19,18 @@
       <div class="lock" v-show="!unlock">
         <div class="unlockBox">
           <n-icon :component="lockIcon" size="100" :depth="4" />
-          <n-input-group >
-            <n-input type="password" show-password-on="click" v-model:value="fileKey"/>
-            <n-button type="primary" ghost @click="handleSubmitKey">
-              submit
+<!--          <n-input-group >-->
+            <n-input
+                class="password-box"
+                type="password"
+                :placeholder="curLang.lang.plsInput"
+                show-password-on="click"
+                v-model:value="fileKey"
+            />
+            <n-button class="submit-box" type="primary" ghost @click="handleSubmitKey">
+              {{ curLang.lang.submitBtn }}
             </n-button>
-          </n-input-group>
+<!--          </n-input-group>-->
           <br>
 
         </div>
@@ -54,6 +58,7 @@ import { LockClosed as lockIcon } from "@vicons/ionicons5";
 import FileExplorer from "@/components/explorer/FileExplorer.vue";
 import fileService from "@/service/share/file"
 import fileMenu from "@/service/share/fileMenu"
+import curLang from "@/common/lang";
 
 const NONE_KEY = 600008;
 const INCORRECT_KEY = 600009;
@@ -65,7 +70,7 @@ export default {
     FileExplorer,
     OpenBox,
     NButton,
-    NInputGroup,
+    // NInputGroup,
     NInput,
     NIcon,
 
@@ -165,7 +170,8 @@ export default {
       lockIcon,
       fileMenu,
       fileService,
-      loading:useLoadingBar()
+      loading:useLoadingBar(),
+      curLang
     }
   }
 }
@@ -190,6 +196,15 @@ export default {
   align-items: center;
   justify-content: center;
   vertical-align: center;
+}
+.password-box{
+  text-align: left;
+  width: 100%;
+}
+
+.submit-box{
+  margin-top: 10px;
+  width: 100%;
 }
 
 

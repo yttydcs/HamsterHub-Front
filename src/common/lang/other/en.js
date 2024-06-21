@@ -9,6 +9,7 @@ const enLangData = {
         validateError: "Input data contains errors",
         validateMissing: "Missing required data",
         processing:"Processing, please wait",
+        submitBtn: "Submit",
         shareList:{
             code:"Code",
             expired:"Expired"
