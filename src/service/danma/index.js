@@ -8,7 +8,7 @@ async function getXmlByUrl(url){
 async function getCidForBili(bvid){
     let res = -1;
     try {
-        res = (await danma.queryCid(null,bvid)).data.cid
+        res = (await danma.queryCidDirect(null,bvid)).data[0].cid
     }catch(err){
         res = -1;
     }
@@ -18,7 +18,7 @@ async function getCidForBili(bvid){
 async function getXmlByCidForBili(cid){
     let res = "";
     try {
-        res = await danma.queryXmlForBili(cid)
+        res = await danma.queryXmlForBiliDirect(cid)
     }catch(err){
         res = "";
     }

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import previewVideo from "@/components/preview/previewVideo.vue";
+import danma from "@/api/danma"
 
 
 export default {
@@ -14,9 +14,14 @@ export default {
   components: {
     // previewVideo
   },
+  mounted() {
+    this.test()
+  },
   methods: {
-    test(){
-
+    async test(){
+      let res = (await danma.queryCidDirect(null,"BV1di421C7ZY")).data[0].cid
+      console.log(res)
+      console.log(await danma.queryXmlForBiliDirect(res))
     },
 
   },
