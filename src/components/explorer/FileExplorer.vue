@@ -568,7 +568,6 @@ export default {
 .explorer-box{
   width: 100%;
   min-height: calc( 100vh - 110px );
-
 }
 
 .file-path{

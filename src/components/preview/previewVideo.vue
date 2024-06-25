@@ -2,12 +2,50 @@
   <div ref="playContainer" class="videoBox">
     <video ref="player-box" id="player-box" class="player" playsinline controls :src="src">
       <!-- Captions are optional -->
-      <!--      <track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default />-->
+<!--      <track kind="captions" label="English captions" src="http://127.0.0.1:38088/api/download?ticket=iCsmIVvC4H&fileName=test.vtt" srclang="en" default />-->
     </video>
     <Teleport to=".plyr" v-if="ready">
       <div ref="danmakuContainer" id="dan-mu-box">
       </div>
     </Teleport>
+
+    <!--settings-->
+    <n-modal
+        v-model:show="videoSettingShow"
+        class="alertBox"
+        preset="card"
+        :title="curLang.lang.danmakuSetting.title"
+        size="medium"
+        :bordered="false"
+    >
+      <n-form>
+
+        <n-form-item-row :label="curLang.lang.danmakuSetting.type" >
+          <n-select
+              v-model:value="danmakuSetting.type"
+              :options="danmakuTypeOptions"
+              :placeholder="curLang.lang.plsInput"
+          />
+          <!--          <n-input v-model:value="danmakuSettingModel.type" :placeholder="curLang.lang.plsInput"/>-->
+        </n-form-item-row>
+
+        <n-form-item-row :label="curLang.lang.danmakuSetting.url" >
+          <n-input v-model:value="danmakuSetting.url" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
+      </n-form>
+
+
+      <n-space align="stretch" justify="end">
+        <n-button class="sendBtn" type="primary" block secondary strong @click="videoSettingHandle">
+          {{ curLang.lang.curd.submitBtn }}
+        </n-button>
+        <n-button class="sendBtn" type="primary" block secondary strong @click="()=>{this.videoSettingShow = false}">
+          {{ curLang.lang.curd.cancelBtn }}
+        </n-button>
+      </n-space>
+
+    </n-modal>
 
   </div>
 
@@ -24,9 +62,22 @@ import Plyr from 'plyr';
 
 // 提供弹幕支持
 import Danmaku from 'danmaku/dist/esm/danmaku.dom.js';
+import {NButton, NForm, NFormItemRow, NInput, NModal, NSelect, NSpace} from "naive-ui";
+import {getEnum} from "@/common/enums";
+
+function createDanmakuTypeOptions(){
+  let danmakuType = getEnum("danmakuType")
+  let res = []
+
+  for (let i = 0; i < danmakuType.length; i++) {
+    res.push({ label: danmakuType[i], value: danmakuType[i] });
+  }
+  return res;
+}
 
 export default {
   name: 'videoBox',
+  components: {NFormItemRow, NSelect, NSpace, NModal, NForm, NButton, NInput},
   mounted() {
     this.initPlyr();
     this.ready = true;
@@ -75,7 +126,7 @@ export default {
           selected: 1,
           options: [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4],
         },
-        // iconUrl:false,
+        iconUrl:"/static/img/file/plyr.svg",
       }
       this.playerObj.plyr = new Plyr(".player", option);
 
@@ -127,12 +178,19 @@ export default {
       this.playerObj.danmaku.resize();
     },
     async loadDanMa(){
-      if(!this.danMaType || !this.danMaUrl){
+      if(!this.danmakuSetting.type || !this.danmakuSetting.url){
         return
       }
       // 清除原先弹幕
       this.playerObj.danmaku.clear();
-      await loadDanmaku(this.danMaType,this.danMaUrl,this.insertBiliDanMa);
+      await loadDanmaku(this.danmakuSetting.type,this.danmakuSetting.url,this.insertBiliDanMa);
+    },
+    async videoSettingHandle(){
+      this.videoSettingShow = false;
+      await this.loadDanMa();
+    },
+    settingFunc(){
+      this.videoSettingShow = true;
     },
     insertBiliDanMa(text,mode,time,color){
       let _mode = 'rtl'
@@ -158,22 +216,22 @@ export default {
         },
 
       });
+
     }
   },
   props:{
     src:String,
     savedTimeKey:String,
-    danMaType:String,
-    danMaUrl:String,
   },
   setup(){
-    // 响应语言变化
-
     return{
       curLang,
       playerObj:reactive({plyr:null,danmaku:null}),
       resizeObserver: null,
       ready:ref(false),
+      videoSettingShow:ref(false),
+      danmakuSetting:reactive({type:"",url:""}),
+      danmakuTypeOptions: reactive(createDanmakuTypeOptions())
     }
   }
 }

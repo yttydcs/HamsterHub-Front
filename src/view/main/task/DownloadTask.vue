@@ -182,26 +182,17 @@ import {
   NInput,
   NForm, NSelect, NFormItemRow
 } from "naive-ui";
-import {computed, h, reactive, ref, watch} from "vue";
-import { BanOutline, PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
-import { Recycle } from "@vicons/tabler";
-import { Delete24Regular, ArrowClockwise24Regular, CaretRight24Regular, Pause20Regular } from "@vicons/fluent";
-
+import {computed, reactive, ref} from "vue";
+import { PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
+import { Delete24Regular, ArrowClockwise24Regular } from "@vicons/fluent";
 import { Add, } from "@vicons/ionicons5";
 import curLang from "@/common/lang";
-import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
 
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import downloadTask,{delTask} from "@/service/task";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
-
-
-
-function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
-}
 
 export default {
   name: 'DownloadTask',
@@ -232,8 +223,8 @@ export default {
         return;
       }
 
-      downloadTask.addTask(this.taskModel.root,this.taskModel.parentId,this.taskModel.url)
-      this.show = false
+      downloadTask.addTask(this.taskModel.root,this.taskModel.parentId,this.taskModel.url);
+      this.show = false;
     },
     confirmSelect(isSelect,root,parentId){
       this.selectBoxShow = false;
@@ -250,14 +241,22 @@ export default {
       this.selectBoxShow = true;
     },
     async flushData() {
-      let data = await downloadTask.getTasks()
-      this.downloadTasks.done = data.done;
-      this.downloadTasks.doing = data.doing;
+      try {
+        let data = await downloadTask.getTasks()
+        this.downloadTasks.done = data.done;
+        this.downloadTasks.doing = data.doing;
+      }catch (e) {
+        return false;
+      }
+      return true;
     },
   },
-  mounted() {
-    // 避免延迟
-    this.flushData()
+  async mounted() {
+    // 避免延迟,首次出错后续不再继续
+    if (!await this.flushData()) {
+      return false;
+    }
+
     // 轮询列表数据
     this.timerHandle = setInterval(this.flushData, 2000 )
   },

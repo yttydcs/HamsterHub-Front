@@ -9,7 +9,7 @@
 <!--          {{msg}}-->
 <!--        </div>-->
         <div class="action">
-          <n-button v-if="settingFunc" quaternary class="btn" @click="settingFunc" :disabled="videoSettingDisable">
+          <n-button v-if="settingFunc" quaternary class="btn" @click="settingFunc" :disabled="settingDisable">
             <template #icon>
               <n-icon>
                 <SettingsOutline />
@@ -70,8 +70,6 @@
               :src="url"
               :key="flushKey"
               :saved-time-key="title"
-              :dan-ma-type="danmakuSetting.type"
-              :dan-ma-url="danmakuSetting.url"
           />
         </div>
 
@@ -91,50 +89,14 @@
         </div>
 
         <!--    pdf的预览    -->
-        <div class="file-excel pd" v-if="previewType === 'pdf'">
+        <div class="file-pdf" v-if="previewType === 'pdf'">
           <previewPdf :url="url" />
         </div>
 
       </div>
     </div>
 
-    <n-modal
 
-        v-model:show="videoSettingShow"
-        class="alertBox"
-        preset="card"
-        :title="curLang.lang.danmakuSetting.title"
-        size="medium"
-        :bordered="false"
-    >
-      <n-form>
-
-        <n-form-item-row :label="curLang.lang.danmakuSetting.type" >
-          <n-select
-              v-model:value="danmakuSetting.type"
-              :options="danmakuTypeOptions"
-              :placeholder="curLang.lang.plsInput"
-          />
-<!--          <n-input v-model:value="danmakuSettingModel.type" :placeholder="curLang.lang.plsInput"/>-->
-        </n-form-item-row>
-
-        <n-form-item-row :label="curLang.lang.danmakuSetting.url" >
-          <n-input v-model:value="danmakuSetting.url" :placeholder="curLang.lang.plsInput"/>
-        </n-form-item-row>
-
-      </n-form>
-
-
-      <n-space align="stretch" justify="end">
-          <n-button class="sendBtn" type="primary" block secondary strong @click="videoSettingHandle">
-            {{ curLang.lang.curd.submitBtn }}
-          </n-button>
-          <n-button class="sendBtn" type="primary" block secondary strong @click="()=>{this.videoSettingShow = false}">
-            {{ curLang.lang.curd.cancelBtn }}
-          </n-button>
-        </n-space>
-
-    </n-modal>
 
   </div>
 </template>
@@ -154,29 +116,10 @@ import previewPdf from "@/components/preview/previewPdf.vue";
 import previewVideo from "@/components/preview/previewVideo.vue";
 import fileType from "@/common/fileType";
 
-import { getEnum } from "@/common/enums";
-
-
-
-function createDanmakuTypeOptions(){
-  let danmakuType = getEnum("danmakuType")
-  let res = []
-
-  for (let i = 0; i < danmakuType.length; i++) {
-    res.push({ label: danmakuType[i], value: danmakuType[i] });
-  }
-  return res;
-}
-
-
 
 export default {
   name: 'OpenBox',
   components: {
-    NSpace,
-    NForm, NFormItemRow, NInput,
-    NSelect,
-    NModal,
     SettingsOutline,
     fileIcon,
     NButton,
@@ -198,33 +141,42 @@ export default {
   },
   computed:{
     previewType(){
-      let openType
+      let openType;
       if(this.isFolder){
-        openType = "dir"
+        openType = "dir";
       }else{
-        openType = fileType.getOpenTypeByName(this.title)
+        openType = fileType.getOpenTypeByName(this.title);
       }
 
-      this.handlePreviewIndex(openType)
+      this.handlePreviewIndex(openType);
       return openType;
     },
     icoType(){
-      return  fileType.getIconTypeByName(this.title)
+      return  fileType.getIconTypeByName(this.title);
     }
   },
   methods:{
     handleDownload(url){
-      download.url(url)
+      download.url(url);
     },
 
     handlePreviewIndex(openType){
+      this.settingDisable = true;
       switch (openType) {
         case "text":
         case "md":
           this.textPreview();
           break;
         case "video":
-          this.settingFunc = this.openVideoSetting;
+          this.settingDisable = false;
+          break;
+      }
+    },
+
+    settingFunc(){
+      switch (this.previewType) {
+        case "video":
+          this.$refs.previewVideo.settingFunc();
           break;
       }
     },
@@ -245,17 +197,7 @@ export default {
         that.text = "";
       })
     },
-    openVideoSetting(){
-      this.videoSettingShow = true;
-    },
-    async videoSettingHandle(){
-      this.videoSettingShow = false;
-      // this.danmakuSetting.type = this.danmakuSettingModel.type;
-      // this.danmakuSetting.url = this.danmakuSettingModel.url;
-      this.videoSettingDisable = true
-      await this.$refs.previewVideo.loadDanMa();
-      this.videoSettingDisable = false;
-    }
+
   },
   setup(){
     let theme = useThemeVars();
@@ -271,12 +213,7 @@ export default {
       borderColor : computed(() => theme.value.borderColor),
       opacity2 : computed(() => theme.value.opacity2),
       text: ref(""),
-      settingFunc:ref(null),
-      videoSettingShow:ref(false),
-      videoSettingDisable:ref(false),
-      // danmakuSettingModel:reactive({type:"",url:""}),
-      danmakuSetting:reactive({type:"",url:""}),
-      danmakuTypeOptions: reactive(createDanmakuTypeOptions())
+      settingDisable: ref(true),
     }
   }
 }

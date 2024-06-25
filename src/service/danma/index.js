@@ -53,7 +53,6 @@ async function parseXmlForBili(text,addFunc){
         let time = parseFloat(arr[0])
         let mode = arr[1]
         let color = decimalToHexColor(arr[3])
-
         addFunc(text,mode,time,color)
     }
 }
