@@ -84,7 +84,6 @@
                 </n-icon>
               </n-button>
 
-
             </n-space>
           </div>
         </div>
@@ -110,64 +109,21 @@
 
 </template>
 
-<script>
-import {NProgress, NIcon, useLoadingBar, useThemeVars, NButton, NSpace} from "naive-ui";
-import {computed, h, reactive, ref, watch} from "vue";
-import { BanOutline, PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
-import { Recycle } from "@vicons/tabler";
-import { Delete24Regular, ArrowClockwise24Regular, CaretRight24Regular, Pause20Regular } from "@vicons/fluent";
-
-
+<script setup>
+import { NProgress, NIcon, useLoadingBar, useThemeVars, NButton, NSpace } from "naive-ui";
+import { computed } from "vue";
+import { PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
+import { Delete24Regular, ArrowClockwise24Regular, } from "@vicons/fluent";
 import curLang from "@/common/lang";
-import strategy from "@/api/strategy";
-import fileService from "@/service/hamster/file"
-import fileMenu from "@/service/hamster/fileMenu"
-
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import uploadTask, {delDone} from "@/common/task/uploadTask";
 
+let theme = useThemeVars();
+const cubicBezierEaseInOut = theme.value.cubicBezierEaseInOut
+const hoverColor = computed(() => theme.value.hoverColor)
+const titleColor = computed(() => theme.value.textColor2)
+const loading = useLoadingBar()
 
-
-function renderIcon(icon) {
-  return () => h(NIcon, null, { default: () => h(icon) });
-}
-
-export default {
-  name: 'UpLoadTask',
-  components: {
-    NSpace,
-    NIcon,
-    NButton,
-    NProgress,
-    fileIcon,
-    Delete24Regular,
-    ArrowClockwise24Regular,
-    CaretForwardOutline,
-    PauseOutline,
-  },
-  methods:{
-    delDone,
-  },
-  mounted() {
-  },
-  activated() {
-  },
-
-  setup(){
-    let theme = useThemeVars();
-    return{
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      hoverColor : computed(() => theme.value.hoverColor),
-      titleColor : computed(() => theme.value.textColor2),
-      collapsed: ref(false),
-      curLang,
-      fileMenu,
-      fileService,
-      loading:useLoadingBar(),
-      uploadTask,
-    }
-  }
-}
 </script>
 
 <style scoped>
@@ -251,9 +207,5 @@ export default {
   border-radius: 3px;
 
 }
-
-
-
-
 
 </style>
