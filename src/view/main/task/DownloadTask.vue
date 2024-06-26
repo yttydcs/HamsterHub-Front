@@ -15,8 +15,6 @@
             <span class="status"> {{ item.status }} </span>
             {{ item.name }}
             {{ item.total }}
-
-
           </div>
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%" v-show="true">
@@ -60,9 +58,6 @@
           
         </div>
       </div>
-
-
-
     </div>
 
     <div class="title">
@@ -101,10 +96,6 @@
 
         </div>
       </div>
-
-
-
-
     </div>
 
 
@@ -160,11 +151,7 @@
       </n-icon>
     </n-float-button>
 
-
   </div>
-
-
-
 
 </template>
 

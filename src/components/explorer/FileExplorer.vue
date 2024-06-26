@@ -91,7 +91,7 @@
         :title="curLang.lang.explorerMenu.newDir"
         v-model:show="inputShow"
         :confirm-func="handleNewDir"
-        :cancel-func="() =>{this.inputShow=false}"
+        :cancel-func="() =>{inputShow.value=false}"
     />
 
     <!--  新建分享  -->
@@ -135,7 +135,7 @@
         v-model:show="moveBoxShow"
         :title="curLang.lang.explorerMenu.move"
         :data="moveModel"
-        :cancelFunc="() =>{this.moveBoxShow=false;}"
+        :cancelFunc="() =>{moveBoxShow.value=false;}"
         :confirm-func="confirmMove"
     />
 
@@ -145,7 +145,7 @@
         v-model:show="copyBoxShow"
         :title="curLang.lang.explorerMenu.copy"
         :data="copyModel"
-        :cancelFunc="() =>{this.copyBoxShow=false;}"
+        :cancelFunc="() =>{copyBoxShow.value=false;}"
         :confirm-func="confirmCopy"
     />
 
@@ -154,7 +154,7 @@
         :title="curLang.lang.explorerMenu.rename"
         v-model:show="renameBoxShow"
         :confirm-func="confirmRename"
-        :cancel-func="() =>{this.renameBoxShow=false}"
+        :cancel-func="() =>{renameBoxShow.value=false}"
     />
 
   </div>
@@ -163,7 +163,7 @@
 
 </template>
 
-<script>
+<script setup>
 import {
   NBreadcrumb,
   NBreadcrumbItem,
@@ -176,7 +176,7 @@ import {
   NInput,
   NForm, NFormItem, NModal, useLoadingBar
 } from "naive-ui";
-import {ref, computed, watch, reactive, nextTick, toRefs} from "vue";
+import {ref, computed, watch, reactive, nextTick, toRefs, onMounted} from "vue";
 
 import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
@@ -195,372 +195,366 @@ import InputBox from "@/components/common/InputBox.vue";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
 import DetailBox from "@/components/explorer/DetailBox.vue";
 import OpenBox from "@/components/common/OpenBox.vue";
+import {onActivated} from "vue-demi";
 
+const props = defineProps({
+  fileMenu:Object,
+  fileService:Object,
+  readme:Boolean
+})
 
-export default {
-  name: 'mainLayout',
-  computed: {
-    HomeOutline() {
-      return HomeOutline
-    },
-    BorderColor(){
-      return useThemeVars().value.borderColor
-    }
-  },
-  components: {
-    OpenBox,
-    NModal,
-    NFormItem,
-    NForm,
-    NInput,
-    NButton,
-    NLayout,
-    FileList,
-    NBreadcrumb,
-    NBreadcrumbItem,
-    NIcon,
-    NSpace,
-    ArrowClockwise24Regular,
-    AppsListDetail24Regular,
-    AppFolder24Regular,
-    NDropdown,
-    InputBox,
-    FolderSelect,
-    DetailBox,
-  },
-  methods:{
-    changeRoute(){
-      this.fileService.setRouteHistory();
-    },
-    pathClick(index){
-      this.fileService.setPathLength(index+1);
-      this.getFileData();
-      this.changeRoute();
-    },
-    async switchRoot(root){
-      this.fileService.setRoot(root);
-      this.fileService.setPathLength(0);
-      this.changeRoute();
-      await this.getFileData()
+// console.log(props)
 
-    },
-    setFileSelect(index){
-      this.fileData.file[index].selected = !this.fileData.file[index].selected
-    },
-    async enterPath(index){
-      this.fileService.enterPath(index);
-      this.changeRoute();
-      await this.getFileData(index);
-    },
-    async handleFlush(){
-      await this.handleRoute()
-      await this.getFileData()
-    },
-    async handleRoute(){
-      let path = window.location.pathname
-      await this.fileService.setPathByRoute(path)
-    },
-    async getFileData(index){
-      await this.fileService.getFileData();
-      if(this.fileData.isFile){
-        let fileObj = await this.fileService.getNextFileDetail(index)
-        await this.$refs.detailBox.flushData(fileObj);
-      }
-    },
-    async switchBoxStyle(boxStyle){
-      this.boxStyle = boxStyle;
-      // await this.getFileData();
-    },
-    async handleDrop(event){// 文件拖拽上传
-      event.preventDefault();
-      const  {files,items} = event.dataTransfer;
+// const { fileMenu, fileService, readme } = toRefs(props);
 
-      if(files.length <= 0){
-        return
-      }
+// console.log(fileMenu, fileService, readme)
+const theme = useThemeVars();
+const BorderColor = computed(()=>theme.value.borderColor)
+const fileData = props.fileService.getFileListObject()
 
-      let root = this.fileService.getCurRoot()
-      let parent = (await this.fileService.getCurPathNode()).id
-      let parentUrl = (await this.fileService.getPathString()).slice(0, -1)
+const route = useRoute()
+const router = useRouter()
+const collapsed = ref(false)
+const cubicBezierEaseInOut = computed(()=>theme.value.cubicBezierEaseInOut)
+const curRoot = ref(null)
+const curParent = ref("0")
+const contextMenu = reactive({isShow:false, options:fileContextMenuOption, x:0, y:0,})
+const inputShow = ref(false)
+const shareBoxShow = ref(false)
+const shareModel = reactive({fileName:"",name:"",vFileId:"",key:"",expiry:""})
+const moveBoxShow = ref(false)
+const moveModel = reactive({name:"",vFileId:"",})
+const copyBoxShow = ref(false)
+const copyModel = reactive({name:"",vFileId:"",})
+const renameBoxShow = ref(false)
+const renameModel = reactive({name:"",vFileId:"",})
+const loading = useLoadingBar()
+const boxStyle = ref(null)
+const readmeData = reactive({msg:"",name:"",url:""})
 
-      addTasks(files,items,root,parentUrl,parent)
+const detailBox = ref(null)
+const moveFolderSelect = ref(null)
+const copyFolderSelect = ref(null)
 
+function changeRoute(){
+  props.fileService.setRouteHistory();
+}
+function pathClick(index){
+  props.fileService.setPathLength(index+1);
+  getFileData();
+  changeRoute();
+}
 
-      setTimeout(this.handleFlush, 300);
+async function switchRoot(root){
+  props.fileService.setRoot(root);
+  props.fileService.setPathLength(0);
+  changeRoute();
+  await getFileData()
+}
 
-      // for (let i = 0; i < files.length; i++) {
-      //   let data = await hash.fileToHash(files[i])
-      //   await this.fileService.uploadFile(files[i],data)
-      // }
-    },
-    handleContextMenuShow(event){
-      // 阻止默认行为
-      event.preventDefault();
+function setFileSelect(index){
+  fileData.file[index].selected = !fileData.file[index].selected
+}
 
-      // 仅打开部分，其他选项需要选中文件。
-      openMenuByCondition(0)
+async function enterPath(index){
+  props.fileService.enterPath(index);
+  changeRoute();
+  await getFileData(index);
+}
 
-      // 使其具备一定的关闭效果
-      this.contextMenu.isShow = false
-      nextTick().then(() => {
-        this.contextMenu.isShow = true
-        this.contextMenu.x = event.clientX;
-        this.contextMenu.y = event.clientY;
-      });
-    },
-    handleContextMenuSelect(key){
-      this.closeContextMenu()
-      this.invokeMenuHandle(key)
-    },
-    handleClickOutside() {
-      this.closeContextMenu()
-    },
-    closeContextMenu(){
-      this.contextMenu.isShow = false;
-      closeAllMenu()
-    },
-    invokeMenuHandle(key){
-      switch(key){
-        case "open":
-          let aim = fileContextMenuOption[findByKey(key)].data;
-          this.enterPath(aim)
-          break;
-        case "newDir":
-          this.inputShow = true;
-          break;
-        case "delete":
-          this.handleDelete(key);
-          break;
-        case "download":
-          this.handleDownload(key);
-          break;
-        case "share":
-          this.handleShare(key);
-          break;
-        case "copyAddress":
-          this.handleCopyUrl(key);
-          break;
-        case "move":
-          this.handleMove(key);
-          break;
-        case "copy":
-          this.handleCopy(key);
-          break;
-        case "detail":
-          this.handleDetail (key);
-          break;
-        case "rename":
-          this.handleRename(key);
-          break;
-      }
-    },
-    getFileByKey(key){
-      let aim = fileContextMenuOption[findByKey(key)].data;
-      return this.fileData.file[aim];
-    },
-    async handleNewDir(value){ // 执行文件夹创建
-      this.inputShow = false;
-      await this.fileService.newDir(value)
-      this.getFileData();
-    },
-    async handleDelete(key){ // 执行文件删除
-      let vFile = this.getFileByKey(key);
-      await this.fileService.deleteFile(vFile)
-      this.getFileData();
-    },
-    async handleDownload(key){ // 执行文件下载
-      let vFile = this.getFileByKey(key);
-      await this.fileService.downloadFile(vFile)
-    },
-    async handleCopyUrl(key){ // 执行复制url
-      let vFile = this.getFileByKey(key);
-      await this.fileService.copyFileUrl(vFile);
-    },
-    async handleShare(key){ // 打开分享窗口
-      let vFile = this.getFileByKey(key);
-      this.shareModel.fileName = vFile.name;
-      this.shareModel.name = vFile.name;
-      this.shareModel.vFileId = vFile.other.id;
-      this.shareBoxShow = true;
+async function handleFlush(){
+  await handleRoute()
+  await getFileData()
+}
 
-    },
-    async handleMove(key){ // 打开移动窗口
-      let vFile = this.getFileByKey(key);
-      this.moveModel.name = vFile.name;
-      this.moveModel.vFileId = vFile.other.id;
-      this.$refs.moveFolderSelect.flushData(); // 刷新缓存数据
-      this.moveBoxShow = true;
-    },
-    async handleCopy(key){ // 打开拷贝窗口
-      let vFile = this.getFileByKey(key);
-      this.copyModel.name = vFile.name;
-      this.copyModel.vFileId = vFile.other.id;
-      this.$refs.copyFolderSelect.flushData(); // 刷新缓存数据
-      this.copyBoxShow = true;
-    },
-    async confirmShare(){
-      this.fileService.shareFile(this.shareModel.vFileId,this.shareModel.key,this.shareModel.expiry,this.shareModel.name);
-      this.shareModel.key = "";
-      this.shareModel.expiry = "";
-      this.shareBoxShow = false;
-    },
-    async confirmMove(isSelect,root,parentId){
-      this.moveBoxShow = false;
-      if(!isSelect){
-        return;
-      }
-      if(this.moveModel.vFileId === parentId){
-        window.$message.info("不能自己向自己移动哦")
-        return;
-      }
-      await this.fileService.moveFile(this.moveModel.vFileId,parentId)
-      this.getFileData()
-    },
-    async confirmCopy(isSelect,root,parentId){
-      this.copyBoxShow = false;
-      if(!isSelect){
-        return;
-      }
-      if(this.copyModel.vFileId === parentId){
-        window.$message.info("不能自己向自己复制哦")
-        return;
-      }
-      await this.fileService.copyFile(this.copyModel.vFileId,parentId)
-      this.getFileData()
-    },
-    async handleDetail(key){
-      let vFile = this.getFileByKey(key);
-      let root = this.fileData.root;
-      let path = this.fileService.getPathString()+vFile.name;
-      window.open("/detail?root="+root+"&path="+path);
-    },
-    async handleRename(key){
-      let vFile = this.getFileByKey(key);
-      this.renameModel.vFileId = vFile.other.id;
-      this.renameBoxShow = true;
-    },
-    async confirmRename(value){ // 执行重命名
-      this.renameBoxShow = false;
-      await this.fileService.rename(this.renameModel.vFileId,value)
-      this.getFileData();
-    },
-    setMenu(){
-      this.contextMenu.options.length = 0;
-      this.contextMenu.options.push(...this.fileMenu)
-    },
-    async dragDrop(e,index){
-      let to = (await this.fileService.getPathNodeByIndex(index)).id;
-      let str = e.dataTransfer.getData('dragFile')
-      if(!str ){
-        return;
-      }
-      let files = str.split(",");
-      if(files.length <= 0){
-        return;
-      }
+async function handleRoute(){
+  let path = window.location.pathname
+  await props.fileService.setPathByRoute(path)
+}
 
-      for (let i = 0; i < files.length; i++) {
-        let from = files[i];
-        if(from === to){
-          continue;
-        }
-        await this.fileMove(from, to);
-      }
-    // },
-    },
-    async fileMove(target,parentId){
-      if(!target || !parentId){
-        return;
-      }
-      if(target === parentId){
-        window.$message.info("不能自己向自己移动哦")
-        return;
-      }
-      await this.fileService.moveFile(target,parentId)
-      this.getFileData()
-    },
-  },
-  mounted() {
-    this.setMenu()
-    this.handleFlush()
-  },
-  activated() {
-    this.setMenu()
-    this.handleFlush()
-  },
-  props:{
-    fileMenu:Object,
-    fileService:Object,
-    readme:Boolean
-  },
-  watch: {
-    // 响应路由变化
-    $route(to, from) {
-      this.handleFlush();
-    }
-  },
-  setup(props){
-    let theme = useThemeVars();
-    let borderColor = computed(() => theme.value.borderColor);
-    let fileData = props.fileService.getFileListObject()
-
-    // 使菜单响应语言变化
-    watch(curLang, () => {
-      for (let i = 0; i < fileContextMenuOption.length; i++) {
-        if ("label" in fileContextMenuOption[i]){
-          fileContextMenuOption[i].label =curLang.lang.explorerMenu[fileContextMenuOption[i].key] ;
-        }
-      }
-    });
-
-    // 检查readme文件id
-    watch(() => fileData.readmeData.id, async (newId,oldId) => {
-      if(!props.readme){
-        return;
-      }
-      if(newId === -1){
-        fileData.readmeData.url = "";
-        return;
-      }
-
-      try {
-        fileData.readmeData.url = await props.fileService.getDownloadUrl(newId);
-      }catch(e){
-        fileData.readmeData.url = "";
-      }
-
-    });
-
-    return{
-      curLang,
-      router: useRouter(),
-      collapsed: ref(false),
-      borderColor,
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileData,
-      curRoot:null,
-      curParent:"0",
-      contextMenu:reactive({
-        isShow:false,
-        options:fileContextMenuOption,
-        x:0,
-        y:0,
-      }),
-      inputShow:ref(false),
-      shareBoxShow:ref(false),
-      shareModel:reactive({fileName:"",name:"",vFileId:"",key:"",expiry:""}),
-      moveBoxShow:ref(false),
-      moveModel:reactive({name:"",vFileId:"",}),
-      copyBoxShow:ref(false),
-      copyModel:reactive({name:"",vFileId:"",}),
-      renameBoxShow:ref(false),
-      renameModel:reactive({name:"",vFileId:"",}),
-      loading:useLoadingBar(),
-      boxStyle:ref(null),
-      readmeData:reactive({msg:"",name:"",url:""}),
-    }
+async function getFileData(index){
+  await props.fileService.getFileData();
+  if(fileData.isFile){
+    let fileObj = await props.fileService.getNextFileDetail(index)
+    await detailBox.value.flushData(fileObj);
   }
 }
+
+async function switchBoxStyle(_boxStyle){
+  boxStyle.value = _boxStyle;
+  // await getFileData();
+}
+
+async function handleDrop(event){// 文件拖拽上传
+  event.preventDefault();
+  const  {files,items} = event.dataTransfer;
+
+  if(files.length <= 0){
+    return
+  }
+
+  let root = props.fileService.getCurRoot()
+  let parent = (await props.fileService.getCurPathNode()).id
+  let parentUrl = (await props.fileService.getPathString()).slice(0, -1)
+
+  addTasks(files,items,root,parentUrl,parent)
+
+  setTimeout(handleFlush, 300);
+
+  // for (let i = 0; i < files.length; i++) {
+  //   let data = await hash.fileToHash(files[i])
+  //   await props.fileService.uploadFile(files[i],data)
+  // }
+}
+
+function handleContextMenuShow(event){
+  // 阻止默认行为
+  event.preventDefault();
+
+  // 仅打开部分，其他选项需要选中文件。
+  openMenuByCondition(0)
+
+  // 使其具备一定的关闭效果
+  contextMenu.isShow = false
+  nextTick().then(() => {
+    contextMenu.isShow = true
+    contextMenu.x = event.clientX;
+    contextMenu.y = event.clientY;
+  });
+}
+
+function handleContextMenuSelect(key){
+  closeContextMenu()
+  invokeMenuHandle(key)
+}
+
+function handleClickOutside() {
+  closeContextMenu()
+}
+
+function closeContextMenu(){
+  contextMenu.isShow = false;
+  closeAllMenu()
+}
+
+function invokeMenuHandle(key){
+  switch(key){
+    case "open":
+      let aim = fileContextMenuOption[findByKey(key)].data;
+      enterPath(aim)
+      break;
+    case "newDir":
+      inputShow.value = true;
+      break;
+    case "delete":
+      handleDelete(key);
+      break;
+    case "download":
+      handleDownload(key);
+      break;
+    case "share":
+      handleShare(key);
+      break;
+    case "copyAddress":
+      handleCopyUrl(key);
+      break;
+    case "move":
+      handleMove(key);
+      break;
+    case "copy":
+      handleCopy(key);
+      break;
+    case "detail":
+      handleDetail (key);
+      break;
+    case "rename":
+      handleRename(key);
+      break;
+  }
+}
+
+function getFileByKey(key){
+  let aim = fileContextMenuOption[findByKey(key)].data;
+  return fileData.file[aim];
+}
+
+async function handleNewDir(value){ // 执行文件夹创建
+  inputShow.value = false;
+  await props.fileService.newDir(value)
+  await getFileData();
+}
+
+async function handleDelete(key){ // 执行文件删除
+  let vFile = getFileByKey(key);
+  await props.fileService.deleteFile(vFile)
+  await getFileData();
+}
+
+async function handleDownload(key){ // 执行文件下载
+  let vFile = getFileByKey(key);
+  await props.fileService.downloadFile(vFile)
+}
+
+async function handleCopyUrl(key){ // 执行复制url
+  let vFile = getFileByKey(key);
+  await props.fileService.copyFileUrl(vFile);
+}
+
+async function handleShare(key){ // 打开分享窗口
+  let vFile = getFileByKey(key);
+  shareModel.fileName = vFile.name;
+  shareModel.name = vFile.name;
+  shareModel.vFileId = vFile.other.id;
+  shareBoxShow.value = true;
+
+}
+
+async function handleMove(key){ // 打开移动窗口
+  let vFile = getFileByKey(key);
+  moveModel.name = vFile.name;
+  moveModel.vFileId = vFile.other.id;
+  moveFolderSelect.value.flushData(); // 刷新缓存数据
+  moveBoxShow.value = true;
+}
+
+async function handleCopy(key){ // 打开拷贝窗口
+  let vFile = getFileByKey(key);
+  copyModel.name = vFile.name;
+  copyModel.vFileId = vFile.other.id;
+  copyFolderSelect.value.flushData(); // 刷新缓存数据
+  copyBoxShow.value = true;
+}
+
+async function confirmShare(){
+  props.fileService.shareFile(shareModel.vFileId,shareModel.key,shareModel.expiry,shareModel.name);
+  shareModel.key = "";
+  shareModel.expiry = "";
+  shareBoxShow.value = false;
+}
+
+async function confirmMove(isSelect,root,parentId){
+  moveBoxShow.value = false;
+  if(!isSelect){
+    return;
+  }
+  if(moveModel.vFileId === parentId){
+    window.$message.info("不能自己向自己移动哦")
+    return;
+  }
+  await props.fileService.moveFile(moveModel.vFileId,parentId)
+  await getFileData()
+}
+
+async function confirmCopy(isSelect,root,parentId){
+  copyBoxShow.value = false;
+  if(!isSelect){
+    return;
+  }
+  if(copyModel.vFileId === parentId){
+    window.$message.info("不能自己向自己复制哦")
+    return;
+  }
+  await props.fileService.copyFile(copyModel.vFileId,parentId)
+  getFileData()
+}
+
+async function handleDetail(key){
+  let vFile = getFileByKey(key);
+  let root = fileData.root;
+  let path = props.fileService.getPathString()+vFile.name;
+  window.open("/detail?root="+root+"&path="+path);
+}
+
+async function handleRename(key){
+  let vFile = getFileByKey(key);
+  renameModel.vFileId = vFile.other.id;
+  renameBoxShow.value = true;
+}
+
+async function confirmRename(value){ // 执行重命名
+  renameBoxShow.value = false;
+  await props.fileService.rename(renameModel.vFileId,value)
+  getFileData();
+}
+
+function setMenu(){
+  contextMenu.options.length = 0;
+  contextMenu.options.push(...(props.fileMenu))
+}
+
+async function dragDrop(e,index){
+  let to = (await props.fileService.getPathNodeByIndex(index)).id;
+  let str = e.dataTransfer.getData('dragFile')
+  if(!str ){
+    return;
+  }
+  let files = str.split(",");
+  if(files.length <= 0){
+    return;
+  }
+
+  for (let i = 0; i < files.length; i++) {
+    let from = files[i];
+    if(from === to){
+      continue;
+    }
+    await fileMove(from, to);
+  }
+}
+
+async function fileMove(target,parentId){
+  if(!target || !parentId){
+    return;
+  }
+  if(target === parentId){
+    window.$message.info("不能自己向自己移动哦")
+    return;
+  }
+  await props.fileService.moveFile(target,parentId)
+  await getFileData()
+}
+
+onActivated(()=>{
+  setMenu()
+  handleFlush()
+})
+
+onMounted(()=>{
+  setMenu()
+  handleFlush()
+})
+
+// 响应路由变化
+watch(route, (newRoute) => {
+  handleFlush();
+});
+
+// 使菜单响应语言变化
+watch(curLang, () => {
+  for (let i = 0; i < fileContextMenuOption.length; i++) {
+    if ("label" in fileContextMenuOption[i]){
+      fileContextMenuOption[i].label =curLang.lang.explorerMenu[fileContextMenuOption[i].key] ;
+    }
+  }
+});
+
+// 检查readme文件id
+watch(() => fileData.readmeData.id, async (newId,oldId) => {
+  if(!props.readme){
+    return;
+  }
+  if(newId === -1){
+    fileData.readmeData.url = "";
+    return;
+  }
+
+  try {
+    fileData.readmeData.url = await props.fileService.getDownloadUrl(newId);
+  }catch(e){
+    fileData.readmeData.url = "";
+  }
+
+});
 </script>
 
 <style>
