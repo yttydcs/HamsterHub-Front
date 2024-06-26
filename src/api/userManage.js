@@ -63,7 +63,7 @@ export default {
 
         // 构造提交数据
         let d = {
-            "deviceId": id
+            "id": id
         }
 
         return axois[type]({
