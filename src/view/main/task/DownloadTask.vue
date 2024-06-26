@@ -115,15 +115,14 @@
         :title="curLang.lang.taskDownload.addTask"
         size="medium"
         :show-line="true"
-
     >
 
       <FolderSelect
-          ref="FolderSelect"
+          ref="folderSelect"
           v-model:show="selectBoxShow"
           :title="curLang.lang.taskDownload.selectBox"
           :data="taskModel"
-          :cancelFunc="() =>{this.selectBoxShow=false;}"
+          :cancelFunc="() =>{selectBoxShow=false;}"
           :confirm-func="confirmSelect"
       />
 
@@ -169,124 +168,85 @@
 
 </template>
 
-<script>
-import {
-  NProgress,
-  NIcon,
-  useLoadingBar,
-  useThemeVars,
-  NButton,
-  NSpace,
-  NFloatButton,
-  NModal,
-  NInput,
-  NForm, NSelect, NFormItemRow
-} from "naive-ui";
-import {computed, reactive, ref} from "vue";
+<script setup>
+import {NProgress, NIcon, useLoadingBar, useThemeVars, NButton,
+  NSpace, NFloatButton, NModal, NInput, NForm, NFormItemRow} from "naive-ui";
+import {computed, onMounted, onUnmounted, reactive, ref} from "vue";
 import { PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
 import { Delete24Regular, ArrowClockwise24Regular } from "@vicons/fluent";
 import { Add, } from "@vicons/ionicons5";
 import curLang from "@/common/lang";
-import fileService from "@/service/hamster/file"
-import fileMenu from "@/service/hamster/fileMenu"
-
 import fileIcon from "@/components/explorer/FileIcon.vue";
 import downloadTask,{delTask} from "@/service/task";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
 
-export default {
-  name: 'DownloadTask',
-  components: {
-    FolderSelect,
-    NFormItemRow, NForm, NInput,
-    NModal,
-    NSpace,
-    NIcon,
-    NButton,
-    NProgress,
-    fileIcon,
-    Delete24Regular,
-    ArrowClockwise24Regular,
-    CaretForwardOutline,
-    PauseOutline,
-    Add,
-    NFloatButton,
-  },
-  methods:{
-    handleDel(tag){
-      delTask(tag);
-      this.flushData();
-    },
-    confirmAddTask(){
-      if(this.taskModel.showPosition ===""){
-        window.$message.warning(curLang.lang.validateMissing);
-        return;
-      }
+let theme = useThemeVars();
+const cubicBezierEaseInOut = computed(() =>theme.value.cubicBezierEaseInOut);
+const hoverColor = computed(() => theme.value.hoverColor);
+const titleColor = computed(() => theme.value.textColor2);
+const loading = useLoadingBar();
+const downloadTasks = reactive({done:[],doing:[]});
+const show = ref(false);
+const selectBoxShow = ref(false);
+const taskModel = reactive({name:"", root:"",parentId:"", showPosition:"",url:""});
+const timerHandle = ref(0);
+const folderSelect = ref(null);
 
-      downloadTask.addTask(this.taskModel.root,this.taskModel.parentId,this.taskModel.url);
-      this.show = false;
-    },
-    confirmSelect(isSelect,root,parentId){
-      this.selectBoxShow = false;
-      if(!isSelect){
-        return;
-      }
-      this.taskModel.parentId = parentId;
-      this.taskModel.root = root;
-      this.taskModel.showPosition = "root: " + root + " parentId: " + parentId;
-
-    },
-    handleSelect(){
-      this.$refs.FolderSelect.flushData();
-      this.selectBoxShow = true;
-    },
-    async flushData() {
-      try {
-        let data = await downloadTask.getTasks()
-        this.downloadTasks.done = data.done;
-        this.downloadTasks.doing = data.doing;
-      }catch (e) {
-        return false;
-      }
-      return true;
-    },
-  },
-  async mounted() {
-    // 避免延迟,首次出错后续不再继续
-    if (!await this.flushData()) {
-      return false;
-    }
-
-    // 轮询列表数据
-    this.timerHandle = setInterval(this.flushData, 2000 )
-  },
-
-  activated() {
-  },
-
-  unmounted() {
-    clearInterval(this.timerHandle)
-  },
-
-  setup(){
-    let theme = useThemeVars();
-    return{
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      hoverColor : computed(() => theme.value.hoverColor),
-      titleColor : computed(() => theme.value.textColor2),
-      collapsed: ref(false),
-      curLang,
-      fileMenu,
-      fileService,
-      loading:useLoadingBar(),
-      downloadTasks:reactive({done:[],doing:[]}),
-      show:ref(false),
-      selectBoxShow:ref(false),
-      taskModel:reactive({name:"", root:"",parentId:"", showPosition:"",url:""}),
-      timerHandle:ref(0),
-    }
-  }
+function handleDel(tag){
+  delTask(tag);
+  flushData();
 }
+
+function confirmAddTask(){
+  if(taskModel.showPosition ===""){
+    window.$message.warning(curLang.lang.validateMissing);
+    return;
+  }
+
+  downloadTask.addTask(taskModel.root,taskModel.parentId,taskModel.url);
+  show.value = false;
+}
+
+function confirmSelect(isSelect,root,parentId){
+  selectBoxShow.value = false;
+  if(!isSelect){
+    return;
+  }
+  taskModel.parentId = parentId;
+  taskModel.root = root;
+  taskModel.showPosition = "root: " + root + " parentId: " + parentId;
+}
+
+function handleSelect(){
+  folderSelect.value.flushData();
+  selectBoxShow.value = true;
+}
+
+async function flushData(){
+  try {
+    let data = await downloadTask.getTasks()
+    downloadTasks.done = data.done;
+    downloadTasks.doing = data.doing;
+  }catch (e) {
+    return false;
+  }
+  return true;
+}
+
+onMounted(async ()=>{
+  // 避免延迟,首次出错后续不再继续
+  if (!await flushData()) {
+    return false;
+  }
+
+  // 轮询列表数据
+  timerHandle.value = setInterval(flushData, 2000 )
+})
+
+onUnmounted(()=>{
+  clearInterval(timerHandle.value)
+})
+
 </script>
 
 <style scoped>
@@ -370,9 +330,4 @@ export default {
   border-radius: 3px;
 
 }
-
-
-
-
-
 </style>
