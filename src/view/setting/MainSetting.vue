@@ -24,7 +24,7 @@
 
 </template>
 
-<script>
+<script setup>
 import { NModal } from "naive-ui";
 import curLang from "@/common/lang";
 import {optionList} from "@/common/setting/option";
@@ -37,39 +37,20 @@ import StoreSetting from "@/components/setting/StoreSetting.vue";
 import localSetting from "@/components/setting/LocalSetting.vue";
 import loginData, {hasPermission} from "@/common/loginData";
 
-export default {
-  name: 'mainSetting',
-  methods: {
-    hasPermission,
-    curdHandle(title,model,fun){
-      this.curdData.title = title
-      this.curdData.model = model
-      this.curdData.fun = fun
-      this.curdData.show = true
-    }
-  },
-  components: {
-    CommonCURD,
-    NModal,
-    UserSetting,
-    UserManageSetting,
-    StoreSetting,
-    localSetting,
-  },
-  setup() {
-    return {
-      curLang,
-      optionList,
-      curdData:reactive({
-        title: "",
-        show: ref(false),
-        model: deviceConfig.model,
-        fun: deviceConfig.fun
-      }),
-      loginData: loginData,
-    }
-  }
+const curdData = reactive({
+  title: "",
+  show: false,
+  model: deviceConfig.model,
+  fun: deviceConfig.fun
+});
+
+function curdHandle(title,model,fun){
+  curdData.title = title
+  curdData.model = model
+  curdData.fun = fun
+  curdData.show = true
 }
+
 </script>
 
 <style>

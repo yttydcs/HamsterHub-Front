@@ -47,8 +47,8 @@
 
 <script setup>
 import {onBeforeRouteUpdate, useRoute, useRouter} from 'vue-router';
-import {NButton, NDataTable, NIcon, NSpace, NInputGroup, NInput, useThemeVars, useLoadingBar} from "naive-ui";
-import {computed, reactive, ref, nextTick, onMounted} from "vue";
+import {NButton, NIcon, NInput, useLoadingBar} from "naive-ui";
+import { reactive, ref, onMounted} from "vue";
 import share from "@/api/share";
 import OpenBox from "@/components/common/OpenBox.vue";
 import calc from "@/common/calc";
@@ -71,7 +71,7 @@ const INCORRECT_KEY = 600009;
 // const cubicBezierEaseInOut = computed(()=>theme.value.cubicBezierEaseInOut);
 const dataRoute = useRoute()
 const router = useRouter();
-const fileSelect= ref(false);
+// const fileSelect= ref(false);
 const shareData=reactive({data:[],});
 const isExist=ref(true);
 const unlock=ref(true);
