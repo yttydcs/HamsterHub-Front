@@ -50,11 +50,9 @@
       </n-button>
     </div>
   </div>
-
-
 </template>
 
-<script>
+<script setup>
 import { NIcon, NButton, useThemeVars} from "naive-ui";
 import { computed } from "vue";
 import { Menu as DetailIcon } from "@vicons/ionicons5";
@@ -63,62 +61,41 @@ import fileIcon from "@/components/explorer/FileIcon.vue";
 import calc from "@/common/calc";
 import fileType from "@/common/fileType";
 
+const props = defineProps({
+  fileIndex:Number,
+  fileName:String,
+  fileImgUrl:String,
+  fileSelect:Boolean,
+  fileClick: Function,
+  dbClick: Function,
+  isDir: Boolean,
+  showMenu:Function,
+  boxStyle:String,
+  size:String,
+  modified:String,
+})
 
-export default {
-  name: 'FileBox',
-  components: {
-    NButton,
-    DetailIcon,
-    NIcon,
-    fileIcon
-  },
-  props:{
-    fileIndex:Number,
-    fileName:String,
-    fileImgUrl:String,
-    fileSelect:Boolean,
-    fileClick: Function,
-    dbClick: Function,
-    isDir: Boolean,
-    showMenu:Function,
-    boxStyle:String,
-    size:String,
-    modified:String,
-  },
-  methods:{
-    handleContextMenuShow(event,data){
-      // 阻止默认事件
-      event.preventDefault();
-      openMenuByCondition(1,data)
-    },
-    handleButtonContextMenuShow(event,data){
-      // 阻止点击事件向上传播
-      event.stopPropagation();
-      this.showMenu(event)
-      openMenuByCondition(1,data)
-    },
+const theme = useThemeVars();
+const borderColor = computed(() => theme.value.borderColor)
+const borderHover = computed(() => theme.value.primaryColorHover)
+const borderSelected = computed(() => theme.value.primaryColorSuppl)
+const cubicBezierEaseInOut = theme.value.cubicBezierEaseInOut
+const opacity2 = computed(() => theme.value.opacity2)
+const hoverColor = computed(() => theme.value.hoverColor)
+const iconType = computed(() => props.isDir?"dir":fileType.getIconTypeByName(props.fileName))
 
-  },
-  computed: {
-    calc() {
-      return calc
-    },
-    iconType: function () {
-      return this.isDir?"dir":fileType.getIconTypeByName(this.fileName);
-    }
-  },
-  setup(){
-    let theme = useThemeVars();
-    return{
-      borderColor : computed(() => theme.value.borderColor),
-      borderHover : computed(() => theme.value.primaryColorHover),
-      borderSelected : computed(() => theme.value.primaryColorSuppl),
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      opacity2 : computed(() => theme.value.opacity2),
-      hoverColor : computed(() => theme.value.hoverColor),
-    }
-  }
+function handleContextMenuShow(event,data){
+  // 阻止默认事件
+  event.preventDefault();
+  openMenuByCondition(1,data)
 }
+function handleButtonContextMenuShow(event,data){
+  // 阻止点击事件向上传播
+  event.stopPropagation();
+  props.showMenu(event)
+  openMenuByCondition(1,data)
+}
+
 </script>
 
 <style scoped>

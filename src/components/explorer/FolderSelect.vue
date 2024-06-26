@@ -37,129 +37,120 @@
   </div>
 </template>
 
-<script>
-import {NButton, NInput, NModal, NSpace, NForm, NFormItem, NTree, NSpin} from "naive-ui";
+<script setup>
+import {NButton, NModal, NSpace, NTree, NSpin} from "naive-ui";
 import {reactive, ref} from "vue";
 import strategy from "@/api/strategy";
 import fileService from "@/service/hamster/file"
 import curLang from "@/common/lang";
 
-export default {
-  name: 'FolderSelect',
-  components: { NButton, NModal, NSpace, NTree, NSpin },
-  props: {
-    title: String,
-    show:Boolean,
-    data:Object,
-    confirmFunc:Function,
-    cancelFunc:Function
-  },
+const props = defineProps({
+  title: String,
+  show:Boolean,
+  data:Object,
+  confirmFunc:Function,
+  cancelFunc:Function
+})
 
-  methods:{
-    flushData(){
-      this.treeData.length = 0;
-      this.fetchRoot();
-    },
-    fetchRoot(){
-      this.loading = true;
-      let that = this
-      strategy.query().then(res =>{
-        let arr = res.data
 
-        if(arr===undefined || arr.length<=0){
-          return
-        }
+const model = reactive({value:""})
+const treeData = ref([
+  {
+    label: "waiting",
+    key: "0",
+    isLeaf: false
+  }
+])
+const loading = ref(false)
+const root = ref(null)
+const parentId = ref(null)
+const isSelect = ref(false)
 
-        that.treeData.length = 0
-        for (let i = 0; i < arr.length; i++) {
-          that.treeData.push({
-            label: arr[i].root,
-            key: arr[i].id,
-            isLeaf: false,
-            isRoot: true,
-            root:arr[i].root
-          })
-        }
+function fetchRoot(){
+  loading.value = true;
+  strategy.query().then(res =>{
+    let arr = res.data
 
-        that.loading = false;
+    if(arr===undefined || arr.length<=0){
+      return
+    }
+
+    treeData.value.length = 0
+    for (let i = 0; i < arr.length; i++) {
+      treeData.value.push({
+        label: arr[i].root,
+        key: arr[i].id,
+        isLeaf: false,
+        isRoot: true,
+        root:arr[i].root
       })
-    },
+    }
 
-    async handleLoad(node) {
-      let root = node.root
-      let parentId = "0";
+    loading.value = false;
+  })
+}
 
-      if(!node.isRoot){
-        parentId = node.key;
+async function handleLoad(node) {
+  let root = node.root
+  let parentId = "0";
+
+  if(!node.isRoot){
+    parentId = node.key;
+  }
+
+  let files = (await fileService.fetchFileData(root,parentId)).data
+
+  if (files.length <=0){
+    node.isLeaf = true
+    window.$message.info("该目录下未发现目录")
+  }else{
+    node.children = [];
+    for (let i = 0; i < files.length; i++) {
+      // 只选文件夹
+      if(files[i].type === 0){
+        node.children.push({
+          label: files[i].name,
+          key: files[i].id,
+          isLeaf: false,
+          isRoot: false,
+          root:node.root
+        })
       }
-
-      let files = (await fileService.fetchFileData(root,parentId)).data
-
-      if (files.length <=0){
-        node.isLeaf = true
-        window.$message.info("该目录下未发现目录")
-      }else{
-        node.children = [];
-        for (let i = 0; i < files.length; i++) {
-          // 只选文件夹
-          if(files[i].type === 0){
-            node.children.push({
-              label: files[i].name,
-              key: files[i].id,
-              isLeaf: false,
-              isRoot: false,
-              root:node.root
-            })
-          }
-        }
-        if(node.children.length<=0){
-          node.isLeaf = true
-          window.$message.info("该目录下未发现目录")
-        }
-      }
-    },
-    handleNodeClick(value,options){
-      let option = options[0]
-
-      if(value.length<=0){
-        this.isSelect=false;
-        return
-      }else{
-        this.isSelect=true;
-      }
-
-      let isRoot = option.isRoot;
-      this.root = option.root;
-
-      if(isRoot){
-        this.parentId = 0;
-      }else{
-        this.parentId = option.key;
-      }
-    },
-  },
-  setup(){
-
-    return {
-      curLang,
-      model:reactive({
-        value:""
-      }),
-      treeData: ref([
-        {
-          label: "waiting",
-          key: "0",
-          isLeaf: false
-        }
-      ]),
-      loading:ref(false),
-      root:ref(null),
-      parentId:ref(null),
-      isSelect:ref(false),
-
+    }
+    if(node.children.length<=0){
+      node.isLeaf = true
+      window.$message.info("该目录下未发现目录")
     }
   }
 }
+
+function flushData(){
+  treeData.value.length = 0;
+  fetchRoot();
+}
+
+function handleNodeClick(value,options){
+  let option = options[0]
+
+  if(value.length<=0){
+    isSelect.value = false;
+    return
+  }else{
+    isSelect.value = true;
+  }
+
+  let isRoot = option.isRoot;
+  root.value = option.root;
+
+  if(isRoot){
+    parentId.value = 0;
+  }else{
+    parentId.value = option.key;
+  }
+}
+
+defineExpose({flushData})
+
 </script>
 
 <style>
@@ -171,7 +162,7 @@ export default {
   width: 600px
 }
 
-// 优化小窗口的体验
+/* 优化小窗口的体验 */
 @media only screen and (max-width: 600px){
   .alertBox{
     width: 100%;

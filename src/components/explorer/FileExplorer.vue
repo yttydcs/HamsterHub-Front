@@ -203,11 +203,6 @@ const props = defineProps({
   readme:Boolean
 })
 
-// console.log(props)
-
-// const { fileMenu, fileService, readme } = toRefs(props);
-
-// console.log(fileMenu, fileService, readme)
 const theme = useThemeVars();
 const BorderColor = computed(()=>theme.value.borderColor)
 const fileData = props.fileService.getFileListObject()

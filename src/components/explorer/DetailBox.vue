@@ -30,13 +30,9 @@
 
 </template>
 
-<script>
+<script setup>
 import {computed, reactive, ref} from "vue";
-import {useRoute} from "vue-router";
 import {NSelect} from "naive-ui";
-
-import hamster from "@/common/adapter/hamster";
-import alist from "@/common/adapter/alist";
 import OpenBox from "@/components/common/OpenBox.vue";
 import file from "@/api/file/hamster/file";
 import calc from "@/common/calc";
@@ -44,116 +40,103 @@ import download from "@/common/download";
 import {useThemeVars} from "naive-ui";
 import curLang from "@/common/lang";
 
-const _adapters = [hamster, alist];
+const props = defineProps({
+  fileService:Object,
+})
 
-export default {
-  name: 'mainDetail',
-  methods: {
-    async flushData(fileObj){
-      let data = fileObj;
+const theme = useThemeVars();
+const borderColor = computed(() => theme.value.borderColor);
+const opacity2 = computed(() => theme.value.opacity2);
+const version = ref(0);
+const detailData = reactive([{
+  title:"",
+  msg:"",
+  url:"",
+  isFolder:false,
+  other:[{key:"key",value:"value"}],
+}]);
+const versionOptions = reactive([]);
 
-      for (let i = 0; i < data.length; i++) {
-        this.detailData[i]={};
-        this.detailData[i]["title"] = data[i].name;
 
-        data[i].created = data[i].created.replace("T"," ");
-        data[i].modified = data[i].modified.replace("T"," ");
+async function flushData(fileObj){
+  let data = fileObj;
 
-        this.detailData[i].version = data[i].version;
+  for (let i = 0; i < data.length; i++) {
+    detailData[i]={};
+    detailData[i]["title"] = data[i].name;
 
-        if(data[i].type === 0){
-          this.detailData[i].isFolder = true;
-          this.detailData[i].url = "";
-          this.detailData[i].msg = data[i].created.replace("T"," ");
-        }else{
-          this.detailData[i].url = await this.handleUrl(data[i].id);
-          data[i].size = calc.toSizeString(data[i].size);
-          this.detailData[i].msg = data[i].size + ` · ` + data[i].created.replace("T"," ");
-        }
+    data[i].created = data[i].created.replace("T"," ");
+    data[i].modified = data[i].modified.replace("T"," ");
 
-        await this.handleItem(data[i],i);
-      }
-      this.createOption();
-    },
-    createOption(){
-      this.versionOptions.length = 0;
-      for (let i = 0; i <this.detailData.length; i++) {
-        this.versionOptions.push({
-          label: "version:"+this.detailData[i].version,
-          value: i,
-        })
-      }
-    },
-    async handleItem(data,p){
-      this.detailData[p].other = []
+    detailData[i].version = data[i].version;
 
-      this.detailData[p].other.push({
-        key:"name",
-        value:data.name
-      })
-
-      this.detailData[p].other.push({
-        key:"size",
-        value:data.size
-      })
-
-      this.detailData[p].other.push({
-        key:"type",
-        value: data.type===1?"file":"folder"
-      })
-
-      this.detailData[p].other.push({
-        key:"version",
-        value: data.version
-      })
-
-      this.detailData[p].other.push({
-        key:"created",
-        value: data.created
-      })
-
-      this.detailData[p].other.push({
-        key:"modified",
-        value: data.modified
-      })
-
-    },
-    async handleUrl(id){
-      let res = await file.getDownloadUrl(id)
-      return download.toAbsolute(res)
-    },
-  },
-  components: {
-    OpenBox,
-    NSelect,
-  },
-  computed:{
-    routeData(){
-      return useRoute();
-    },
-  },
-  props:{
-    fileService:Object
-  },
-  setup() {
-    let theme = useThemeVars();
-    return {
-      curLang,
-      borderColor : computed(() => theme.value.borderColor),
-      opacity2 : computed(() => theme.value.opacity2),
-      version: ref(0),
-      detailData:reactive([{
-        title:"",
-        msg:"",
-        url:"",
-        isFolder:false,
-        other:[{key:"key",value:"value"}],
-      }]),
-      versionOptions:reactive([]),
-
+    if(data[i].type === 0){
+      detailData[i].isFolder = true;
+      detailData[i].url = "";
+      detailData[i].msg = data[i].created.replace("T"," ");
+    }else{
+      detailData[i].url = await handleUrl(data[i].id);
+      data[i].size = calc.toSizeString(data[i].size);
+      detailData[i].msg = data[i].size + ` · ` + data[i].created.replace("T"," ");
     }
+
+    await handleItem(data[i],i);
+  }
+  createOption();
+}
+
+function createOption(){
+  versionOptions.length = 0;
+  for (let i = 0; i <detailData.length; i++) {
+    versionOptions.push({
+      label: "version:"+detailData[i].version,
+      value: i,
+    })
   }
 }
+
+async function handleItem(data,p){
+  detailData[p].other = []
+
+  detailData[p].other.push({
+    key:"name",
+    value:data.name
+  })
+
+  detailData[p].other.push({
+    key:"size",
+    value:data.size
+  })
+
+  detailData[p].other.push({
+    key:"type",
+    value: data.type===1?"file":"folder"
+  })
+
+  detailData[p].other.push({
+    key:"version",
+    value: data.version
+  })
+
+  detailData[p].other.push({
+    key:"created",
+    value: data.created
+  })
+
+  detailData[p].other.push({
+    key:"modified",
+    value: data.modified
+  })
+
+}
+
+async function handleUrl(id){
+  let res = await file.getDownloadUrl(id)
+  return download.toAbsolute(res)
+}
+
+defineExpose({flushData});
+
 </script>
 
 <style scoped>

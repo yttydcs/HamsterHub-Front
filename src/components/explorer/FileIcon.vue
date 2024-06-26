@@ -82,17 +82,12 @@
     </svg>
 </template>
 
-<script>
+<script setup>
 
+const props = defineProps({
+  fileType: String
+})
 
-export default {
-  name: 'FileIcon',
-  props: {
-    fileType: String
-  },
-  setup() {
-  }
-}
 </script>
 
 <style>

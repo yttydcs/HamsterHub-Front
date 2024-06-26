@@ -53,71 +53,59 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {NGridItem,NGrid} from "naive-ui";
-
 import FileBox from "@/components/explorer/FileBox.vue";
+import {reactive} from "vue";
 
-export default {
-  name: 'FileList',
-  components: {
-    FileBox,
-    NGridItem,
-    NGrid
-  },
-  props: {
-    fileList:Object,
-    fileClick:Function,
-    enterPath:Function,
-    showMenu:Function,
-    boxStyle:String,
-    moveFunc:Function,
-  },
-  methods: {
-    dragstart(e,file){
-      let target = []
-      if(file.selected){
-        let files = this.fileList.file
-        for (let i = 0; i < files.length; i++) {
-          if(files[i].selected){
-            target.push(files[i].other.id)
-          }
-        }
-      }else{
-        target.push(file.other.id)
-      }
-      e.dataTransfer.setData('dragFile', target)
-    },
-    dragend(e){
-      // 防止下次移动冲突
-      this.dragFile.length=0;
-    },
-    dragDrop(e,file){
-      if(!file.is_dir){
-        return;
-      }
-      let to = file.other.id;
-      let str = e.dataTransfer.getData('dragFile')
+const props = defineProps({
+  fileList:Object,
+  fileClick:Function,
+  enterPath:Function,
+  showMenu:Function,
+  boxStyle:String,
+  moveFunc:Function,
+})
+const dragFile = reactive([])
 
-      if(!str ){
-        return
+function dragstart(e,file){
+  let target = []
+  if(file.selected){
+    let files = props.fileList.file
+    for (let i = 0; i < files.length; i++) {
+      if(files[i].selected){
+        target.push(files[i].other.id)
       }
-      let files = str.split(",");
-      if(files.length <= 0){
-        return;
-      }
-
-      for (let i = 0; i < files.length; i++) {
-        let from = files[i]
-        this.moveFunc(from ,to );
-      }
-    },
-
-  },
-  setup(){
-    return{
-      dragFile:[]
     }
+  }else{
+    target.push(file.other.id)
+  }
+  e.dataTransfer.setData('dragFile', target)
+}
+
+function dragend(e){
+  // 防止下次移动冲突
+  dragFile.length=0;
+}
+
+function dragDrop(e,file){
+  if(!file.is_dir){
+    return;
+  }
+  let to = file.other.id;
+  let str = e.dataTransfer.getData('dragFile')
+
+  if(!str ){
+    return
+  }
+  let files = str.split(",");
+  if(files.length <= 0){
+    return;
+  }
+
+  for (let i = 0; i < files.length; i++) {
+    let from = files[i]
+    props.moveFunc(from ,to );
   }
 }
 </script>
