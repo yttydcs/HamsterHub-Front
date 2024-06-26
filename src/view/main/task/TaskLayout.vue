@@ -31,27 +31,17 @@
 
 </template>
 
-<script>
+<script setup>
 import {NLayout, NLayoutSider, NMenu, NIcon, useLoadingBar} from "naive-ui";
-import {h, reactive, ref, watch} from "vue";
-import { HomeOutline,
-  ShareSocialOutline,
-  FileTrayFullOutline,
-  CloudDownloadOutline,
-  FolderOpenOutline,
-  CloudUploadOutline,
-  } from "@vicons/ionicons5";
-import { Recycle } from "@vicons/tabler";
-import { Collections24Regular } from "@vicons/fluent";
-
-
+import {h, reactive, ref, watch, defineComponent} from "vue";
+import { CloudDownloadOutline, CloudUploadOutline } from "@vicons/ionicons5";
 import curLang from "@/common/lang";
-import strategy from "@/api/strategy";
-import fileService from "@/service/hamster/file"
-import fileMenu from "@/service/hamster/fileMenu"
 
+defineComponent({
+  name: 'TaskLayout',
+});
 
-const MenuOption = reactive(
+const menuOptions = reactive(
     [
     {
       label: curLang.lang.taskUpload.title,
@@ -68,50 +58,23 @@ const MenuOption = reactive(
 
   ]
 )
-
+const collapsed = ref(false);
+const loading = useLoadingBar()
 
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-export default {
-  name: 'TaskLayout',
-  components: {
-    NLayout,
-    NLayoutSider,
-    NMenu,
-  },
-  methods:{
-    handleMenuSelect(key,ob){
-      if(key==="upload"){
-        this.$router.push("/task/upload");
-      }
-    },
-  },
-  mounted() {
-  },
-  activated() {
-  },
-
-  setup(){
-    watch(curLang, () => {
-      MenuOption[0].label = curLang.lang.taskUpload.title
-      MenuOption[1].label = curLang.lang.taskDownload.title
-    });
-
-    return{
-      collapsed: ref(false),
-      menuOptions: MenuOption,
-      curRoot:ref(""),
-      curStrategy:reactive({title:"",free:"",total:""}),
-      strategy:reactive([]),
-      curLang,
-      fileMenu,
-      fileService,
-      loading:useLoadingBar(),
-    }
+function handleMenuSelect(key,ob){
+  if(key==="upload"){
+    this.$router.push("/task/upload");
   }
 }
+
+watch(curLang, () => {
+  menuOptions[0].label = curLang.lang.taskUpload.title
+  menuOptions[1].label = curLang.lang.taskDownload.title
+});
 </script>
 
 <style>
