@@ -41,31 +41,21 @@
 
 </template>
 
-<script>
+<script setup>
 import {NLayout, NLayoutSider, NMenu, NIcon, useLoadingBar} from "naive-ui";
-import {h, reactive, ref, watch} from "vue";
-import {
-  HomeOutline,
-  ShareSocialOutline,
-  FileTrayFullOutline,
-  DocumentTextOutline,
-  FolderOpenOutline,
-  AddCircleOutline,
-  FlagOutline,
-  BookmarkOutline, CloudUploadOutline, CloudDownloadOutline
-} from "@vicons/ionicons5";
-import { Recycle } from "@vicons/tabler";
-import {Collections24Regular, TaskListSquareRtl24Regular} from "@vicons/fluent";
-import FileExplorer from "@/components/explorer/FileExplorer.vue";
+import {h, onMounted, reactive, ref, watch, defineComponent} from "vue";
+import { ShareSocialOutline, FolderOpenOutline,} from "@vicons/ionicons5";
+import { TaskListSquareRtl24Regular } from "@vicons/fluent";
 import DeviceUsage from "@/components/common/DeviceUsage.vue";
-
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
-import fileService from "@/service/hamster/file"
-import fileMenu from "@/service/hamster/fileMenu"
+import {useRoute, useRouter} from "vue-router";
 
+defineComponent({
+  name: 'MainIndex',
+});
 
-const MenuOption = reactive(
+const menuOptions = reactive(
     [
     {
       label: curLang.lang.leftMenu.file,
@@ -97,199 +87,160 @@ const MenuOption = reactive(
         },
       ],
       },
-
-
-
-      // {
-    //   label: curLang.lang.leftMenuFavorite,
-    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-    //   key: 'favorite',
-    //   icon: renderIcon(Collections24Regular),
-    // },{
-    //   label: curLang.lang.leftMenuRecycle,
-    //   href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-    //   key: 'recycle',
-    //   icon: renderIcon(Recycle),
-    // },{
-    //   label: curLang.lang.leftMenuShortcut,
-    //   key: 'shortcut',
-    //   icon: renderIcon(BookmarkOutline),
-    //   children: [
-    //     {
-    //       label: curLang.lang.leftMenuAdd,
-    //       href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-    //       key: 'add',
-    //       icon: renderIcon(AddCircleOutline),
-    //     }
-    //   ]
-    // },
   ]
-)
+);
 
+const route = useRoute();
+const router = useRouter();
+const collapsed = ref(false);
+const curRoot = ref("");
+const showDevice = ref(false);
+const showRoot = ref("");
+const curStrategy = reactive({title:"",free:"",total:""});
+const strategys = reactive([]);
+const loading = useLoadingBar();
 
 function renderIcon(icon) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 
-export default {
-  name: 'mainLayout',
-  components: {
-    NLayout,
-    NLayoutSider,
-    NMenu,
-    DeviceUsage,
-  },
-  methods:{
-    // 获取可用的根目录
-    async fetchRoot(){
-      this.loading.start();
-      try{
-        let res = await strategy.query()
+// 获取可用的根目录
+async function fetchRoot(){
+  loading.start();
+  try{
+    let res = await strategy.query()
 
-        let arr = res.data
+    let arr = res.data
 
-        if(arr===undefined || arr.length<=0){
-          return
-        }
-
-        MenuOption[0].children = []
-        this.strategy.length = 0
-
-        for (let i = 0; i < arr.length; i++) {
-          MenuOption[0].children.push({
-            label: arr[i].name,
-            key: 'root-'+arr[i].root,
-            data: arr[i].root,
-            index: i
-          })
-
-          // 缓存 strategy
-          this.strategy.push(arr[i]);
-        }
-        this.loading.finish();
-      }catch (e) {
-        this.loading.error();
-      }
-    },
-    async switchToRoot(root){
-      this.loading.start()
-      this.$router.push("/"+root);
-      this.curRoot = root
-      this.loading.finish()
-    },
-    async setDeviceUsage(index,ob=null){
-      let aim
-      if(ob === null){
-        if(index >= this.strategy.length){
-          return
-        }
-        aim = this.strategy[index]
-      }else{
-        aim = ob
-      }
-
-      try {
-        let strategySize = (await strategy.getStrategySize(aim.id)).data
-
-        this.curStrategy.title = aim.name;
-        this.curStrategy.free = strategySize.usable;
-        this.curStrategy.total = strategySize.total;
-      }catch (e) {
-        // 隐藏剩余空间组件
-        this.curStrategy.total = 0
-      }
-
-    },
-    handleMenuSelect(key,ob){
-      if(key.substr(0,4)==="root"){
-        this.switchToRoot(ob.data);
-        this.showDevice = true;
-      }else{
-        this.$router.push("/" + key);
-        this.showDevice = false;
-      }
-
-    },
-    handleRoute(rootName){
-      if(rootName === this.showRoot){
-        return;
-      }
-      let index = null
-      for (let i = 0; i < this.strategy.length; i++) {
-        if(this.strategy[i].root === rootName){
-          index = i;
-        }
-      }
-
-      if(index!==null){
-        this.setDeviceUsage(index);
-        this.showRoot = rootName ;
-        this.showDevice = true;
-      }
-    },
-    checkUrl(path){
-      let url = path.split("/");
-
-      // 初始状态自动导航到第一个策略
-      if(url.length <=1 || (url.length ===2 && url[1]==="")){
-        if(this.strategy.length > 0){
-          this.$router.push("/"+this.strategy[0].root)
-        }
-        return
-      }
-
-      let root = url[1];
-
-      this.handleRoute(root)
+    if(arr===undefined || arr.length<=0){
+      return
     }
-  },
-  async mounted() {
-    await this.fetchRoot()
-    let path = this.$router.currentRoute.value.fullPath
-    this.checkUrl(path);
-  },
-  // activated() {
-  //   this.fetchRoot()
-  // },
-  watch: {
-    // 响应路由变化
-    $route(to, from) {
-      this.checkUrl(to.fullPath);
-    }
-  },
-  setup(){
-    // 响应语言变化
-    watch(curLang, () => {
-      function setLangData(Option) {
-        for (let i = 0; i < Option.length; i++) {
-          if ("label" in Option[i]){
-            Option[i].label =curLang.lang.leftMenu[Option[i].key] ;
-          }
 
-          // 如果还有子菜单就继续
-          if("children" in Option[i] && !Option[i].ignoreChildren){
-            setLangData(Option[i].children);
-          }
-        }
-      }
-      setLangData(MenuOption)
-    });
+    menuOptions[0].children = []
+    strategys.length = 0
 
-    return{
-      collapsed: ref(false),
-      menuOptions: MenuOption,
-      curRoot:ref(""),
-      showDevice:ref(false),
-      showRoot:ref(""),
-      curStrategy:reactive({title:"",free:"",total:""}),
-      strategy:reactive([]),
-      curLang,
-      fileMenu,
-      fileService,
-      loading:useLoadingBar(),
+    for (let i = 0; i < arr.length; i++) {
+      menuOptions[0].children.push({
+        label: arr[i].name,
+        key: 'root-'+arr[i].root,
+        data: arr[i].root,
+        index: i
+      })
+
+      // 缓存 strategy
+      strategys.push(arr[i]);
     }
+    loading.finish();
+  }catch (e) {
+    loading.error();
   }
 }
+
+async function switchToRoot(root){
+  loading.start()
+  await router.push("/" + root);
+  curRoot.value = root
+  loading.finish()
+}
+
+async function setDeviceUsage(index,ob=null){
+  let aim
+  if(ob === null){
+    if(index >= strategys.length){
+      return
+    }
+    aim = strategys[index]
+  }else{
+    aim = ob
+  }
+
+  try {
+    let strategySize = (await strategy.getStrategySize(aim.id)).data
+
+    curStrategy.title = aim.name;
+    curStrategy.free = strategySize.usable;
+    curStrategy.total = strategySize.total;
+  }catch (e) {
+    // 隐藏剩余空间组件
+    curStrategy.total = 0
+  }
+
+}
+
+function handleMenuSelect(key,ob){
+  if(key.substr(0,4)==="root"){
+    switchToRoot(ob.data);
+    showDevice.value = true;
+  }else{
+    router.push("/" + key);
+    showDevice.value = false;
+  }
+
+}
+
+function handleRoute(rootName){
+  if(rootName === showRoot.value){
+    return;
+  }
+  let index = null
+  for (let i = 0; i < strategys.length; i++) {
+    if(strategys[i].root === rootName){
+      index = i;
+    }
+  }
+
+  if(index!==null){
+    setDeviceUsage(index);
+    showRoot.value = rootName ;
+    showDevice.value = true;
+  }
+}
+
+function checkUrl(path){
+  let url = path.split("/");
+
+  // 初始状态自动导航到第一个策略
+  if(url.length <=1 || (url.length ===2 && url[1]==="")){
+    if(strategys.length > 0){
+      router.push("/"+strategys[0].root)
+    }
+    return
+  }
+
+  let root = url[1];
+
+  handleRoute(root)
+}
+
+
+onMounted(async () => {
+  await fetchRoot()
+  let path = router.currentRoute.value.fullPath
+  checkUrl(path);
+});
+
+
+// 响应路由变化
+watch(route, (newRoute) => {
+  checkUrl(newRoute.fullPath);
+});
+
+// 响应语言变化
+watch(curLang, () => {
+  function setLangData(Option) {
+    for (let i = 0; i < Option.length; i++) {
+      if ("label" in Option[i]){
+        Option[i].label =curLang.lang.leftMenu[Option[i].key];
+      }
+
+      // 如果还有子菜单就继续
+      if("children" in Option[i] && !Option[i].ignoreChildren){
+        setLangData(Option[i].children);
+      }
+    }
+  }
+  setLangData(menuOptions);
+});
 </script>
 
 <style scoped>

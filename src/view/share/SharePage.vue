@@ -19,7 +19,6 @@
       <div class="lock" v-show="!unlock">
         <div class="unlockBox">
           <n-icon :component="lockIcon" size="100" :depth="4" />
-<!--          <n-input-group >-->
             <n-input
                 class="password-box"
                 type="password"
@@ -30,9 +29,7 @@
             <n-button class="submit-box" type="primary" ghost @click="handleSubmitKey">
               {{ curLang.lang.submitBtn }}
             </n-button>
-<!--          </n-input-group>-->
           <br>
-
         </div>
 
       </div>
