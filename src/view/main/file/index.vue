@@ -6,26 +6,16 @@
   />
 </template>
 
-<script>
+<script setup>
 import FileExplorer from "@/components/explorer/FileExplorer.vue";
 import curLang from "@/common/lang";
 import fileService from "@/service/hamster/file"
 import fileMenu from "@/service/hamster/fileMenu"
+import {defineComponent} from "vue";
 
-
-export default {
-  name: 'fileLayout',
-  components: {
-    FileExplorer,
-  },
-  setup(){
-    return{
-      curLang,
-      fileMenu,
-      fileService,
-    }
-  }
-}
+defineComponent({
+  name: 'MainIndex',
+});
 </script>
 
 <style>
