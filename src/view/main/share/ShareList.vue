@@ -55,69 +55,53 @@
 
 </template>
 
-<script>
+<script setup>
 import {NButton, NIcon, NSpace, useThemeVars} from "naive-ui";
-import {computed, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import share from "@/api/share";
 import {BanOutline, CloudDownloadOutline, OpenOutline} from "@vicons/ionicons5";
 import curLang from "@/common/lang";
+import {onActivated} from "vue-demi";
 
-export default {
-  name: 'ShareLayout',
-  components: {
-    NSpace,
-    NButton,
-    NIcon,
-    BanOutline,
-    CloudDownloadOutline,
-    OpenOutline,
-  },
-  methods:{
-    flushData(){
-      let that = this
-      share.query().then((res)=>{
-        that.shareListData.data = res.data
-      })
-    },
-    handleDelete(id){
-      let that = this
-      share.delete(id).then(res=>{
-        that.flushData()
-      })
-    },
-    handleDownload(ticket,key){
-      let that = this
-      try {
-        share.download(ticket,key)
-      }catch (e) {
 
-      }
+let theme = useThemeVars();
+const borderColor = computed(() => theme.value.borderColor);
+const borderHover = computed(() => theme.value.primaryColorHover);
+const borderSelected = computed(() => theme.value.primaryColorSuppl);
+const hoverColor = computed(() => theme.value.hoverColor);
+const textColor = computed(() => theme.value.textColor3);
+const cubicBezierEaseInOut = computed(() => theme.value.cubicBezierEaseInOut);
+const fileSelect = ref(false);
+const shareListData=reactive({data:[]});
 
-    }
-  },
-  mounted() {
-    this.flushData()
-  },
-  activated() {
-    this.flushData()
-  },
-  setup(){
-    let theme = useThemeVars();
-    return{
-      curLang,
-      borderColor : computed(() => theme.value.borderColor),
-      borderHover : computed(() => theme.value.primaryColorHover),
-      borderSelected : computed(() => theme.value.primaryColorSuppl),
-      hoverColor : computed(() => theme.value.hoverColor),
-      textColor : computed(() => theme.value.textColor3),
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileSelect: false,
-      shareListData:reactive({
-        data:[],
-      }),
-    }
+function flushData(){
+  share.query().then((res)=>{
+    shareListData.data = res.data
+  })
+}
+
+function handleDelete(id){
+  share.delete(id).then(res=>{
+    flushData()
+  })
+}
+
+function handleDownload(ticket,key){
+  try {
+    share.download(ticket,key)
+  }catch (e) {
+
   }
 }
+
+onMounted(()=>{
+  flushData()
+})
+
+onActivated(()=>{
+  flushData()
+})
+
 </script>
 
 <style scoped>
