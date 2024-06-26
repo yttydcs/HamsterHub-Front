@@ -5,31 +5,22 @@
 
 </template>
 
-<script>
+<script setup>
 import danma from "@/api/danma"
+import {defineComponent, onMounted} from "vue";
 
+defineComponent({
+  name: 'TestLayout',
+});
 
-export default {
-  name: 'testPage',
-  components: {
-    // previewVideo
-  },
-  mounted() {
-    this.test()
-  },
-  methods: {
-    async test(){
-      let res = (await danma.queryCidDirect(null,"BV1di421C7ZY")).data[0].cid
-      console.log(res)
-      console.log(await danma.queryXmlForBiliDirect(res))
-    },
-
-  },
-  setup() {
-    return {}
-
-  }
+async function test(){
+  let res = (await danma.queryCidDirect(null,"BV1di421C7ZY")).data[0].cid
 }
+
+onMounted(()=>{
+  test()
+})
+
 </script>
 
 <style>

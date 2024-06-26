@@ -42,8 +42,6 @@
                   <PauseOutline />
                 </n-icon>
               </n-button>
-
-
             </n-space>
           </div>
         </div>
@@ -58,9 +56,6 @@
           
         </div>
       </div>
-
-
-
     </div>
 
     <div class="title">
@@ -95,18 +90,10 @@
               :fill-border-radius="4"
               status="success"
           />
-
         </div>
       </div>
-
-
-
     </div>
   </div>
-
-
-
-
 </template>
 
 <script setup>
