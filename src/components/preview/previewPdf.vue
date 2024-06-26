@@ -5,26 +5,13 @@
 
 </template>
 
-<script>
+<script setup>
 import PDF from "pdf-vue3";
-export default {
-  name: 'pdfBox',
-  components: {
-    PDF
-  },
-  props:{
-    url:String,
-  },
-  setup(){
-    return{
-    }
-  }
-}
+defineProps({ url:String })
 </script>
 
 <style scoped>
 .pdfBox{
   height: calc(100vh - 250px) ;
 }
-
 </style>

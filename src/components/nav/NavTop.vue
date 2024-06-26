@@ -116,8 +116,8 @@
 
 </template>
 
-<script>
-import {defineComponent, h, reactive, ref} from "vue";
+<script setup>
+import {computed, defineComponent, h, reactive, ref} from "vue";
 import {NIcon, NAvatar, NButton, NSpace, NInput, NDivider, NDropdown, NFormItemRow, NForm, NModal} from "naive-ui";
 import {
   SettingsOutline,
@@ -126,19 +126,12 @@ import {
   SearchOutline,
   LanguageOutline,
   FolderOpenOutline,
-  ShareSocialOutline,
   LogOutOutline,
-  PencilOutline,
 } from "@vicons/ionicons5";
-
-import {
-  TaskListSquareRtl24Regular
-} from "@vicons/fluent";
 
 
 import loginData, {removeLoginData} from "@/common/loginData"
 import login from "@/api/login";
-
 import curLang, {switchLang} from "@/common/lang";
 
 const renderIcon = (icon) => {
@@ -149,90 +142,45 @@ const renderIcon = (icon) => {
   };
 };
 const userOptions= [
-  // {
-  //   label: "修改密码",
-  //   key: "change",
-  //   icon: renderIcon(PencilOutline)
-  // },
   {
     label: "退出登录",
     key: "logout",
     icon: renderIcon(LogOutOutline)
   }
 ];
+const props = defineProps({switchThemeFunc: Function});
+const name = ref("HamsterHub");
+const searchText =  ref(null);
+const changePwdShow =  ref(false);
+const formData = reactive({newPwd:"",oldPwd:""});
+const appName = computed(() => window.hamsterHubConfig.name || process.env["VUE_APP_NAME"])
 
-export default defineComponent({
-  name: 'NavTop',
-  components: {
-    NModal,
-    NForm, NFormItemRow,
-    NButton,
-    NIcon,
-    NAvatar,
-    NInput,
-    NDivider,
-    SettingsOutline,
-    NSpace,
-    Contrast,
-    PersonOutline,
-    LanguageOutline,
-    FolderOpenOutline,
-    // ShareSocialOutline,
-    // TaskListSquareRtl24Regular,
-    NDropdown,
-  },
-  props: {
-    switchThemeFunc: Function
-  },
-  methods: {
-    switchLanguage (){
-      if(curLang.name === "zh"){
-        switchLang(1)
-      }else{
-        switchLang(0)
-      }
-    },
-    async handleSelect(key) {
-      switch (key) {
-        case "logout" :
-          await login.logout();
-          // this.$router.push("/login");
-          break
-        case "change" :
-          this.changePwdShow = true
-          break
-      }
-    },
-    async confirmChangePwd(){
-      let that = this;
-      login.changePwd(this.formData.oldPwd,this.formData.newPwd).then(res=>{
-        removeLoginData();
-        // that.$router.push("/login");
-        that.changePwdShow = false;
-      })
-    }
-
-
-  },
-  computed:{
-    appName(){
-      return window.hamsterHubConfig.name || process.env["VUE_APP_NAME"];
-    },
-  },
-  setup() {
-
-    return {
-      name:"HamsterHub",
-      searchText: ref(null),
-      loginData: loginData,
-      SearchOutline,
-      curLang,
-      userOptions,
-      changePwdShow: ref(false),
-      formData:reactive({newPwd:"",oldPwd:""}),
-    };
+function switchLanguage (){
+  if(curLang.name === "zh"){
+    switchLang(1)
+  }else{
+    switchLang(0)
   }
-});
+}
+
+async function handleSelect(key) {
+  switch (key) {
+    case "logout" :
+      await login.logout();
+      break
+    case "change" :
+      changePwdShow.value = true
+      break
+  }
+}
+
+async function confirmChangePwd(){
+  login.changePwd(formData.oldPwd,formData.newPwd).then(res=>{
+    removeLoginData();
+    changePwdShow.value = false;
+  })
+}
+
 </script>
 
 <style scoped lang="css">

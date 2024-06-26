@@ -3,30 +3,13 @@
     <vue-office-docx
         :src="url"
     />
-
-
   </div>
-
 </template>
 
-<script>
+<script setup>
 import VueOfficeDocx from '@vue-office/docx'
 import '@vue-office/docx/lib/index.css'
-
-
-export default {
-  name: 'markdownBox',
-  components: {
-    VueOfficeDocx,
-  },
-  props:{
-    url:String,
-  },
-  setup(){
-    return{
-    }
-  }
-}
+defineProps({url:String})
 </script>
 
 <style scoped>

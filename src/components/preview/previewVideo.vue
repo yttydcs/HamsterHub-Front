@@ -1,6 +1,6 @@
 <template>
   <div ref="playContainer" class="videoBox">
-    <video ref="player-box" id="player-box" class="player" playsinline controls :src="src">
+    <video ref="playerBox" id="player-box" class="player" playsinline controls :src="src">
       <!-- Captions are optional -->
 <!--      <track kind="captions" label="English captions" src="http://127.0.0.1:38088/api/download?ticket=iCsmIVvC4H&fileName=test.vtt" srclang="en" default />-->
     </video>
@@ -40,7 +40,7 @@
         <n-button class="sendBtn" type="primary" block secondary strong @click="videoSettingHandle">
           {{ curLang.lang.curd.submitBtn }}
         </n-button>
-        <n-button class="sendBtn" type="primary" block secondary strong @click="()=>{this.videoSettingShow = false}">
+        <n-button class="sendBtn" type="primary" block secondary strong @click="()=>{videoSettingShow = false}">
           {{ curLang.lang.curd.cancelBtn }}
         </n-button>
       </n-space>
@@ -51,10 +51,10 @@
 
 </template>
 
-<script>
+<script setup>
 import curLang from "@/common/lang";
-import danma, {loadDanmaku} from "@/service/danma";
-import {reactive, ref, watch} from "vue";
+import {loadDanmaku} from "@/service/danma";
+import {onMounted, reactive, ref, nextTick} from "vue";
 
 // 提供播放器支持
 import 'plyr/dist/plyr.css';
@@ -64,6 +64,16 @@ import Plyr from 'plyr';
 import Danmaku from 'danmaku/dist/esm/danmaku.dom.js';
 import {NButton, NForm, NFormItemRow, NInput, NModal, NSelect, NSpace} from "naive-ui";
 import {getEnum} from "@/common/enums";
+import {onBeforeUnmount} from "vue-demi";
+
+const props = defineProps({src:String, savedTimeKey:String,})
+const playerObj = reactive({plyr:null,danmaku:null});
+const resizeObserver = ref(null);
+const ready = ref(false);
+const videoSettingShow = ref(false);
+const danmakuSetting = reactive({type:"",url:""});
+const danmakuTypeOptions = reactive(createDanmakuTypeOptions());
+const playerBox = ref(null)
 
 function createDanmakuTypeOptions(){
   let danmakuType = getEnum("danmakuType")
@@ -75,166 +85,148 @@ function createDanmakuTypeOptions(){
   return res;
 }
 
-export default {
-  name: 'videoBox',
-  components: {NFormItemRow, NSelect, NSpace, NModal, NForm, NButton, NInput},
-  mounted() {
-    this.initPlyr();
-    this.ready = true;
-    this.$nextTick(this.initDanMa);
-
-    this.resizeObserver = new ResizeObserver(this.debounce(this.handleResize, 500))
-    this.resizeObserver.observe(this.$refs["player-box"]);
-  },
-  beforeUnmount() {
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-  },
-  methods:{
-    initPlyr (){
-      let option = {
-        controls: [
-          'play-large',
-          // 'restart',
-          'rewind',
-          'play',
-          'fast-forward',
-          'progress',
-          'current-time',
-          'duration',
-          'mute',
-          'volume',
-          'captions',
-          'settings',
-          'pip',
-          'airplay',
-          // 'download',
-          'fullscreen',
-        ],
-        i18n: curLang.lang.video ,
-        tooltips: {
-          controls: true,
-          seek: true,
-        },
-        keyboard: {
-          focused: true,
-          global: true,
-        },
-        settings: ['captions', 'quality', 'speed', 'loop'],
-        speed: {
-          selected: 1,
-          options: [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4],
-        },
-        iconUrl:"/static/img/file/plyr.svg",
-      }
-      this.playerObj.plyr = new Plyr(".player", option);
-
-      // 尝试回复进度
-      let key = "savedTime-"+this.savedTimeKey
-      const savedTime = localStorage.getItem(key);
-
-      if (savedTime) {
-        // 仅在第一次回复位置
-        this.playerObj.plyr.once("playing", ()=>{
-          window.$message.info(curLang.lang.video.autoGo)
-          this.playerObj.plyr.currentTime = parseFloat(savedTime);
-        })
-      }
-
-      // 记住当前播放位置
-      this.playerObj.plyr.on('timeupdate', () => {
-        localStorage.setItem(key, this.playerObj.plyr.currentTime);
-      });
-
-
-      // 播放结束清除记住的位置
-      this.playerObj.plyr.on('ended', () => {
-        localStorage.removeItem(key);
-      });
-
+function initPlyr (){
+  let option = {
+    controls: [
+      'play-large',
+      // 'restart',
+      'rewind',
+      'play',
+      'fast-forward',
+      'progress',
+      'current-time',
+      'duration',
+      'mute',
+      'volume',
+      'captions',
+      'settings',
+      'pip',
+      'airplay',
+      // 'download',
+      'fullscreen',
+    ],
+    i18n: curLang.lang.video ,
+    tooltips: {
+      controls: true,
+      seek: true,
     },
-    initDanMa(){
-      let danmaku = new Danmaku({
-        container: document.getElementById('dan-mu-box'),
-        media: document.getElementById('player-box'),
-        comments: [],
-        engine: 'dom',
-        speed: 144
-      });
-      this.playerObj.danmaku = danmaku;
-      this.loadDanMa();
+    keyboard: {
+      focused: true,
+      global: true,
     },
-    debounce(func, delay) {// 防抖
-      let timer;
-      return function(...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      };
+    settings: ['captions', 'quality', 'speed', 'loop'],
+    speed: {
+      selected: 1,
+      options: [0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4],
     },
-    handleResize(entries) {
-      this.playerObj.danmaku.resize();
-    },
-    async loadDanMa(){
-      if(!this.danmakuSetting.type || !this.danmakuSetting.url){
-        return
-      }
-      // 清除原先弹幕
-      this.playerObj.danmaku.clear();
-      await loadDanmaku(this.danmakuSetting.type,this.danmakuSetting.url,this.insertBiliDanMa);
-    },
-    async videoSettingHandle(){
-      this.videoSettingShow = false;
-      await this.loadDanMa();
-    },
-    settingFunc(){
-      this.videoSettingShow = true;
-    },
-    insertBiliDanMa(text,mode,time,color){
-      let _mode = 'rtl'
-
-      if(mode === '5'){
-        _mode = 'top'
-      }else if(mode === '4'){
-        _mode = 'bottom'
-      }
-
-      this.playerObj.danmaku.emit({
-        text: text,
-        // 'rtl'(right to left) by default, available mode: 'ltr', 'rtl', 'top', 'bottom'.
-        mode: _mode,
-
-        time: time,
-
-        style: {
-          fontSize: '20px',
-          color: color,
-          textShadow: "#000 1px 0 1px,#000 0 1px 1px,#000 0 -1px 1px,#000 -1px 0 1px",
-          'font-weight': '500'
-        },
-
-      });
-
-    }
-  },
-  props:{
-    src:String,
-    savedTimeKey:String,
-  },
-  setup(){
-    return{
-      curLang,
-      playerObj:reactive({plyr:null,danmaku:null}),
-      resizeObserver: null,
-      ready:ref(false),
-      videoSettingShow:ref(false),
-      danmakuSetting:reactive({type:"",url:""}),
-      danmakuTypeOptions: reactive(createDanmakuTypeOptions())
-    }
+    iconUrl:"/static/img/file/plyr.svg",
   }
+  playerObj.plyr = new Plyr(".player", option);
+
+  // 尝试回复进度
+  let key = "savedTime-" + props.savedTimeKey
+  const savedTime = localStorage.getItem(key);
+
+  if (savedTime) {
+    // 仅在第一次回复位置
+    playerObj.plyr.once("playing", ()=>{
+      window.$message.info(curLang.lang.video.autoGo)
+      playerObj.plyr.currentTime = parseFloat(savedTime);
+    })
+  }
+
+  // 记住当前播放位置
+  playerObj.plyr.on('timeupdate', () => {
+    localStorage.setItem(key, playerObj.plyr.currentTime);
+  });
+
+
+  // 播放结束清除记住的位置
+  playerObj.plyr.on('ended', () => {
+    localStorage.removeItem(key);
+  });
+
 }
+function initDanMa(){
+  let danmaku = new Danmaku({
+    container: document.getElementById('dan-mu-box'),
+    media: document.getElementById('player-box'),
+    comments: [],
+    engine: 'dom',
+    speed: 144
+  });
+  playerObj.danmaku = danmaku;
+  loadDanMa();
+}
+function debounce(func, delay) {// 防抖
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+function handleResize(entries) {
+  playerObj.danmaku.resize();
+}
+async function loadDanMa(){
+  if(!danmakuSetting.type || !danmakuSetting.url){
+    return
+  }
+  // 清除原先弹幕
+  playerObj.danmaku.clear();
+  await loadDanmaku(danmakuSetting.type,danmakuSetting.url,insertBiliDanMa);
+}
+async function videoSettingHandle(){
+  videoSettingShow.value = false;
+  await loadDanMa();
+}
+function settingFunc(){
+  videoSettingShow.value = true;
+}
+function insertBiliDanMa(text,mode,time,color){
+  let _mode = 'rtl'
+
+  if(mode === '5'){
+    _mode = 'top'
+  }else if(mode === '4'){
+    _mode = 'bottom'
+  }
+
+  playerObj.danmaku.emit({
+    text: text,
+    // 'rtl'(right to left) by default, available mode: 'ltr', 'rtl', 'top', 'bottom'.
+    mode: _mode,
+
+    time: time,
+
+    style: {
+      fontSize: '20px',
+      color: color,
+      textShadow: "#000 1px 0 1px,#000 0 1px 1px,#000 0 -1px 1px,#000 -1px 0 1px",
+      'font-weight': '500'
+    },
+
+  });
+
+}
+
+onMounted(()=>{
+  initPlyr();
+  ready.value = true;
+  nextTick(initDanMa);
+  resizeObserver.value = new ResizeObserver(debounce(handleResize, 500))
+  resizeObserver.value.observe(playerBox.value);
+})
+
+onBeforeUnmount(()=>{
+  if (resizeObserver.value) {
+    resizeObserver.value.disconnect();
+  }
+})
+
+defineExpose({settingFunc})
 </script>
 
 <style>
@@ -261,7 +253,5 @@ export default {
   left: 0;
   z-index: 10;
 }
-
-
 
 </style>

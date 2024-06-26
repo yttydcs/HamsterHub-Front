@@ -12,47 +12,28 @@
       <MdCatalog  :editorId="id" :scrollElement="scrollElement" />
     </div>
 
-
   </div>
 
 </template>
 
-<script>
-import curLang from "../../common/lang";
+<script setup>
+
 import {theme} from "@/common/theme";
-import {reactive, ref, watch} from 'vue';
+import {onMounted, reactive, ref, watch} from 'vue';
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 
+const defaultTheme = "github";
+const props = defineProps({ mdText:String, showCatalog:Boolean });
+const id = ref('preview-only');
+const scrollElement = ref(null); ;
+const preTheme = window.hamsterHubConfig.mdTheme || defaultTheme;
 
-const defaultTheme = "github"
-let scrollElement = document.querySelector('#app > div > div.n-layout.n-layout--static-positioned > div')
+onMounted(()=>{
+  // 获取用于滚动的元素(naive ui 专门给了一个用于实现自定义滚动条的元素，所以不能用户根元素滚动了)
+  scrollElement.value = document.querySelector('#app > div > div.n-layout.n-layout--static-positioned > div')
+})
 
-export default {
-  name: 'markdownBox',
-  components: {
-    MdPreview,
-    MdCatalog,
-
-  },
-  props:{
-    mdText:String,
-    showCatalog:Boolean
-  },
-  mounted() {
-    // 获取用于滚动的元素(naive ui 专门给了一个用于实现自定义滚动条的元素，所以不能用户根元素滚动了)
-    this.scrollElement = document.querySelector('#app > div > div.n-layout.n-layout--static-positioned > div')
-  },
-  setup(){
-    return{
-      curLang,
-      id: ref('preview-only'),
-      scrollElement ,
-      preTheme : window.hamsterHubConfig.mdTheme || defaultTheme,
-      theme
-    }
-  }
-}
 </script>
 
 <style scoped>
