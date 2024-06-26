@@ -7,30 +7,15 @@
   </n-layout>
 </template>
 
-<script>
+<script setup>
 import navTop from "@/components/nav/NavTop.vue";
 import {NLayout, NLayoutHeader, useLoadingBar} from "naive-ui";
 import {switchTheme} from "@/common/theme";
+import {onMounted} from "vue";
 
-
-export default {
-  name: 'mainPage',
-  methods: {
-    switchTheme: switchTheme
-  },
-  components: {
-    navTop,
-    NLayout,
-    NLayoutHeader,
-  },
-  mounted() {
-    // 设置全局的加载对象
-    window.loading = useLoadingBar();
-  },
-  setup() {
-    return {}
-  }
-}
+onMounted(() =>{
+  window.loading = useLoadingBar();
+})
 </script>
 
 <style>
