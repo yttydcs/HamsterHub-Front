@@ -166,26 +166,35 @@
   </div>
 </template>
 
-<script>
-import {h, defineComponent, ref, watch, reactive} from "vue";
-import {
-  NIcon,
-  NAvatar,
-  NButton,
-  NSpace,
-  NInput,
-  NDataTable,
-  NModal,
-  NForm,
-  NFormItemRow,
-  NSelect,
-  NTag
-} from "naive-ui";
+<script setup>
+import {h, ref, watch, reactive, onMounted} from "vue";
+import {NButton, NSpace, NInput, NDataTable, NModal, NForm, NFormItemRow, NSelect, NTag} from "naive-ui";
 import curLang from "@/common/lang";
 import KVInput from "@/components/common/curd/KVInput.vue";
 
+
+const props = defineProps({
+  formModel: Object, // 用于动态生成表单， 第一个对象表示索引,删除时传递该值
+  formFun: Object
+});
+
+const tableData= reactive({
+  headers:[],
+  addModel:[],
+  modifyModel:[],
+  items:[],
+});
+const formData=reactive({});
+const pagination= ref(true);
+const createBox= ref(false);
+const modifyBox= ref(false);
+const kvBox=reactive({show:false,title:"",oldValue:"",handle:Function,template:{}});
+const curRow= ref(1);
+const checkedRowKeys=ref([1]);
+const arrayBox= reactive({loading:false, option:{}});
+
 // 从formModel中构建出增加表单和删除表单的数据
-const createFormByModel = (model,checkIndex="show")=>{
+function createFormByModel(model,checkIndex="show"){
   let res = []
 
   for (let i = 0; i < model.length; i++) {
@@ -213,9 +222,35 @@ const createFormByModel = (model,checkIndex="show")=>{
   }
 
   return res;
-};
+}
+
+function createOptionByArray(arr) {
+  let options = []
+
+  for (let i = 0; i < arr.length; i++) {
+    options.push({
+      label: arr[i],
+      value: i,
+    })
+  }
+
+  return options
+}
+
+function createOptionByArrayValue(arr) {
+  let options = []
+
+  for (let i = 0; i < arr.length; i++) {
+    options.push({
+      label: arr[i],
+      value: arr[i],
+    })
+  }
+
+  return options
+}
 // 从formModel中构建出表格的数据
-const createListByModel = (model,checkIndex="show")=>{
+function createListByModel (model,checkIndex="show"){// 从formModel中构建出增加表单和删除表单的数据
   let res = []
   if(checkIndex==="show"){
     // 如果是show就说明是用于生成列表的数据，第一个设置列表的一些属性
@@ -230,12 +265,11 @@ const createListByModel = (model,checkIndex="show")=>{
       key: '_indexKey',
       width: 40,
     })
-
   }
 
   for (let i = 0; i < model.length; i++) {
     if(model[i][checkIndex]){
-
+      arrayBox[(model[i]["key"])]={};
       let o = {
         title: model[i].title,
         key: model[i].key,
@@ -270,254 +304,119 @@ const createListByModel = (model,checkIndex="show")=>{
         }
 
       }
-
-
-
-
       res.push(o)
     }
   }
 
   return res;
-};
-
-
-const createOptionByArray= (arr) => {
-  let options = []
-
-  for (let i = 0; i < arr.length; i++) {
-    options.push({
-      label: arr[i],
-      value: i,
-    })
-  }
-
-  return options
 }
 
-const createOptionByArrayValue= (arr) => {
-  let options = []
+function openCreateBox(){
+  createBox.value = true;
+}
+function openModifyBox(){
+  let m = tableData.modifyModel
 
-  for (let i = 0; i < arr.length; i++) {
-    options.push({
-      label: arr[i],
-      value: arr[i],
-    })
+  // 获得当前选中的对象
+  let cur = tableData.items[curRow.value-1]
+
+  // 设置旧值
+  for (let i = 0; i < m.length; i++) {
+    formData[m[i].title] = cur[m[i].title];
   }
 
-  return options
+  modifyBox.value = true;
 }
 
-
-export default {
-  name: 'commonCURD',
-  components: {
-    NFormItemRow,
-    NForm,
-    NInput,
-    NDataTable,
-    NSpace,
-    NButton,
-    NModal,
-    NSelect,
-    KVInput,
-  },
-  methods:{
-    createListByModel (model,checkIndex="show"){// 从formModel中构建出增加表单和删除表单的数据
-      let res = []
-      if(checkIndex==="show"){
-        // 如果是show就说明是用于生成列表的数据，第一个设置列表的一些属性
-        res.push({
-          type: "selection",
-          multiple: false,
-        })
-
-        // 加入索引
-        res.push({
-          title: '#',
-          key: '_indexKey',
-          width: 40,
-        })
-
-      }
-
-      for (let i = 0; i < model.length; i++) {
-        if(model[i][checkIndex]){
-          this.arrayBox[(model[i]["key"])]={};
-          let o = {
-            title: model[i].title,
-            key: model[i].key,
-            resizable: true,
-          }
-
-          // 渲染枚举的显示方式
-          if(model[i]["type"]==="enum"){
-            o["render"] = (row)=> {
-              return `${model[i]["typeValue"][row.type]}`
-            }
-          }
-
-          // 渲染数组的显示方式
-          if(model[i]["type"]==="array"){
-            o["render"] = (row) => {
-              return row[model[i].key].map((tagKey) => {
-                return h(
-                    NTag,
-                    {
-                      style: {
-                        marginRight: "6px"
-                      },
-                      type: "info",
-                      bordered: false
-                    },
-                    {
-                      default: () => tagKey
-                    }
-                );
-              });
-            }
-
-          }
-
-
-
-
-          res.push(o)
-        }
-      }
-
-      return res;
-    },
-    openCreateBox(){
-      this.createBox = true;
-    },
-    openModifyBox(){
-      let m = this.tableData.modifyModel
-
-      // 获得当前选中的对象
-      let cur = this.tableData.items[this.curRow-1]
-
-      // 设置旧值
-      for (let i = 0; i < m.length; i++) {
-        this.formData[m[i].title] = cur[m[i].title];
-      }
-
-      this.modifyBox = true;
-    },
-    getData(){
-      this.formFun.get().then(res=>{
-        // 设置索引
-        for (let i = 0; i < res.data.length; i++) {
-          res.data[i]["_indexKey"] = i+1;
-        }
-        this.tableData.items = res.data
-      })
-    },
-    createHandle(){
-      let that = this
-      this.formFun.create(this.formData).then(res => {
-        this.createBox = false;
-        that.getData();
-      })
-    },
-    modifyHandle(){
-      let that = this
-      this.formFun.update(this.formData).then(res => {
-        this.modifyBox = false;
-        that.getData();
-      })
-    },
-    deleteHandle(){
-      let that = this
-      this.formFun.delete(this.tableData.items[this.curRow-1].id).then(res => {
-        this.modifyBox = false;
-        that.getData();
-      })
-    },
-    cancelHandle(){
-      this.createBox = false;
-      this.modifyBox = false;
-    },
-    openKvHandle(create,d,index){
-      this.kvBox.show = true;
-      this.kvBox.template = create(d);
-      this.kvBox.title = index;
-      this.kvBox.oldValue = this.formData[index]
-
-      this.kvBox.handle = (data)=>{
-        this.kvBox.show = false;
-        this.formData[index] = JSON.stringify(data)
-      }
-
-    },
-    handleCheck(rowKeys) {
-      this.curRow = rowKeys[0]
-    },
-    rowKey(row){
-      return row["_indexKey"]
-    },
-    handleUpdateValue(value, option){
-      // to do
-    },
-    async arraySelectHandle(show, fetchFun, key) {
-      if (!show) {
-        return
-      }
-
-      this.arrayBox.loading = true
-      let option
-      if(fetchFun){
-        option = await fetchFun(this.formData[key])
-      }
-      this.arrayBox[key].option = option
-      this.arrayBox.loading = false
+function getData(){
+  props.formFun.get().then(res=>{
+    // 设置索引
+    for (let i = 0; i < res.data.length; i++) {
+      res.data[i]["_indexKey"] = i+1;
     }
-
-  },
-  mounted() {
-
-    // 构建表头
-    this.tableData.headers = this.createListByModel(this.formModel)
-
-    // 构建增加表单model
-    this.tableData.addModel = createFormByModel(this.formModel,"create")
-
-    // 构建修改表单model
-    this.tableData.modifyModel = createFormByModel(this.formModel,"modify")
-
-    // 首次获取数据
-    this.getData();
-  },
-  props:{
-    formModel: Object, // 用于动态生成表单， 第一个对象表示索引,删除时传递该值
-    formFun: Object
-  },
-  setup(){
-    return{
-      curLang,
-      tableData: reactive({
-        headers:[],
-        addModel:[],
-        modifyModel:[],
-        items:[],
-      }),
-      formData:reactive({}),
-      pagination: true,
-      createBox: ref(false),
-      modifyBox: ref(false),
-      kvBox:reactive({show:false,title:"",oldValue:"",handle:Function,template:{}}),
-      curRow: ref(1),
-      checkedRowKeys:ref([1]),
-      arrayBox: reactive({
-        loading:false,
-        option:{}
-      })
-
-    }
-  }
+    tableData.items = res.data
+  })
 }
+
+function createHandle(){
+  props.formFun.create(formData).then(res => {
+    createBox.value = false;
+    getData();
+  })
+}
+
+function modifyHandle(){
+  props.formFun.update(formData).then(res => {
+    modifyBox.value = false;
+    getData();
+  })
+}
+
+function deleteHandle(){
+  props.formFun.delete(tableData.items[curRow.value-1].id).then(res => {
+    modifyBox.value = false;
+    getData();
+  })
+}
+
+function cancelHandle(){
+  createBox.value = false;
+  modifyBox.value = false;
+}
+
+function openKvHandle(create,d,index){
+  kvBox.show = true;
+  kvBox.template = create(d);
+  kvBox.title = index;
+  kvBox.oldValue = formData[index]
+
+  kvBox.handle = (data)=>{
+    kvBox.show = false;
+    formData[index] = JSON.stringify(data)
+  }
+
+}
+
+function handleCheck(rowKeys) {
+  curRow.value = rowKeys[0]
+}
+
+function rowKey(row){
+  return row["_indexKey"]
+}
+
+function handleUpdateValue(value, option){
+  // to do
+}
+
+async function arraySelectHandle(show, fetchFun, key) {
+  if (!show) {
+    return
+  }
+
+  arrayBox.loading = true
+  let option
+  if(fetchFun){
+    option = await fetchFun(formData[key])
+  }
+  arrayBox[key].option = option
+  arrayBox.loading = false
+}
+
+onMounted(()=>{
+  // 构建表头
+  tableData.headers = createListByModel(props.formModel)
+
+  // 构建增加表单model
+  tableData.addModel = createFormByModel(props.formModel,"create")
+
+  // 构建修改表单model
+  tableData.modifyModel = createFormByModel(props.formModel,"modify")
+
+  // 首次获取数据
+  getData();
+})
 </script>
-
 
 <style>
 
@@ -533,7 +432,7 @@ export default {
   height: 40px;
 }
 
-// 优化小窗口的体验
+/* 优化小窗口的体验 */
 @media only screen and (max-width: 600px){
   .alertBox{
     width: 100%;

@@ -29,31 +29,22 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {NButton, NInput, NModal, NSpace, NForm, NFormItem} from "naive-ui";
 import {reactive, ref} from "vue";
 import curLang from "@/common/lang";
 
-export default {
-  name: 'InputBox',
-  components: {NInput, NButton, NModal, NSpace, NForm, NFormItem},
-  props: {
-    title:String,
-    show:Boolean,
-    confirmFunc:Function,
-    cancelFunc:Function
-  },
-  setup(){
-    return {
-      curLang,
-      model:reactive({
-        value:""
-      })
+const props = defineProps({
+  title:String,
+  show:Boolean,
+  confirmFunc:Function,
+  cancelFunc:Function
+})
 
+const model = reactive({
+  value:""
+})
 
-    }
-  }
-}
 </script>
 
 <style>
@@ -65,7 +56,7 @@ export default {
   width: 600px
 }
 
-// 优化小窗口的体验
+/* 优化小窗口的体验 */
 @media only screen and (max-width: 600px){
   .alertBox{
     width: 100%;

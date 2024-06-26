@@ -19,71 +19,43 @@
   </div>
 </template>
 
-<script>
-import {h, defineComponent, ref, watch, reactive} from "vue";
-import {
-  NIcon,
-  NAvatar,
-  NButton,
-  NSpace,
-  NInput,
-  NDataTable,
-  NModal,
-  NForm,
-  NFormItemRow,
-  NSelect,
-  NTag
-} from "naive-ui";
+<script setup>
+import { reactive, onMounted} from "vue";
+import {NButton, NSpace, NInput, NForm, NFormItemRow,} from "naive-ui";
 import curLang from "@/common/lang";
 
+const props = defineProps({
+  template:Object,
+  oldValue:String,
+  modifyHandle: Function,
+  cancelHandle: Function,
+})
+const tempData = reactive({});
 
-export default {
-  name: 'commonCURD',
-  components: {
-    NFormItemRow,
-    NForm,
-    NInput,
-    NSpace,
-    NButton,
-  },
-  methods:{
-    modify(){
-      this.modifyHandle(this.tempData);
-      this.tempData={};
-    },
-    cancel(){
-      this.cancelHandle();
-      this.tempData={};
-    },
-    setOldValue(data){
-      try {
-        let temp = JSON.parse(data)
-        for (let key in temp){
-          this.tempData[key] = temp[key];
-        }
-      }catch(err){
-        this.tempData = {};
-      }
+function modify(){
+  props.modifyHandle(tempData);
+  tempData.value={};
+}
 
+function cancel(){
+  props.cancelHandle();
+  tempData.value={};
+}
 
+function setOldValue(data){
+  try {
+    let temp = JSON.parse(data)
+    for (let key in temp){
+      tempData[key] = temp[key];
     }
-  },
-  mounted() {
-      this.setOldValue(this.oldValue)
-  },
-  props:{
-    template:Object,
-    oldValue:String,
-    modifyHandle: Function,
-    cancelHandle: Function,
-  },
-  setup(){
-    return{
-      curLang,
-      tempData: reactive({}),
-    }
+  }catch(err){
+    tempData.value = {};
   }
 }
+
+onMounted(()=>{
+  setOldValue(props.oldValue)
+})
 </script>
 
 

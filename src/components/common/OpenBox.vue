@@ -66,7 +66,7 @@
         <!--    视频的预览    -->
         <div class="file-video pd" v-if="previewType === 'video'">
           <previewVideo
-              ref="previewVideo"
+              ref="previewVideoBox"
               :src="url"
               :key="flushKey"
               :saved-time-key="title"
@@ -101,11 +101,11 @@
   </div>
 </template>
 
-<script>
-import {computed, reactive, ref, watch} from "vue";
-import {NForm, NFormItemRow, NInput, NModal, NSpace, useThemeVars} from "naive-ui";
+<script setup>
+import {computed, ref, watch} from "vue";
+import { useThemeVars} from "naive-ui";
 import fileIcon from "@/components/explorer/FileIcon.vue";
-import { NButton, NIcon, NImage, NSelect } from "naive-ui";
+import { NButton, NIcon, NImage } from "naive-ui";
 import {CloudDownloadOutline, SettingsOutline} from "@vicons/ionicons5";
 import download from "@/common/download"
 import curLang from "@/common/lang";
@@ -116,106 +116,77 @@ import previewPdf from "@/components/preview/previewPdf.vue";
 import previewVideo from "@/components/preview/previewVideo.vue";
 import fileType from "@/common/fileType";
 
+const props = defineProps({
+  title:String,
+  msg:String,
+  url:String,
+  isFolder:Boolean
+})
 
-export default {
-  name: 'OpenBox',
-  components: {
-    SettingsOutline,
-    fileIcon,
-    NButton,
-    NIcon,
-    NImage,
-    CloudDownloadOutline,
-    previewMarkdown,
-    previewDocx,
-    previewExcel,
-    previewPdf,
-    previewVideo
-
-  },
-  props: {
-    title:String,
-    msg:String,
-    url:String,
-    isFolder:Boolean
-  },
-  computed:{
-    previewType(){
-      let openType;
-      if(this.isFolder){
-        openType = "dir";
-      }else{
-        openType = fileType.getOpenTypeByName(this.title);
-      }
-
-      this.handlePreviewIndex(openType);
-      return openType;
-    },
-    icoType(){
-      return  fileType.getIconTypeByName(this.title);
-    }
-  },
-  methods:{
-    handleDownload(url){
-      download.url(url);
-    },
-
-    handlePreviewIndex(openType){
-      this.settingDisable = true;
-      switch (openType) {
-        case "text":
-        case "md":
-          this.textPreview();
-          break;
-        case "video":
-          this.settingDisable = false;
-          break;
-      }
-    },
-
-    settingFunc(){
-      switch (this.previewType) {
-        case "video":
-          this.$refs.previewVideo.settingFunc();
-          break;
-      }
-    },
-
-    textPreview(){
-      let that = this
-      download.getText(this.url).then(res=>{
-        if(res){
-          that.text = res;
-        }else{
-          that.text = "";
-        }
-        if(typeof(that.text)!="string"){
-          that.text = "";
-        }
-
-      }).catch(err=>{
-        that.text = "";
-      })
-    },
-
-  },
-  setup(){
-    let theme = useThemeVars();
-    let flushKey = ref(0);
-    watch(curLang.lang.video, () => {
-      // 由于plyr修改config不直接应用，所以强制重新加载
-      flushKey.value++
-    });
-
-    return {
-      curLang,
-      flushKey,
-      borderColor : computed(() => theme.value.borderColor),
-      opacity2 : computed(() => theme.value.opacity2),
-      text: ref(""),
-      settingDisable: ref(true),
-    }
+const previewType = computed(()=>{
+  let openType;
+  if(props.isFolder){
+    openType = "dir";
+  }else{
+    openType = fileType.getOpenTypeByName(props.title);
   }
+
+  handlePreviewIndex(openType);
+  return openType;
+})
+const icoType = computed(()=>fileType.getIconTypeByName(props.title))
+const theme = useThemeVars();
+const flushKey = ref(0);
+const borderColor = computed(() => theme.value.borderColor);
+const opacity2 = computed(() => theme.value.opacity2);
+const text = ref("");
+const settingDisable = ref(true);
+const previewVideoBox = ref(null)
+
+watch(curLang.lang.video, () => {
+  // 由于plyr修改config不直接应用，所以强制重新加载
+  flushKey.value++
+});
+
+function handleDownload(url){
+  download.url(url);
+}
+
+function handlePreviewIndex(openType){
+  settingDisable.value = true;
+  switch (openType) {
+    case "text":
+    case "md":
+      textPreview();
+      break;
+    case "video":
+      settingDisable.value = false;
+      break;
+  }
+}
+
+function settingFunc(){
+  switch (previewType.value) {
+    case "video":
+      previewVideoBox.value.settingFunc();
+      break;
+  }
+}
+
+function textPreview(){
+  download.getText(props.url).then(res=>{
+    if(res){
+      text.value = res;
+    }else{
+      text.value = "";
+    }
+    if(typeof(text.value)!="string"){
+      text.value = "";
+    }
+
+  }).catch(err=>{
+    text.value = "";
+  })
 }
 </script >
 

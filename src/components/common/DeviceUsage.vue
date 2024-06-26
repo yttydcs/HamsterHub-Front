@@ -15,41 +15,24 @@
   </div>
 </template>
 
-<script>
-import {NProgress } from "naive-ui";
-import {reactive, ref} from "vue";
+<script setup>
+import { NProgress } from "naive-ui";
+import { computed } from "vue";
 import calc from "@/common/calc";
-
-export default {
-  name: 'DeviceUsage',
-  components: {NProgress},
-  computed:{
-    usedString(){
-      return calc.toSizeString(this.total-this.free);
-    },
-    freeString(){
-      return calc.toSizeString(this.free);
-    },
-    totalString(){
-      return calc.toSizeString(this.total);
-    },
-    percentage(){
-      let total = Number(this.total);
-      let free = Number(this.free);
-      return (total-free)/total*100;
-    }
-  },
-  props: {
-    title:String,
-    total:String,
-    free:String,
-    mini:Boolean,
-  },
-  setup(){
-    return {
-    }
-  }
-}
+const props = defineProps({
+  title:String,
+  total:String,
+  free:String,
+  mini:Boolean,
+})
+const usedString = computed(()=>calc.toSizeString(props.total-props.free));
+const freeString = computed(()=>calc.toSizeString(props.free));
+const totalString = computed(()=>calc.toSizeString(props.total));
+const percentage = computed(()=>{
+  let total = Number(props.total);
+  let free = Number(props.free);
+  return (total-free)/total*100;
+});
 </script>
 
 <style scoped>
