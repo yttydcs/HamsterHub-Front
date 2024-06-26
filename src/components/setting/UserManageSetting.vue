@@ -30,40 +30,12 @@
   </div>
 </template>
 
-<script>
-import {
-  NButton,
-  useThemeVars,
-  NListItem,
-  NList,
-  NThing,
-} from "naive-ui";
-
+<script setup>
+import {NButton, NListItem, NList, NThing,} from "naive-ui";
 import curLang from "../../common/lang";
 import KVBool from "@/components/setting/KV/KVBool.vue";
 import {userManageConfig} from "@/common/curd/option/userManageConfig";
-
-export default {
-  name: 'userManageSetting',
-  components: {
-    KVBool,
-    NThing, NList,
-    NListItem,
-    NButton,
-  },
-  props:{
-    curdHandle:Function
-  },
-  methods:{
-  },
-  setup(){
-    let theme = useThemeVars();
-    return{
-      curLang,
-      userManageConfig,
-    }
-  }
-}
+defineProps({curdHandle:Function})
 </script>
 
 <style scoped>

@@ -6,7 +6,6 @@
         <n-thing :title="curLang.lang.localSetting.title" />
       </template>
 
-
       <!--   黑暗模式调整   -->
       <n-list-item>
         <n-thing
@@ -41,45 +40,16 @@
 
         </template>
       </n-list-item>
-
-
-
     </n-list>
-
   </div>
-
 
 </template>
 
-<script>
-import {
-  NListItem,
-  NList,
-  NThing,
-  NSelect, NSwitch,
-} from "naive-ui";
+<script setup>
+import {NListItem, NList, NThing, NSelect, NSwitch,} from "naive-ui";
 import curLang from "@/common/lang";
-import {setDark,theme} from "@/common/theme";
+import {setDark, theme} from "@/common/theme";
 import { switchLang , langSelectOption, curLangIndex} from "@/common/lang";
-
-export default {
-  name: 'localSetting',
-  components: {
-    NSwitch, NThing, NList, NListItem, NSelect
-  },
-  methods:{
-    setDark,
-    switchLang,
-  },
-  setup(){
-    return{
-      curLang,
-      theme,
-      langSelectOption,
-      curLangIndex
-    }
-  }
-}
 </script>
 
 <style scoped>

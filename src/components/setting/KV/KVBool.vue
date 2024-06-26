@@ -17,54 +17,42 @@
 
 </template>
 
-<script>
+<script setup>
 import {
   NListItem,
   NThing, NSwitch,
 } from "naive-ui";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import config from "@/service/config";
+const props = defineProps({
+  title:String,
+  description:String,
+  configKey:String,
+  updateFunc:Function
+})
 
-export default {
-  name: 'KVBool',
-  components: {
-    NSwitch,
-    NThing, NListItem,
-  },
-  props:{
-    title:String,
-    description:String,
-    configKey:String,
-    updateFunc:Function
-  },
-  methods:{
-    async handle(value){
-      let valueStr = value.toString();
-      this.loading = true
-      try {
-        await config.set(this.configKey, valueStr);
-      }catch (e) {
+const data = ref(false);
+const loading = ref(false);
 
-      }
-      this.loading = false
-    },
-    setData(value){
-      this.data = value === "true";
-    }
-  },
-  async mounted() {
-    let configObj = await config.getObj()
-    this.setData(configObj[this.configKey].value)
-  },
+async function handle(value){
+  let valueStr = value.toString();
+  loading.value = true
+  try {
+    await config.set(props.configKey, valueStr);
+  }catch (e) {
 
-  setup() {
-
-    return {
-      data: ref(false),
-      loading:ref(false),
-    }
   }
+  loading.value = false
 }
+function setData(value){
+  data.value = value === "true";
+}
+
+onMounted(async ()=>{
+  let configObj = await config.getObj()
+  setData(configObj[props.configKey].value)
+})
+
 </script>
 
 <style scoped>

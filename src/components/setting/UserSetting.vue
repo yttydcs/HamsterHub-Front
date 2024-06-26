@@ -65,75 +65,38 @@
 
 </template>
 
-<script>
-import {
-  NLayout,
-  NLayoutSider,
-  NH2,
-  NMenu,
-  NIcon,
-  NButton,
-  useThemeVars,
-  NListItem,
-  NList,
-  NThing,
-  NAvatar, NFormItemRow, NModal, NForm, NInput,
-} from "naive-ui";
-import {computed, h, nextTick, reactive, ref} from "vue";
+<script setup>
+import {NButton, NListItem, NList, NThing, NAvatar, NFormItemRow, NModal, NForm, NInput,} from "naive-ui";
+import { reactive, ref } from "vue";
 import loginData, {removeLoginData} from "@/common/loginData";
 import login from "@/api/login";
 import curLang from "../../common/lang";
 
+const changePwdShow = ref(false);
+const formData = reactive({newPwd:"",oldPwd:""});
+const uploadInput = ref(null);
 
-export default {
-  name: 'userSetting',
-  components: {
-    NInput, NForm, NModal, NFormItemRow,
-    NAvatar,
-    NThing, NList, NListItem, NButton
-  },
-  props:{
+function changeAvatar(){
+  uploadInput.value.click()
+}
 
-  },
-  methods:{
-    changeAvatar(){
-      this.$refs.uploadInput.click()
-    },
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      login.changeUserAvatar(file).then(res=>{
-        window.$message.success("上传成功，刷新后生效");
-      })
-    },
-    async confirmChangePwd(){
-      let that = this;
-      login.changePwd(this.formData.oldPwd,this.formData.newPwd).then(res=>{
-        if(res.code ===0){
-          removeLoginData();
-          that.changePwdShow = false;
-        }
-      })
-    },
-    logout(){
-      login.logout()
-    }
-  },
+function handleFileUpload(event) {
+  const file = event.target.files[0];
+  login.changeUserAvatar(file).then(res=>{
+    window.$message.success("上传成功，刷新后生效");
+  })
+}
 
-  setup(){
-    let theme = useThemeVars();
-    return{
-      curLang,
-      borderColor : computed(() => theme.value.borderColor),
-      borderHover : computed(() => theme.value.primaryColorHover),
-      borderSelected : computed(() => theme.value.primaryColorSuppl),
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      opacity2 : computed(() => theme.value.opacity2),
-      hoverColor : computed(() => theme.value.hoverColor),
-      loginData,
-      changePwdShow: ref(false),
-      formData:reactive({newPwd:"",oldPwd:""}),
-    }
+async function confirmChangePwd(){
+  let res = await login.changePwd(formData.oldPwd,formData.newPwd)
+  if(res.code === 0){
+    removeLoginData();
+    changePwdShow.value = false;
   }
+}
+
+function logout(){
+  login.logout()
 }
 </script>
 
