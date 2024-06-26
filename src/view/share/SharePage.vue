@@ -45,13 +45,12 @@
 
 </template>
 
-<script>
-import {onBeforeRouteUpdate, useRoute} from 'vue-router';
+<script setup>
+import {onBeforeRouteUpdate, useRoute, useRouter} from 'vue-router';
 import {NButton, NDataTable, NIcon, NSpace, NInputGroup, NInput, useThemeVars, useLoadingBar} from "naive-ui";
-import {computed, reactive, ref ,nextTick} from "vue";
+import {computed, reactive, ref, nextTick, onMounted} from "vue";
 import share from "@/api/share";
 import OpenBox from "@/components/common/OpenBox.vue";
-import {BanOutline, CloudDownloadOutline} from "@vicons/ionicons5";
 import calc from "@/common/calc";
 import download from "@/common/download"
 import { LockClosed as lockIcon } from "@vicons/ionicons5";
@@ -59,122 +58,99 @@ import FileExplorer from "@/components/explorer/FileExplorer.vue";
 import fileService from "@/service/share/file"
 import fileMenu from "@/service/share/fileMenu"
 import curLang from "@/common/lang";
+import {onActivated} from "vue-demi";
 
 const NONE_KEY = 600008;
 const INCORRECT_KEY = 600009;
 
+// let theme = useThemeVars();
 
-export default {
-  name: 'sharePage',
-  components: {
-    FileExplorer,
-    OpenBox,
-    NButton,
-    // NInputGroup,
-    NInput,
-    NIcon,
+// const borderColor = computed(() => theme.value.borderColor);
+// const borderHover = computed(() => theme.value.primaryColorHover);
+// const borderSelected = computed(() => theme.value.primaryColorSuppl);
+// const cubicBezierEaseInOut = computed(()=>theme.value.cubicBezierEaseInOut);
+const dataRoute = useRoute()
+const router = useRouter();
+const fileSelect= ref(false);
+const shareData=reactive({data:[],});
+const isExist=ref(true);
+const unlock=ref(true);
+const isDir=ref(null);
+const url=ref("");
+const fileKey=ref("");
+const ticket=ref("");
+const loading=useLoadingBar();
 
-  },
-  methods:{
-    getDataByRoute(){
-      this.ticket = this.dataRoute.params.ticket;
-      this.fileKey = this.dataRoute.query.key;
-    },
-    flushData(){
-      let that = this;
-      this.loading.start()
-      share.getShare(this.ticket,this.fileKey).then((res)=>{
-        if("data" in res){
-          res.data.size = calc.toSizeString(res.data.size);
-          res.data.created = res.data.created.replace("T"," ");
-          that.shareData.data = res.data
-          that.isExist = true
-          that.unlock = true
-          if (res.data.type===0){
-            that.fileService.getFileListObject().others["key"] = this.fileKey
-            that.fileService.getFileListObject().others["ticket"] = this.ticket
-            that.fileService.getFileListObject().others["id"] = res.data.id
-            that.isDir = true
-          }else{
-            that.handleUrl(this.ticket,this.fileKey)
-            that.isDir = false
-          }
-        }else{
-          let data = res;
-          if(data.code === INCORRECT_KEY || data.code === NONE_KEY){// 验证码错误
-            that.unlock = false;
-          }
-        }
-        that.loading.finish()
-      }).catch((err)=>{
-        that.isExist=false
-        that.loading.error()
-      })
-    },
-    handleUrl(ticket,key,vFileId){
-      let that = this
-      share.getDownloadUrl(ticket,key,vFileId).then(res=>{
-        that.url = download.toAbsolute(res);
-      })
-    },
-    async handleSubmitKey(){
-      let ticket = this.dataRoute.params.ticket;
-      let key = this.fileKey;
-      this.$router.push("/s/"+ticket+"?key="+key);
-    },
-    handleDownload(ticket,key){
-      let that = this
-      share.download(ticket,key)
-    }
-  },
-  mounted() {
-    this.getDataByRoute()
-    this.flushData()
-  },
-  activated() {
-    this.getDataByRoute()
-    this.flushData()
-  },
-  beforeRouteUpdate (to, from, next){
-    this.ticket = to.params.ticket;
-    this.fileKey = to.query.key;
-    this.flushData()
-    next()
-  },
-  computed: {
-    dataRoute(){
-      return useRoute();
-    },
-  },
+onMounted(() =>{
+  getDataByRoute()
+  flushData()
+})
 
+onActivated(()=>{
+  getDataByRoute()
+  flushData()
+})
 
-  setup(){
-    let theme = useThemeVars();
+onBeforeRouteUpdate((to, from, next)=>{
+  ticket.value = to.params.ticket;
+  fileKey.value = to.query.key;
+  flushData()
+  next()
+})
 
-    return{
-      borderColor : computed(() => theme.value.borderColor),
-      borderHover : computed(() => theme.value.primaryColorHover),
-      borderSelected : computed(() => theme.value.primaryColorSuppl),
-      cubicBezierEaseInOut : theme.value.cubicBezierEaseInOut,
-      fileSelect: false,
-      shareData:reactive({
-        data:[],
-      }),
-
-      isExist:ref(true),
-      unlock:ref(true),
-      isDir:ref(null),
-      url:ref(""),
-      fileKey:ref(""),
-      ticket:ref(""),
-      lockIcon,
-      fileMenu,
-      fileService,
-      loading:useLoadingBar(),
-      curLang
-    }
-  }
+function getDataByRoute(){
+  ticket.value = dataRoute.params.ticket;
+  fileKey.value = dataRoute.query.key;
 }
+
+function flushData(){
+
+  loading.start()
+  share.getShare(ticket.value,fileKey.value).then((res)=>{
+    if("data" in res){
+      res.data.size = calc.toSizeString(res.data.size);
+      res.data.created = res.data.created.replace("T"," ");
+      shareData.data = res.data
+      isExist.value = true
+      unlock.value = true
+      if (res.data.type===0){
+        fileService.getFileListObject().others["key"] = fileKey.value;
+        fileService.getFileListObject().others["ticket"] = ticket.value;
+        fileService.getFileListObject().others["id"] = res.data.id;
+        isDir.value = true
+      }else{
+        handleUrl(ticket.value,fileKey.value);
+        isDir.value = false
+      }
+    }else{
+      let data = res;
+      if(data.code === INCORRECT_KEY || data.code === NONE_KEY){// 验证码错误
+        unlock.value = false;
+      }
+    }
+    loading.finish()
+  }).catch((err)=>{
+    isExist.value=false
+    loading.error()
+  })
+}
+
+function handleUrl(ticket,key,vFileId){
+  share.getDownloadUrl(ticket,key,vFileId).then(res=>{
+    url.value = download.toAbsolute(res);
+  })
+}
+
+async function handleSubmitKey(){
+  let _ticket = dataRoute.params.ticket;
+  await router.push("/s/" + _ticket + "?key=" + fileKey.value);
+}
+
+function handleDownload(ticket,key){
+  share.download(ticket,key)
+}
+
+
 </script>
 
 <style scoped>
@@ -197,6 +173,7 @@ export default {
   justify-content: center;
   vertical-align: center;
 }
+
 .password-box{
   text-align: left;
   width: 100%;
@@ -206,7 +183,4 @@ export default {
   margin-top: 10px;
   width: 100%;
 }
-
-
-
 </style>
