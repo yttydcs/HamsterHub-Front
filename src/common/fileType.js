@@ -54,6 +54,9 @@ const openTypeIndex = {
     xlsx: "xlsx",
     xls: "xls",
     pdf: "pdf",
+    java: "text",
+    c: "text",
+    'c++': "text",
 }
 
 export default {
