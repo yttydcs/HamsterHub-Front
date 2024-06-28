@@ -19,7 +19,8 @@ const zhLangData = {
         danmakuSetting: {
             title: "弹幕设置",
             type:"类型",
-            url:"参数"
+            url:"参数",
+            proxy:"使用后端中转"
         },
         leftMenu:{
             file :"文件",
@@ -155,6 +156,13 @@ const zhLangData = {
                 title: "修改用户数据",
                 description: "希望用不上，这对使用者很不友好",
             }
+        },
+        systemFunctionSetting: {
+            title: "系统功能",
+            proxyBilibiliDanma: {
+                title: "Bilibili弹幕请求中转",
+                description: "启用之后，后端将允许Bilibili的弹幕请求由后端发送",
+            },
         },
         video: {
             autoGo:"自动跳转至上次观看位置",

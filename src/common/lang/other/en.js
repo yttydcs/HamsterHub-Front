@@ -17,7 +17,8 @@ const enLangData = {
         danmakuSetting: {
             title: "Danmaku Setting",
             type:"Type",
-            url:"Url"
+            url:"Url",
+            proxy: "Use Backend Proxy"
         },
         leftMenu:{
             file: "File",
@@ -152,6 +153,13 @@ const enLangData = {
             curdUser: {
                 title: "Modify User Data",
                 description: "Hopefully unnecessary; not user-friendly"
+            }
+        },
+        systemFunctionSetting: {
+            title: "System Functions",
+            proxyBilibiliDanma: {
+                title: "Bilibili Danmaku Proxy",
+                description: "When enabled, backend will allow Bilibili danmaku requests to be sent from the backend"
             }
         },
         video: {

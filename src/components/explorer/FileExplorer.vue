@@ -91,7 +91,7 @@
         :title="curLang.lang.explorerMenu.newDir"
         v-model:show="inputShow"
         :confirm-func="handleNewDir"
-        :cancel-func="() =>{inputShow.value=false}"
+        :cancel-func="() =>{inputShow=false}"
     />
 
     <!--  新建分享  -->
@@ -135,7 +135,7 @@
         v-model:show="moveBoxShow"
         :title="curLang.lang.explorerMenu.move"
         :data="moveModel"
-        :cancelFunc="() =>{moveBoxShow.value=false;}"
+        :cancelFunc="() =>{moveBoxShow=false;}"
         :confirm-func="confirmMove"
     />
 
@@ -145,7 +145,7 @@
         v-model:show="copyBoxShow"
         :title="curLang.lang.explorerMenu.copy"
         :data="copyModel"
-        :cancelFunc="() =>{copyBoxShow.value=false;}"
+        :cancelFunc="() =>{copyBoxShow=false;}"
         :confirm-func="confirmCopy"
     />
 
@@ -154,7 +154,7 @@
         :title="curLang.lang.explorerMenu.rename"
         v-model:show="renameBoxShow"
         :confirm-func="confirmRename"
-        :cancel-func="() =>{renameBoxShow.value=false}"
+        :cancel-func="() =>{renameBoxShow=false}"
     />
 
   </div>

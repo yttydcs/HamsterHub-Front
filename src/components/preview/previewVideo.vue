@@ -33,6 +33,11 @@
           <n-input v-model:value="danmakuSetting.url" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+<!--        <n-form-item-row :label="curLang.lang.danmakuSetting.proxy" >-->
+          <n-checkbox v-model:checked="danmakuSetting.proxy">{{ curLang.lang.danmakuSetting.proxy }}</n-checkbox>
+<!--          <n-input v-model:value="danmakuSetting.url" :placeholder="curLang.lang.plsInput"/>-->
+<!--        </n-form-item-row>-->
+
       </n-form>
 
 
@@ -62,7 +67,7 @@ import Plyr from 'plyr';
 
 // 提供弹幕支持
 import Danmaku from 'danmaku/dist/esm/danmaku.dom.js';
-import {NButton, NForm, NFormItemRow, NInput, NModal, NSelect, NSpace} from "naive-ui";
+import {NButton, NForm, NFormItemRow, NInput, NModal, NSelect, NSpace, NCheckbox} from "naive-ui";
 import {getEnum} from "@/common/enums";
 import {onBeforeUnmount} from "vue-demi";
 
@@ -71,7 +76,7 @@ const playerObj = reactive({plyr:null,danmaku:null});
 const resizeObserver = ref(null);
 const ready = ref(false);
 const videoSettingShow = ref(false);
-const danmakuSetting = reactive({type:"",url:""});
+const danmakuSetting = reactive({type:"",url:"",proxy:true});
 const danmakuTypeOptions = reactive(createDanmakuTypeOptions());
 const playerBox = ref(null)
 
@@ -176,7 +181,7 @@ async function loadDanMa(){
   }
   // 清除原先弹幕
   playerObj.danmaku.clear();
-  await loadDanmaku(danmakuSetting.type,danmakuSetting.url,insertBiliDanMa);
+  await loadDanmaku(danmakuSetting.type,danmakuSetting.url,insertBiliDanMa,danmakuSetting.proxy);
 }
 async function videoSettingHandle(){
   videoSettingShow.value = false;

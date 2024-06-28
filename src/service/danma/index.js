@@ -5,20 +5,29 @@ async function getXmlByUrl(url){
     return await download.getOther(url)
 }
 
-async function getCidForBili(bvid){
+async function getCidForBili(bvid,proxy){
     let res = -1;
     try {
-        res = (await danma.queryCidDirect(null,bvid)).data[0].cid
+        if (proxy){
+            res = (await danma.queryCid(null,bvid)).data[0].cid
+        }else {
+            res = (await danma.queryCidDirect(null,bvid)).data[0].cid
+        }
+
     }catch(err){
         res = -1;
     }
     return res
 }
 
-async function getXmlByCidForBili(cid){
+async function getXmlByCidForBili(cid,proxy){
     let res = "";
     try {
-        res = await danma.queryXmlForBiliDirect(cid)
+        if(proxy){
+            res = await danma.queryXmlForBili(cid)
+        }else{
+            res = await danma.queryXmlForBiliDirect(cid)
+        }
     }catch(err){
         res = "";
     }
@@ -104,28 +113,33 @@ export function decimalToHexColor(decimalColorString) {
     return '#' + hexColor;
 }
 
-export async function loadDanmakuForBiliById(value,addFunc){
+export async function loadDanmakuForBiliById(value,addFunc,proxy){
     // "BV1Mx4y1i7Ny"
-    let cid = await getCidForBili(value);
+    try {
+        let cid = await getCidForBili(value,proxy);
 
-    if(!cid){
+        if(!cid|| cid<=0){
+            return 0;
+        }
+
+        let res = await getXmlByCidForBili(cid,proxy)
+
+        await parseXmlForBili(res,addFunc)
+    }catch {
         return 0;
     }
 
-    let res = await getXmlByCidForBili(cid)
-
-    await parseXmlForBili(res,addFunc)
 }
 
-export async function loadDanmakuForBiliByUrl(value,addFunc){
+export async function loadDanmakuForBiliByUrl(value,addFunc,proxy){
     // "https://danmaku.vercel.app/api/bilibili/danmaku?cid=1526805156"
-    let res = await getXmlByUrl(value)
+    let res = await getXmlByUrl(value,proxy)
     await parseXmlForBili(res,addFunc)
 }
 
 export async function loadDanmakuForDanDanByUrl(value,addFunc){
     // "https://api.dandanplay.net/api/v2/comment/12270001?withRelated=true"
-    let res = await getXmlByUrl(value)
+    let res = await getXmlByUrl(value,proxy)
     await parseJsonForDanDan(res,addFunc)
 }
 
@@ -135,10 +149,10 @@ const typeIndex={
     "DanDan By Url" : loadDanmakuForDanDanByUrl
 }
 
-export async function loadDanmaku(type,value,addFunc){
+export async function loadDanmaku(type,value,addFunc,proxy){
     let func = typeIndex[type]
     if(func){
-        await func(value,addFunc);
+        await func(value,addFunc,proxy);
     }
 }
 

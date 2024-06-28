@@ -5,7 +5,7 @@ let type = 2;
 export default {
 
     queryCid(aid,bvid) {
-        let u = "https://danmaku.vercel.app/api/bilibili/video"
+        let u = "/api/proxy/queryPageListBili"
 
 
         //构造提交数据
@@ -19,7 +19,7 @@ export default {
             d["bvid"] = bvid;
         }
 
-        return axois[2]({
+        return axois[0]({
             method: "get",
             url: u,
             params:d
@@ -28,7 +28,7 @@ export default {
     },
 
     queryXmlForBili(cid) {
-        let u = "https://danmaku.vercel.app/api/bilibili/danmaku"
+        let u = "/api/proxy/queryXmlForBili"
 
         //构造提交数据
         let d = {}
@@ -37,7 +37,7 @@ export default {
             d["cid"] = cid;
         }
 
-        return axois[2]({
+        return axois[0]({
             method: "get",
             url: u,
             params:d

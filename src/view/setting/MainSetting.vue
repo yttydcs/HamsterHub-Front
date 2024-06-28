@@ -5,6 +5,8 @@
 
     <UserManageSetting :curd-handle="curdHandle" v-if="hasPermission('0')"/>
 
+    <SystemFunctionSetting />
+
     <StoreSetting :curd-handle="curdHandle" v-if="hasPermission('0')"/>
 
     <UserSetting v-if="loginData.loginState"/>
@@ -26,8 +28,6 @@
 
 <script setup>
 import { NModal } from "naive-ui";
-import curLang from "@/common/lang";
-import {optionList} from "@/common/setting/option";
 import {reactive, ref, watch} from "vue";
 import CommonCURD from "@/components/common/curd/CommonCURD.vue";
 import {deviceConfig} from "@/common/curd/option/deviceConfig";
@@ -35,6 +35,7 @@ import UserSetting from "@/components/setting/UserSetting.vue";
 import UserManageSetting from "@/components/setting/UserManageSetting.vue";
 import StoreSetting from "@/components/setting/StoreSetting.vue";
 import localSetting from "@/components/setting/LocalSetting.vue";
+import SystemFunctionSetting from "@/components/setting/SystemFunctionSetting.vue";
 import loginData, {hasPermission} from "@/common/loginData";
 
 const curdData = reactive({
