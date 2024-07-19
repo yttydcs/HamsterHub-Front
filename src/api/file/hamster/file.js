@@ -90,11 +90,12 @@ export default {
     },
 
 
-    delete(aim){
+    delete(aim,root = "0"){
         let u = "/api/delete"
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:aim,
         }
 
@@ -105,12 +106,14 @@ export default {
         })
     },
 
-    async getDownloadUrl(id){
+    async getDownloadUrl(id,root="0",preference=null){
         let u = "/api/getDownloadUrl"
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:id,
+            preference
         }
 
         let data = (await axois[type]({
@@ -126,16 +129,15 @@ export default {
         return  data
     },
 
-    async download(id){
-        let url =await this.getDownloadUrl(id);
+    async download(id,root="0",preference=null){
+        let url =await this.getDownloadUrl(id,root,preference);
         download.url(url,true)
     },
 
-    async copyUrl(id){
-        let url =await this.getDownloadUrl(id);
+    async copyUrl(id,root="0",preference=null){
+        let url =await this.getDownloadUrl(id,root,preference);
         copyText(download.toAbsolute(url));
     },
-
 
     getDetail(root,url){
         let u = "/api/queryFile"
@@ -153,11 +155,12 @@ export default {
         })
     },
 
-    moveFile(vFileId,parentId){
+    moveFile(vFileId,parentId,root){
         let u = "/api/move"
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:vFileId,
             parentId:parentId
         }
@@ -169,11 +172,12 @@ export default {
         })
     },
 
-    copyFile(vFileId,parentId){
+    copyFile(vFileId,parentId,root){
         let u = "/api/copy"
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:vFileId,
             parentId:parentId
         }
@@ -201,11 +205,12 @@ export default {
         })
     },
 
-    rename(vFileId,name){
+    rename(vFileId,name,root){
         let u = "/api/rename"
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:vFileId,
             name:name
         }

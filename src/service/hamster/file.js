@@ -278,10 +278,10 @@ export default {
 
     async deleteFile(vFile){
         let fileId = vFile.other.id;
-        await file.delete(fileId);
+        await file.delete(fileId,getCurRoot());
     },
 
-    async downloadFile(vFile){
+    async downloadFile(vFile,preference=null){
 
         if(vFile.is_dir){
             window.$message.info("不支持下载文件夹")
@@ -289,17 +289,17 @@ export default {
         }
 
         let fileId = vFile.other.id;
-        await file.download(fileId,vFile.name)
+        await file.download(fileId,getCurRoot(),preference)
     },
 
-    async copyFileUrl(vFile){
+    async copyFileUrl(vFile,preference=null){
         if(vFile.is_dir){
             window.$message.info("不支持复制文件夹URL")
             return
         }
 
         let fileId = vFile.other.id;
-        await file.copyUrl(fileId)
+        await file.copyUrl(fileId,getCurRoot(),preference)
     },
 
     async shareFile(id,key,expiry,name){
@@ -307,23 +307,24 @@ export default {
     },
 
     async moveFile(id,parentId){
-        await file.moveFile(id,parentId)
+        await file.moveFile(id,parentId,getCurRoot())
     },
 
     async copyFile(id,parentId){
-        await file.copyFile(id,parentId)
+        await file.copyFile(id,parentId,getCurRoot())
     },
 
     async rename(vFileId,name){
         if(!name){
             window.$message.info("名称不能为空")
         }else{
-            await file.rename(vFileId,name)
+            await file.rename(vFileId,name,getCurRoot())
         }
     },
 
     async getDownloadUrl(vFileId){
-       let res = await file.getDownloadUrl(vFileId)
+
+       let res = await file.getDownloadUrl(vFileId,getCurRoot())
         return download.toAbsolute(res);
     },
 

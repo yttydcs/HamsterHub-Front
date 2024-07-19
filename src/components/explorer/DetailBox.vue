@@ -34,7 +34,6 @@
 import {computed, reactive, ref} from "vue";
 import {NSelect} from "naive-ui";
 import OpenBox from "@/components/common/OpenBox.vue";
-import file from "@/api/file/hamster/file";
 import calc from "@/common/calc";
 import download from "@/common/download";
 import {useThemeVars} from "naive-ui";
@@ -131,7 +130,7 @@ async function handleItem(data,p){
 }
 
 async function handleUrl(id){
-  let res = await file.getDownloadUrl(id)
+  let res = await props.fileService.getDownloadUrl(id)
   return download.toAbsolute(res)
 }
 

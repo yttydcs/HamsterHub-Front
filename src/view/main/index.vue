@@ -155,7 +155,9 @@ async function setDeviceUsage(index,ob=null){
   }
 
   try {
-    let strategySize = (await strategy.getStrategySize(aim.id)).data
+
+    let strategySize = (await strategy.getStrategySize(aim.root)).data
+
 
     curStrategy.title = aim.name;
     curStrategy.free = strategySize.usable;

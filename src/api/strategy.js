@@ -103,7 +103,7 @@ export default {
 
     },
 
-    getStrategySize(strategyId){
+    getStrategySize(root,combine = "0"){
 
         // 设置类不做兼容
         let type = 0;
@@ -112,7 +112,8 @@ export default {
         let u = "/api/queryStrategySize"
 
         let d = {
-            strategyId: strategyId
+            root,
+            combine
         };
 
         return axois[type]({
