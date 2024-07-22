@@ -222,6 +222,7 @@ function textPreview(){
 }
 
 .preview{
+  overflow: auto;
   background-color: rgba(255,255,255,0.05);
 }
 
