@@ -74,6 +74,7 @@ const isExist=ref(true);
 const unlock=ref(true);
 const isDir=ref(null);
 const url=ref("");
+const root = ref("");
 const fileKey=ref("");
 const ticket=ref("");
 const loading=useLoadingBar();

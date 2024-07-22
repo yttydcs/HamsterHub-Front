@@ -303,7 +303,7 @@ export default {
     },
 
     async shareFile(id,key,expiry,name){
-        await share.create(id,key,expiry,name);
+        await share.create(id,key,expiry,name,getCurRoot());
     },
 
     async moveFile(id,parentId){

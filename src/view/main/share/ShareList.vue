@@ -18,7 +18,7 @@
         </div>
         <div class="item-action">
           <n-space align="stretch"  style="width: 100%; height: 100%">
-            <n-button class="button" text @click="handleDelete(item.id)">
+            <n-button class="button" text @click="handleDelete(item.id,item.root)">
               <n-icon>
                 <BanOutline />
               </n-icon>
@@ -80,8 +80,8 @@ function flushData(){
   })
 }
 
-function handleDelete(id){
-  share.delete(id).then(res=>{
+function handleDelete(id,root){
+  share.delete(id,root).then(res=>{
     flushData()
   })
 }

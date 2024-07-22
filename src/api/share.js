@@ -45,7 +45,7 @@ export default {
 
     },
 
-    create(id,key=null,expiry="", name=""){
+    create(id,key=null,expiry="", name="", root=null){
 
         let u = "/api/share"
 
@@ -55,6 +55,7 @@ export default {
 
         // 构造提交数据
         let d = {
+            root,
             vFileId:id,
             key:key,
             expiry:expiry,
@@ -69,11 +70,12 @@ export default {
 
     },
 
-    delete(id){
+    delete(id,root){
         let u = "/api/deleteShare"
 
         // 构造提交数据
         let d = {
+            root,
             "shareId": id
         }
 
