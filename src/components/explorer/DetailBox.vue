@@ -64,19 +64,19 @@ async function flushData(fileObj){
     detailData[i]={};
     detailData[i]["title"] = data[i].name;
 
-    data[i].created = data[i].created.replace("T"," ");
-    data[i].modified = data[i].modified.replace("T"," ");
+    data[i].created = calc.formatTimestampWithUserTimeZone(data[i].created);
+    data[i].modified =  calc.formatTimestampWithUserTimeZone(data[i].modified);
 
     detailData[i].version = data[i].version;
 
     if(data[i].type === 0){
       detailData[i].isFolder = true;
       detailData[i].url = "";
-      detailData[i].msg = data[i].created.replace("T"," ");
+      detailData[i].msg = data[i].created;
     }else{
       detailData[i].url = await handleUrl(data[i].id);
       data[i].size = calc.toSizeString(data[i].size);
-      detailData[i].msg = data[i].size + ` · ` + data[i].created.replace("T"," ");
+      detailData[i].msg = data[i].size + ` · ` + data[i].created;
     }
 
     await handleItem(data[i],i);

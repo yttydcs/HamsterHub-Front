@@ -38,7 +38,7 @@
         {{ fileName }}
       </div>
       <div class="file-msg-text-line switchTheme">
-        {{ modified.replace("T"," ")  + ` · ` +  calc.toSizeString(size) }}
+        {{ calc.formatTimestampWithUserTimeZone(modified) + ` · ` +  calc.toSizeString(size) }}
       </div>
 
     </div>
@@ -72,7 +72,7 @@ const props = defineProps({
   showMenu:Function,
   boxStyle:String,
   size:String,
-  modified:String,
+  modified:Number,
 })
 
 const theme = useThemeVars();

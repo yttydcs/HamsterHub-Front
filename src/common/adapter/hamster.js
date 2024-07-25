@@ -39,15 +39,15 @@ export default {
         for (let i = 0; i < content.length; i++) {
             if(content[i].name === "README.md"){
                 fileList.readmeData.id = content[i].id;
-                hasReadMeFile = true
+                hasReadMeFile = true;
             }
 
-            let historyKey =content[i].parentId + content[i].name
+            let historyKey = content[i].parentId + content[i].name;
             let p;
             if(historyKey in fileList.history){
-                fileList.history[historyKey].id.push(content[i]["id"])
+                fileList.history[historyKey].id.push(content[i]["id"]);
                 if(fileList.history[historyKey].version>content[i]["version"]){
-                    continue
+                    continue;
                 }else{
                     fileList.history[historyKey].version = content[i]["version"];
                     p = fileList.history[historyKey].pos;
@@ -62,26 +62,26 @@ export default {
                 };
             }
 
-            fileList.file[p] = {}
-            fileList.file[p].name = content[i].name
-            fileList.file[p].is_dir = (content[i]["type"]===0)
-            fileList.file[p].selected = false
-            fileList.file[p].modified = content[i].modified
-            fileList.file[p].size = content[i].size
+            fileList.file[p] = {};
+            fileList.file[p].name = content[i].name;
+            fileList.file[p].is_dir = (content[i]["type"]===0);
+            fileList.file[p].selected = false;
+            fileList.file[p].modified = content[i].modified;
+            fileList.file[p].size = content[i].size;
 
             // 存储其他平台特有信息
-            fileList.file[p].other = {}
-            fileList.file[p].other["id"] = content[i]["id"]
-            fileList.file[p].other["type"] = content[i]["type"]
-            fileList.file[p].other["created"] = content[i]["created"]
-            fileList.file[p].other["accountID"] = content[i]["accountID"]
-            fileList.file[p].other["strategyId"] = content[i]["strategyId"]
-            fileList.file[p].other["rfileId"] = content[i]["rfileId"]
-            fileList.file[p].other["version"] = content[i]["version"]
+            fileList.file[p].other = {};
+            fileList.file[p].other["id"] = content[i]["id"];
+            fileList.file[p].other["type"] = content[i]["type"];
+            fileList.file[p].other["created"] = content[i]["created"];
+            fileList.file[p].other["accountID"] = content[i]["accountID"];
+            fileList.file[p].other["strategyId"] = content[i]["strategyId"];
+            fileList.file[p].other["rfileId"] = content[i]["rfileId"];
+            fileList.file[p].other["version"] = content[i]["version"];
         }
-
+        // console.log(fileList)
         if(!hasReadMeFile){
-            fileList.readmeData.id = -1
+            fileList.readmeData.id = -1;
         }
     }
 
