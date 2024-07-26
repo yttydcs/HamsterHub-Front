@@ -107,7 +107,7 @@ function flushData(){
   share.getShare(ticket.value,fileKey.value).then((res)=>{
     if("data" in res){
       res.data.size = calc.toSizeString(res.data.size);
-      res.data.created = res.data.created.replace("T"," ");
+      res.data.created = calc.formatTimestampWithUserTimeZone(res.data.created);
       shareData.data = res.data
       isExist.value = true
       unlock.value = true
