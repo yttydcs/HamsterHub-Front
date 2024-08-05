@@ -53,7 +53,8 @@
             :percentage="item.progress"
             :border-radius="4"
             :fill-border-radius="4"
-            status="success"
+            :status="item.progressStatus"
+            :processing = "true"
           />
           
         </div>
@@ -71,7 +72,10 @@
 
       <div class="detail">
         <div class="upBox">
-          <div class="name">{{ item.name }}</div>
+          <div class="name">
+            <span class="status"> {{ curLang.lang.taskDownload.state[item.status] }} </span>
+            <span class="task-name"> {{ item.name }} </span>
+          </div>
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%">
 
@@ -85,13 +89,14 @@
             </n-space>
           </div>
         </div>
+
         <div class="progress">
           <NProgress
               indicator-placement="inside"
               :percentage="item.progress"
               :border-radius="4"
               :fill-border-radius="4"
-              status="success"
+              :status="item.progressStatus"
           />
 
         </div>
