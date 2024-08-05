@@ -12,7 +12,7 @@
       <div class="detail">
         <div class="upBox">
           <div class="name">
-            <span class="status"> {{ item.status }} </span>
+            <span class="status"> {{ curLang.lang.taskUpload.state[item.status] }} </span>
             {{ item.name }}
             {{ item.total }}
           </div>

@@ -15,16 +15,25 @@ export async function getTasks() {
             progress:getProgress(res[i].completed , res[i].total),
             type:"file",
             total: calc.toSizeString(res[i].total),
+            progressStatus:"info"
         }
 
         if(res[i].name){
             item.name = res[i].name;
         }
 
-        if(res[i].state === "done"){
-            data.done.push(item);
-        }else{
+        if(res[i].state === "1"){
             data.doing.push(item);
+        }else{
+            if(res[i].state === "3"){
+                item.progressStatus = "success"
+                item.progress = 100;
+            } else if(res[i].state === "2"){
+                item.progressStatus = "error";
+                item.progress = 0;
+            }
+
+            data.done.push(item);
         }
     }
 

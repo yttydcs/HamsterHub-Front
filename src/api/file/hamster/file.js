@@ -112,7 +112,7 @@ export default {
         // 构造提交数据
         let d = {
             root,
-            vFileId:id,
+            vFileId:encodeURIComponent(id),
             preference
         }
 
@@ -145,7 +145,7 @@ export default {
         // 构造提交数据
         let d = {
             root:root,
-            url:url
+            url:encodeURIComponent(url)
         }
 
         return axois[type]({

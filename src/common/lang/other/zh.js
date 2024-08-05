@@ -125,6 +125,12 @@ const zhLangData = {
             title:"文件上传",
             doing:"执行",
             done:"结束",
+            state:{
+                "0": "等待",
+                "1": "下载",
+                "2": "异常",
+                "3": "完成",
+            },
         },
         taskDownload:{
             title:"离线下载",

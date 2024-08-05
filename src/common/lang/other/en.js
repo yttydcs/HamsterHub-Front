@@ -122,7 +122,13 @@ const enLangData = {
         taskUpload:{
             title: "File Upload",
             doing: "In Progress",
-            done: "Done"
+            done: "Done",
+            state:{
+                "0": "Waiting",
+                "1": "Downloading",
+                "2": "Error",
+                "3": "Completed",
+            },
         },
         taskDownload:{
             title: "Offline Download",
