@@ -123,12 +123,6 @@ const enLangData = {
             title: "File Upload",
             doing: "In Progress",
             done: "Done",
-            state:{
-                "0": "Waiting",
-                "1": "Downloading",
-                "2": "Error",
-                "3": "Completed",
-            },
         },
         taskDownload:{
             title: "Offline Download",
@@ -139,7 +133,14 @@ const enLangData = {
             selectBox: "Select Download Directory",
             downloadPosition: "Storage Location",
             placeholder: "Click to choose download location",
-            downloadUrl: "Download URL"
+            downloadUrl: "Download URL",
+            taskName: "Task Name",
+            state:{
+                "0": "Waiting",
+                "1": "Downloading",
+                "2": "Error",
+                "3": "Completed",
+            },
         },
         confirmBtn:{
             ok: "OK",

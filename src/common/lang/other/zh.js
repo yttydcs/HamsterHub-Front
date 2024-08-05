@@ -125,12 +125,6 @@ const zhLangData = {
             title:"文件上传",
             doing:"执行",
             done:"结束",
-            state:{
-                "0": "等待",
-                "1": "下载",
-                "2": "异常",
-                "3": "完成",
-            },
         },
         taskDownload:{
             title:"离线下载",
@@ -141,7 +135,14 @@ const zhLangData = {
             selectBox:"选择下载目录",
             downloadPosition:"存放位置",
             placeholder:"点击选择下载位置",
-            downloadUrl:"下载地址"
+            downloadUrl:"下载地址",
+            taskName:"任务名称",
+            state:{
+                "0": "等待",
+                "1": "下载",
+                "2": "异常",
+                "3": "完成",
+            },
         },
         confirmBtn:{
             ok:"确定",

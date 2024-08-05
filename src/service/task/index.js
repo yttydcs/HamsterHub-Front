@@ -40,8 +40,8 @@ export async function getTasks() {
     return data;
 }
 
-export async function addTask(root, parentId, url) {
-    await downloadTask.create(root, parentId, url);
+export async function addTask(root, parentId, url, name) {
+    await downloadTask.create(root, parentId, url, name);
 }
 
 export async function delTask(tag) {

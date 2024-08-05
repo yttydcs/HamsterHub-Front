@@ -12,8 +12,8 @@
       <div class="detail">
         <div class="upBox">
           <div class="name">
-            <span class="status"> {{ curLang.lang.taskUpload.state[item.status] }} </span>
-            {{ item.name }}
+            <span class="status"> {{ curLang.lang.taskDownload.state[item.status] }} </span>
+            <span class="task-name"> {{ item.name }} </span>
             {{ item.total }}
           </div>
           <div class="action">
@@ -118,6 +118,9 @@
       />
 
       <n-form>
+        <n-form-item-row :label="curLang.lang.taskDownload.taskName" >
+          <n-input v-model:value="taskModel.name" type="text" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
 
         <n-form-item-row :label="curLang.lang.taskDownload.downloadPosition" >
           <n-input v-model:value="taskModel.showPosition" :disabled="true" :placeholder="curLang.lang.taskDownload.placeholder"/>
@@ -190,7 +193,7 @@ function confirmAddTask(){
     return;
   }
 
-  downloadTask.addTask(taskModel.root,taskModel.parentId,taskModel.url);
+  downloadTask.addTask(taskModel.root,taskModel.parentId,taskModel.url,taskModel.name);
   show.value = false;
 }
 
@@ -315,6 +318,9 @@ onUnmounted(()=>{
   margin-right: 10px;
   padding: 0px 3px;
   border-radius: 3px;
+}
 
+.task-name{
+  margin-right: 10px;
 }
 </style>

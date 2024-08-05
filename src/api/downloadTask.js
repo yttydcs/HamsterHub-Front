@@ -15,7 +15,7 @@ export default {
         })
 
     },
-    create(root, parentId, url){
+    create(root, parentId, url, name){
         // 设置类不做兼容
         let type = 0;
 
@@ -26,7 +26,8 @@ export default {
         let d = {
             "root": root,
             "parentId": parentId,
-            "url": url
+            "url": url,
+            "name": name
         }
 
         return axois[type]({
