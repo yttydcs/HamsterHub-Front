@@ -12,6 +12,23 @@ const zhLangData = {
         validateMissing:"缺少必要数据",
         processing:"正在处理请稍后",
         submitBtn: "提交",
+        rssTask:{
+            pubDate:"发布日期",
+            size:"占用",
+            filter:"筛选",
+            rssListId:"订阅ID:"
+        },
+        rssList:{
+            root: "绑定策略",
+            parent: "存储位置",
+            addRSS: "添加订阅",
+            editRSS: "编辑订阅",
+            selectBox: "选择存储位置",
+            rssName: "订阅名称",
+            downloadPosition: "存储位置",
+            downloadUrl: "订阅地址",
+            replaceHost: "替换域名",
+        },
         shareList:{
             code:"密码",
             expired:"过期时间"
@@ -28,6 +45,9 @@ const zhLangData = {
             task :"任务",
             upload: "文件上传",
             download: "离线下载",
+            rssTask: "获取记录",
+            rssMenu: "RSS 订阅",
+            rss: "我的订阅",
         },
         curd:{
             addTitle:"新增",

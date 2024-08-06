@@ -12,8 +12,8 @@
             <div class="item-name">{{ item.name?item.name:item.id}}</div>
           </div>
           <div class="item-bottom">
-            <div class="item-ticket"> {{ curLang.lang.shareList.code }}: {{item.ticket}}</div>
-            <div class="item-expiry">{{ curLang.lang.shareList.expired }}: {{item.expiry.replace("T"," ")}}</div>
+            <div class="item-root"> {{ curLang.lang.shareList.code }}: {{item.ticket}}</div>
+            <div class="item-parent">{{ curLang.lang.shareList.expired }}: {{item.expiry.replace("T"," ")}}</div>
           </div>
         </div>
         <div class="item-action">
@@ -144,19 +144,19 @@ onActivated(()=>{
   margin-bottom: -4px;
 }
 
-.item-name,.item-ticket,.item-expiry,.item-action{
+.item-name,.item-root,.item-parent,.item-action{
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
 }
 
-.item-ticket{
+.item-root{
   font-size: 14px;
   color: v-bind(textColor);
   width: 150px;
 }
 
-.item-expiry{
+.item-parent{
   font-size: 14px;
   color: v-bind(textColor);
 }

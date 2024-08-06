@@ -10,6 +10,23 @@ const enLangData = {
         validateMissing: "Missing required data",
         processing:"Processing, please wait",
         submitBtn: "Submit",
+        rssTask:{
+            pubDate: "Publication Date",
+            size: "Size",
+            filter: "Filter",
+            rssListId: "Subscription ID:"
+        },
+        rssList:{
+            root: "Binding Strategy",
+            parent: "Storage Location",
+            addRSS: "Add Subscription",
+            editRSS: "Edit Subscription",
+            selectBox: "Select Storage Location",
+            rssName: "Subscription Name",
+            downloadPosition: "Storage Location",
+            downloadUrl: "Subscription URL",
+            replaceHost: "Replace Domain"
+        },
         shareList:{
             code:"Code",
             expired:"Expired"
@@ -26,6 +43,9 @@ const enLangData = {
             task: "Task",
             upload: "Upload",
             download: "Download",
+            rssTask: "Fetch Records",
+            rssMenu: "RSS",
+            rss: "My Subscriptions"
         },
         curd:{
             addTitle:"Add Item",

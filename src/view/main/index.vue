@@ -45,7 +45,7 @@
 import {NLayout, NLayoutSider, NMenu, NIcon, useLoadingBar} from "naive-ui";
 import {h, onMounted, reactive, ref, watch, defineComponent} from "vue";
 import { ShareSocialOutline, FolderOpenOutline,} from "@vicons/ionicons5";
-import { TaskListSquareRtl24Regular } from "@vicons/fluent";
+import { TaskListSquareRtl24Regular, Rss24Regular } from "@vicons/fluent";
 import DeviceUsage from "@/components/common/DeviceUsage.vue";
 import curLang from "@/common/lang";
 import strategy from "@/api/strategy";
@@ -86,7 +86,24 @@ const menuOptions = reactive(
           key: 'download',
         },
       ],
-      },
+      },{
+      label: curLang.lang.leftMenu.rssMenu,
+      href: '',
+      key: 'rssMenu',
+      icon: renderIcon(Rss24Regular),
+      children: [
+        {
+          label: curLang.lang.leftMenu.rss,
+          href: '',
+          key: 'rss',
+        },
+        {
+          label: curLang.lang.leftMenu.rssTask,
+          href: '',
+          key: 'rssTask',
+        },
+      ],
+    },
   ]
 );
 

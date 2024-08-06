@@ -12,6 +12,8 @@ import TaskLayout from "@/view/main/task/TaskLayout.vue";
 import UpLoadTask from "@/view/main/task/UpLoadTask.vue";
 import DownloadTask from "@/view/main/task/DownloadTask.vue";
 import FileLayout from "@/view/main/file"
+import RSSList from "@/view/main/rss/RSSList.vue";
+import RSSTask from "@/view/main/rss/RSSTask.vue";
 
 // 构建路由
 const routes = [
@@ -51,6 +53,22 @@ const routes = [
                         meta:{
                             needToken:true,
                             title:"Upload",
+                        }
+                    },
+                    {
+                        path: 'rss',
+                        component: RSSList,
+                        meta:{
+                            needToken:true,
+                            title:"RSS List",
+                        }
+                    },
+                    {
+                        path: 'rssTask',
+                        component: RSSTask,
+                        meta:{
+                            needToken:true,
+                            title:"RSS Task",
                         }
                     },
                 ]
