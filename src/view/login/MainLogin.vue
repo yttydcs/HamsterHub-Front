@@ -20,10 +20,11 @@
               </n-form-item-row>
               <n-form-item-row :label="curLang.lang.user.password" path="pwd">
                 <n-input
-                    show-password-on="click"
-                    v-model:value="formData.pwd"
-                    type="password"
-                    :placeholder="curLang.lang.plsInput"
+                    show-password-on = "click"
+                    v-model:value = "formData.pwd"
+                    type = "password"
+                    :placeholder = "curLang.lang.plsInput"
+                    @keyup.enter = "userLogin"
                 />
               </n-form-item-row>
               <n-checkbox v-model:checked="formData.lasting" style="margin-bottom: 10px">
