@@ -23,7 +23,7 @@ export default {
         // 构造提交数据
         let d = {
             root:root,
-            parentId:parentId,
+            parentId:encodeURIComponent(parentId),
             limit:pageLimit,
             refresh:refresh
         }

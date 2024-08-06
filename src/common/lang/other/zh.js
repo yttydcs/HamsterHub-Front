@@ -28,6 +28,7 @@ const zhLangData = {
             downloadPosition: "存储位置",
             downloadUrl: "订阅地址",
             replaceHost: "替换域名",
+            mirrorHost:"镜像代理",
         },
         shareList:{
             code:"密码",

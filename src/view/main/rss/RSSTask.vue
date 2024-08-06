@@ -20,11 +20,13 @@
         <!--    todo:icon    -->
         <div class="item-left">
           <div class="item-top">
+
             <div class="item-name">{{ item.title?item.title:item.id}}</div>
           </div>
           <div class="item-bottom">
             <div class="item-date"> {{ curLang.lang.rssTask.pubDate }}: {{item.pubDate}}</div>
             <div class="item-parent">{{ curLang.lang.rssTask.size }}: {{item.size}}</div>
+            <div class="status"> {{ curLang.lang.taskDownload.state[item.state] }} </div>
           </div>
         </div>
         <div class="item-action">
@@ -141,7 +143,7 @@ function onlyAllowNumber (value) {
   margin-right: 10px;
 }
 
-.item-name,.item-date,.item-parent,.item-action,.action-box{
+.item-name,.item-date,.item-parent,.item-action,.status,.action-box{
   display: inline-block;
   vertical-align: middle;
   overflow: hidden;
@@ -193,5 +195,12 @@ function onlyAllowNumber (value) {
 .filter-input{
   margin-left: 10px;
   width: 200px;
+}
+
+.status{
+  display: inline-block;
+  height: 24px;
+  color: v-bind(textColor);
+  margin-left: 20px;
 }
 </style>

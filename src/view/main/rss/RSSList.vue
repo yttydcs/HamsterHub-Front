@@ -91,6 +91,10 @@
           <n-input v-model:value="uploadModel.replaceHost" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.rssList.mirrorHost" >
+          <n-input v-model:value="uploadModel.mirrorHost" type="text" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
       </n-form>
 
       <n-space class="=control-btn" align="stretch" justify="end">
@@ -129,6 +133,10 @@
 
         <n-form-item-row :label="curLang.lang.rssList.replaceHost" >
           <n-input v-model:value="uploadModel.replaceHost" type="text" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
+        <n-form-item-row :label="curLang.lang.rssList.mirrorHost" >
+          <n-input v-model:value="uploadModel.mirrorHost" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
       </n-form>
@@ -177,7 +185,10 @@ const rssListData=reactive({data:[]});
 const addBoxShow=ref(false);
 const editBoxShow=ref(false);
 const selectBoxShow=ref(false);
-const uploadModel = reactive({id:"",name:"", root:"",parentId:"", showPosition:"",url:"",replaceHost:""});
+
+const uploadModel = reactive({id:"",name:"", root:"",parentId:"",
+  showPosition:"",url:"",replaceHost:"",mirrorHost:""});
+
 const folderSelect = ref(null);
 
 onMounted(()=>{
@@ -194,7 +205,8 @@ async function flushData(){
 
 async function confirmAddRSS(){
   await rssList.addList(uploadModel.root,uploadModel.parentId,
-      uploadModel.url,uploadModel.name,1,uploadModel.replaceHost);
+      uploadModel.url,uploadModel.name,1,uploadModel.replaceHost,uploadModel.mirrorHost);
+  addBoxShow.value = false;
   await flushData()
 }
 
@@ -211,6 +223,7 @@ async function handleEdit(item){
   uploadModel.parentId = item.parentIndex;
   uploadModel.url = item.url;
   uploadModel.replaceHost = item.replaceHost;
+  uploadModel.mirrorHost = item.mirrorHost;
   uploadModel.showPosition = "root: " + uploadModel.root + " parentId: " + uploadModel.parentId;
 }
 
@@ -218,7 +231,7 @@ async function confirmEditRSS(){
   editBoxShow.value = false;
 
   await rssList.updateList(uploadModel.id ,uploadModel.root,uploadModel.parentId,uploadModel.url,
-      uploadModel.name,1,uploadModel.replaceHost);
+      uploadModel.name,1,uploadModel.replaceHost,uploadModel.mirrorHost);
 
   await flushData()
 }

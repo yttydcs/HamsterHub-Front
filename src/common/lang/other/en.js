@@ -25,7 +25,8 @@ const enLangData = {
             rssName: "Subscription Name",
             downloadPosition: "Storage Location",
             downloadUrl: "Subscription URL",
-            replaceHost: "Replace Domain"
+            replaceHost: "Replace Domain",
+            mirrorHost: "Mirror Proxy"
         },
         shareList:{
             code:"Code",

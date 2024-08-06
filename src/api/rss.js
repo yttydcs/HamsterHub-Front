@@ -34,7 +34,7 @@ export default {
             data:d
         })
     },
-    addList(root,parent,url,name,downloadId,replaceHost){
+    addList(root,parent,url,name,downloadId,replaceHost,mirrorHost){
         // 设置类不做兼容
         let type = 0;
 
@@ -58,6 +58,10 @@ export default {
 
         if (replaceHost){
             d["replaceHost"] = replaceHost;
+        }
+
+        if (mirrorHost){
+            d["mirrorHost"] = mirrorHost;
         }
 
         return axois[type]({
@@ -85,7 +89,7 @@ export default {
             data:d
         })
     },
-    updateList(id,root,parent,url,name,downloadId,replaceHost){
+    updateList(id,root,parent,url,name,downloadId,replaceHost,mirrorHost){
         // 设置类不做兼容
         let type = 0;
 
@@ -100,7 +104,8 @@ export default {
             url,
             name,
             downloadId,
-            replaceHost
+            replaceHost,
+            mirrorHost
         }
 
         return axois[type]({
