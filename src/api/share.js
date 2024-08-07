@@ -34,7 +34,7 @@ export default {
         }
 
         if (vFileId){
-            d["vFileId"]=vFileId;
+            d["vFileId"]=encodeURIComponent(vFileId);
         }
 
         return axois[type]({
@@ -56,7 +56,7 @@ export default {
         // 构造提交数据
         let d = {
             root,
-            vFileId:id,
+            vFileId:encodeURIComponent(id),
             key:key,
             expiry:expiry,
             name:name
@@ -100,7 +100,7 @@ export default {
         }
 
         if(vFileId){
-            d.vFileId = vFileId
+            d.vFileId =encodeURIComponent(vFileId);
         }
 
         let data = (await axois[type]({
@@ -142,7 +142,7 @@ export default {
         let d = {
             "ticket":ticket,
             "key":key,
-            "parentId":parentId,
+            "parentId":encodeURIComponent(parentId),
             "page":page,
             "limit":limit,
         }
@@ -161,8 +161,8 @@ export default {
         // 构造提交数据
         let d = {
             ticket:ticket,
-            parentId:parentId,
-            name:name,
+            parentId:encodeURIComponent(parentId),
+            name:encodeURIComponent(name),
         }
 
         if (key){

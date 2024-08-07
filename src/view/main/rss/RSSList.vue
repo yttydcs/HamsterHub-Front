@@ -197,6 +197,10 @@ onMounted(()=>{
 
 async function flushData(){
   let res = await rssList.query()
+  if(!res.data){
+    rssListData.data = [];
+    return;
+  }
   rssListData.data = res.data
   for (let i = 0; i < rssListData.data.length; i++) {
     rssListData.data[i].loading = false;

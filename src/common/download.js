@@ -2,16 +2,31 @@ import axois from "@/axios";
 
 export default {
     toAbsolute(url){
-
         if(!url){
             return url;
         }
 
-        if(url.startsWith("http")){// 如果不是绝对地址需要转为绝对地址
+        // 如果不是绝对地址需要转为绝对地址
+        if(url.startsWith("http")){
             return url
         }
 
-        return window.targetUrl + "api" + url
+        // 防止重复调用
+        if (!( url.startsWith("api") || url.startsWith("/api") ) ){
+            url = "api" + url
+        }
+        url = this.combineUrls(window.targetUrl,url)
+        return url;
+    },
+
+    combineUrls(base, relative) {
+        if (base.endsWith('/')) {
+            base = base.slice(0, -1);
+        }
+        if (!relative.startsWith('/')) {
+            relative = '/' + relative;
+        }
+        return base + relative;
     },
 
     url(url, openWindow=false){
