@@ -38,7 +38,8 @@
         {{ fileName }}
       </div>
       <div class="file-msg-text-line switchTheme">
-        {{ calc.formatTimestampWithUserTimeZone(modified) + ` · ` +  calc.toSizeString(size) }}
+        {{ calc.formatTimestampWithUserTimeZone(modified) }}
+        {{ isDir ? "" : (` · ` +  calc.toSizeString(size)) }}
       </div>
 
     </div>
