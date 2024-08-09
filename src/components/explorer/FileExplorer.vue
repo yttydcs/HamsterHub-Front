@@ -23,6 +23,15 @@
             </n-icon>
           </n-button>
 
+          <n-dropdown :options="sortOption" @select="handleSort">
+            <n-button text style="font-size: 20px">
+              <n-icon>
+                <ArrowSortDownLines20Regular />
+              </n-icon>
+            </n-button>
+          </n-dropdown>
+
+
           <n-button text style="font-size: 20px" @click="switchBoxStyle(null)" v-if="boxStyle==='line'" >
             <n-icon>
               <AppFolder24Regular />
@@ -180,6 +189,8 @@ import {ref, computed, watch, reactive, nextTick, toRefs, onMounted} from "vue";
 
 import FileList from "@/components/explorer/FileList.vue";
 import {HomeOutline, LanguageOutline} from "@vicons/ionicons5";
+
+import {ArrowSortDownLines20Regular} from "@vicons/fluent";
 import {useRoute, useRouter} from "vue-router";
 import {addTasks} from "@/common/task/uploadTask";
 
@@ -226,10 +237,37 @@ const renameModel = reactive({name:"",vFileId:"",})
 const loading = useLoadingBar()
 const boxStyle = ref(null)
 const readmeData = reactive({msg:"",name:"",url:""})
-
 const detailBox = ref(null)
 const moveFolderSelect = ref(null)
 const copyFolderSelect = ref(null)
+const sortType = ref("sortByTime")
+const isAsc = ref(false)
+const sortOption = reactive([
+  {
+    label: curLang.lang.explorerSort.asc,
+    key: 'asc',
+  },
+  {
+    label: curLang.lang.explorerSort.desc,
+    key: 'desc',
+  },
+  {
+    type: 'divider',
+    key: 'd1'
+  },
+  {
+    label: curLang.lang.explorerSort.sortBySize,
+    key: 'sortBySize',
+  },
+  {
+    label: curLang.lang.explorerSort.sortByName,
+    key: 'sortByName',
+  },
+  {
+    label: curLang.lang.explorerSort.sortByTime,
+    key: 'sortByTime',
+  },
+])
 
 function changeRoute(){
   props.fileService.setRouteHistory();
@@ -509,6 +547,58 @@ async function fileMove(target,parentId){
   await getFileData()
 }
 
+function handleSort(key){
+  switch(key){
+    case "asc":
+      isAsc.value = true;
+      return;
+    case "desc":
+      isAsc.value = false;
+      return;
+  }
+  doSort(key);
+}
+
+function doSort(key){
+  switch(key){
+    case "sortBySize":
+      sortBySize()
+      break;
+    case "sortByTime":
+      sortByTime()
+      break;
+    case "sortByName":
+      sortByName();
+      break;
+  }
+
+}
+
+function sortBySize(){
+  if(isAsc.value){
+    fileData.file.sort((a, b) => (a.size * 1) - (b.size * 1));
+  }else {
+    fileData.file.sort((a, b) => (b.size * 1) - (a.size * 1));
+  }
+}
+
+function sortByTime(){
+  if(isAsc.value){
+    fileData.file.sort((a, b) => (a.modified * 1) - (b.modified * 1))
+  }else {
+    fileData.file.sort((a, b) => (b.modified * 1) - (a.modified * 1))
+  }
+}
+
+function sortByName(){
+  if(isAsc.value){
+    fileData.file.sort((a, b) => a["name"].localeCompare(b["name"], undefined, { numeric: true, sensitivity: 'base' }));
+  }else{
+    fileData.file.sort((b, a) => a["name"].localeCompare(b["name"], undefined, { numeric: true, sensitivity: 'base' }));
+  }
+}
+
+
 onActivated(()=>{
   setMenu()
   handleFlush()
@@ -529,6 +619,12 @@ watch(curLang, () => {
   for (let i = 0; i < fileContextMenuOption.length; i++) {
     if ("label" in fileContextMenuOption[i]){
       fileContextMenuOption[i].label =curLang.lang.explorerMenu[fileContextMenuOption[i].key] ;
+    }
+  }
+
+  for (let i = 0; i < sortOption.length; i++) {
+    if ("label" in sortOption[i]){
+      sortOption[i].label =curLang.lang.explorerSort[sortOption[i].key] ;
     }
   }
 });

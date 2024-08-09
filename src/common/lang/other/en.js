@@ -131,6 +131,13 @@ const enLangData = {
             move: "Move",
             newDir: "New Folder"
         },
+        explorerSort:{
+            asc: "Ascending",
+            desc: "Descending",
+            sortBySize: "Sort by Size",
+            sortByName: "Sort by Name",
+            sortByTime: "Sort by Time"
+        },
         explorerDetail:{
             name:"Name",
             size:"Size",

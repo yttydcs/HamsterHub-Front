@@ -133,6 +133,13 @@ const zhLangData = {
             move:"移动",
             newDir:"新建文件夹",
         },
+        explorerSort:{
+            asc:"从小到大",
+            desc:"从大到小",
+            sortBySize:"依据大小",
+            sortByName:"根据名称",
+            sortByTime:"修改时间"
+        },
         explorerDetail:{
             name:"名称",
             size:"尺寸",

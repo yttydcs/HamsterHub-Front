@@ -175,7 +175,6 @@ import {Edit} from "@vicons/tabler";
 import curLang from "@/common/lang";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
 
-
 let theme = useThemeVars();
 const borderColor = computed(() => theme.value.borderColor);
 const hoverColor = computed(() => theme.value.hoverColor);
