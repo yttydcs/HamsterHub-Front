@@ -15,7 +15,7 @@ export default {
         })
 
     },
-    create(root, parentId, url, name){
+    create(root, parentId, url, name, downloader){
         // 设置类不做兼容
         let type = 0;
 
@@ -30,6 +30,10 @@ export default {
             "name": name
         }
 
+        if (downloader){
+            d["downloadId"] = downloader
+        }
+
         return axois[type]({
             method:"post",
             url:u,
@@ -38,7 +42,7 @@ export default {
 
     },
 
-    delete(tag){
+    delete(tag, downloader){
         // 设置类不做兼容
         let type = 0;
 
@@ -50,6 +54,10 @@ export default {
             "tag": tag
         }
 
+        if(downloader){
+            d["downloadId"] = downloader
+        }
+
         return axois[type]({
             method:"post",
             url:u,
@@ -57,6 +65,20 @@ export default {
         })
 
     },
+    queryDownloader(){
+        // 设置类不做兼容
+        let type = 0;
+
+        // 设置网址
+        let u = "/api/downloaderList"
+
+        return axois[type]({
+            method:"get",
+            url:u,
+        })
+
+    },
+
 
 
 }

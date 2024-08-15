@@ -163,6 +163,7 @@ const enLangData = {
             placeholder: "Click to choose download location",
             downloadUrl: "Download URL",
             taskName: "Task Name",
+            selectDownloader: "Select Downloader",
             state:{
                 "0": "Waiting",
                 "1": "Downloading",

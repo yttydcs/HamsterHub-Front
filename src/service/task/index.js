@@ -15,7 +15,8 @@ export async function getTasks() {
             progress:getProgress(res[i].completed , res[i].total),
             type:"file",
             total: calc.toSizeString(res[i].total),
-            progressStatus:"info"
+            progressStatus:"info",
+            downloader: res[i].downloader,
         }
 
         if(res[i].name){
@@ -40,12 +41,12 @@ export async function getTasks() {
     return data;
 }
 
-export async function addTask(root, parentId, url, name) {
-    await downloadTask.create(root, parentId, url, name);
+export async function addTask(root, parentId, url, name, downloader) {
+    await downloadTask.create(root, parentId, url, name, downloader);
 }
 
-export async function delTask(tag) {
-    await downloadTask.delete(tag);
+export async function delTask(tag, downloader) {
+    await downloadTask.delete(tag, downloader);
 }
 
 function getProgress(completed,total){
@@ -56,4 +57,8 @@ function getProgress(completed,total){
     return (completed*100 / total).toFixed(2);
 }
 
-export default { getTasks,addTask };
+
+export async function queryDownloader(){
+    return (await downloadTask.queryDownloader()).data;
+}
+export default { getTasks,addTask,delTask,queryDownloader };

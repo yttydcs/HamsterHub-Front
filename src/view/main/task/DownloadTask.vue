@@ -19,7 +19,7 @@
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%" v-show="true">
 
-              <n-button class="button" text @click="handleDel(item.index)">
+              <n-button class="button" text @click="handleDel(item.index, item.downloader)">
                 <n-icon>
                   <Delete24Regular />
                 </n-icon>
@@ -79,13 +79,11 @@
           <div class="action">
             <n-space justify="end"  style="width: 100%; height: 100%">
 
-              <n-button class="button" text @click="handleDel(item.index)" >
+              <n-button class="button" text @click="handleDel(item.index, item.downloader)" >
                 <n-icon>
                   <Delete24Regular />
                 </n-icon>
               </n-button>
-
-
             </n-space>
           </div>
         </div>
@@ -127,6 +125,15 @@
           <n-input v-model:value="taskModel.name" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.taskDownload.selectDownloader" >
+          <n-select
+              v-model:value="taskModel.downloader"
+              :options="downloaderOption"
+              :loading="downloaderLoading"
+              @focus="handleDownloaderOption"
+          />
+        </n-form-item-row>
+
         <n-form-item-row :label="curLang.lang.taskDownload.downloadPosition" >
           <n-input v-model:value="taskModel.showPosition" :disabled="true" :placeholder="curLang.lang.taskDownload.placeholder"/>
           <n-button @click="handleSelect">{{ curLang.lang.taskDownload.select }}</n-button>
@@ -165,14 +172,14 @@
 
 <script setup>
 import {NProgress, NIcon, useLoadingBar, useThemeVars, NButton,
-  NSpace, NFloatButton, NModal, NInput, NForm, NFormItemRow} from "naive-ui";
+  NSpace, NFloatButton, NModal, NInput, NForm, NFormItemRow, NSelect} from "naive-ui";
 import {computed, onMounted, onUnmounted, reactive, ref} from "vue";
 import { PauseOutline, CaretForwardOutline } from "@vicons/ionicons5";
 import { Delete24Regular, ArrowClockwise24Regular } from "@vicons/fluent";
 import { Add, } from "@vicons/ionicons5";
 import curLang from "@/common/lang";
 import fileIcon from "@/components/explorer/FileIcon.vue";
-import downloadTask,{delTask} from "@/service/task";
+import downloadTask from "@/service/task";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
 
 let theme = useThemeVars();
@@ -183,12 +190,15 @@ const loading = useLoadingBar();
 const downloadTasks = reactive({done:[],doing:[]});
 const show = ref(false);
 const selectBoxShow = ref(false);
-const taskModel = reactive({name:"", root:"",parentId:"", showPosition:"",url:""});
+const taskModel = reactive({name:"", root:"",parentId:"", showPosition:"",url:"",downloader:""});
 const timerHandle = ref(0);
 const folderSelect = ref(null);
+const downloaderLoading = ref(false);
+const downloaderOption = reactive([])
 
-function handleDel(tag){
-  delTask(tag);
+
+function handleDel(tag, downloaderId){
+  downloadTask.delTask(tag, downloaderId);
   flushData();
 }
 
@@ -198,7 +208,7 @@ function confirmAddTask(){
     return;
   }
 
-  downloadTask.addTask(taskModel.root,taskModel.parentId,taskModel.url,taskModel.name);
+  downloadTask.addTask(taskModel.root,taskModel.parentId,taskModel.url,taskModel.name,taskModel.downloader);
   show.value = false;
 }
 
@@ -215,6 +225,26 @@ function confirmSelect(isSelect,root,parentId){
 function handleSelect(){
   folderSelect.value.flushData();
   selectBoxShow.value = true;
+}
+
+async function handleDownloaderOption(){
+  if (downloaderOption.length>0){
+    return
+  }
+  downloaderLoading.value = true;
+
+  let options = await downloadTask.queryDownloader()
+  if (options){
+    for (let i = 0; i < options.length; i++) {
+      let option = {
+        label: options[i].name,
+        value: options[i].id,
+      }
+      downloaderOption.push(option);
+    }
+  }
+  downloaderLoading.value = false;
+
 }
 
 async function flushData(){

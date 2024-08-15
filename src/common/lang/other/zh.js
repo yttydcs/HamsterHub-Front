@@ -165,6 +165,7 @@ const zhLangData = {
             placeholder:"点击选择下载位置",
             downloadUrl:"下载地址",
             taskName:"任务名称",
+            selectDownloader:"选择下载器",
             state:{
                 "0": "等待",
                 "1": "下载",
