@@ -105,7 +105,7 @@ export default {
             name,
             downloadId,
             replaceHost,
-            mirrorHost
+            mirrorHost,
         }
 
         return axois[type]({

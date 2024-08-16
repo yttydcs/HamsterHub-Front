@@ -78,6 +78,15 @@
           <n-input v-model:value="uploadModel.name" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.taskDownload.selectDownloader" >
+          <n-select
+              v-model:value="uploadModel.downloader"
+              :options="downloaderOption"
+              :loading="downloaderLoading"
+              @focus="handleDownloaderOption"
+          />
+        </n-form-item-row>
+
         <n-form-item-row :label="curLang.lang.rssList.downloadPosition" >
           <n-input v-model:value="uploadModel.showPosition" :disabled="true" :placeholder="curLang.lang.taskDownload.placeholder"/>
           <n-button @click="handleSelect">{{ curLang.lang.taskDownload.select }}</n-button>
@@ -122,6 +131,15 @@
           <n-input v-model:value="uploadModel.name" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.taskDownload.selectDownloader" >
+          <n-select
+              v-model:value="uploadModel.downloader"
+              :options="downloaderOption"
+              :loading="downloaderLoading"
+              @focus="handleDownloaderOption"
+          />
+        </n-form-item-row>
+
         <n-form-item-row :label="curLang.lang.rssList.downloadPosition" >
           <n-input v-model:value="uploadModel.showPosition" :disabled="true" :placeholder="curLang.lang.taskDownload.placeholder"/>
           <n-button @click="handleSelect">{{ curLang.lang.taskDownload.select }}</n-button>
@@ -163,7 +181,7 @@ import {
   NFormItemRow,
   NIcon,
   NInput,
-  NModal,
+  NModal, NSelect,
   NSpace,
   NSwitch,
   useThemeVars
@@ -174,6 +192,7 @@ import {Add, BanOutline} from "@vicons/ionicons5";
 import {Edit} from "@vicons/tabler";
 import curLang from "@/common/lang";
 import FolderSelect from "@/components/explorer/FolderSelect.vue";
+import downloadTask from "@/service/task";
 
 let theme = useThemeVars();
 const borderColor = computed(() => theme.value.borderColor);
@@ -184,9 +203,11 @@ const rssListData=reactive({data:[]});
 const addBoxShow=ref(false);
 const editBoxShow=ref(false);
 const selectBoxShow=ref(false);
+const downloaderLoading = ref(false);
+const downloaderOption = reactive([])
 
 const uploadModel = reactive({id:"",name:"", root:"",parentId:"",
-  showPosition:"",url:"",replaceHost:"",mirrorHost:""});
+  showPosition:"",url:"",replaceHost:"",mirrorHost:"",downloader:""});
 
 const folderSelect = ref(null);
 
@@ -220,6 +241,7 @@ async function handleDelete(id){
 
 async function handleEdit(item){
   editBoxShow.value = true;
+  await handleDownloaderOption();
   uploadModel.id = item.id;
   uploadModel.name = item.name;
   uploadModel.root = item.root;
@@ -227,7 +249,9 @@ async function handleEdit(item){
   uploadModel.url = item.url;
   uploadModel.replaceHost = item.replaceHost;
   uploadModel.mirrorHost = item.mirrorHost;
+  uploadModel.downloader = item.downloader;
   uploadModel.showPosition = "root: " + uploadModel.root + " parentId: " + uploadModel.parentId;
+
 }
 
 async function confirmEditRSS(){
@@ -261,6 +285,26 @@ function confirmSelect(isSelect,root,parentId){
 function handleSelect(){
   folderSelect.value.flushData();
   selectBoxShow.value = true;
+}
+
+async function handleDownloaderOption(){
+  if (downloaderOption.length>0){
+    return
+  }
+  downloaderLoading.value = true;
+
+  let options = await downloadTask.queryDownloader()
+  if (options){
+    for (let i = 0; i < options.length; i++) {
+      let option = {
+        label: options[i].name,
+        value: options[i].id,
+      }
+      downloaderOption.push(option);
+    }
+  }
+  downloaderLoading.value = false;
+
 }
 
 
