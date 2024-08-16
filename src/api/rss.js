@@ -45,7 +45,7 @@ export default {
         // 构造提交数据
         let d = {
             "root":root,
-            "parent":parent,
+            "parentIndex":parent,
             "url":url
         }
 
@@ -70,6 +70,9 @@ export default {
         }
 
         return axois[type]({
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method:"post",
             url:u,
             data:d
