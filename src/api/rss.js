@@ -1,4 +1,5 @@
 import axois from "@/axios"
+import {filter} from "core-js/internals/array-iteration";
 
 export default {
 
@@ -34,7 +35,7 @@ export default {
             data:d
         })
     },
-    addList(root,parent,url,name,downloadId,replaceHost,mirrorHost){
+    addList(root,parent,url,name,downloader,replaceHost,mirrorHost,filter){
         // 设置类不做兼容
         let type = 0;
 
@@ -52,8 +53,8 @@ export default {
             d["name"] = name;
         }
 
-        if (downloadId){
-            d["downloadId"] = downloadId;
+        if (downloader){
+            d["downloader"] = downloader;
         }
 
         if (replaceHost){
@@ -62,6 +63,10 @@ export default {
 
         if (mirrorHost){
             d["mirrorHost"] = mirrorHost;
+        }
+
+        if (filter){
+            d["filter"] = filter;
         }
 
         return axois[type]({
@@ -89,7 +94,7 @@ export default {
             data:d
         })
     },
-    updateList(id,root,parent,url,name,downloadId,replaceHost,mirrorHost){
+    updateList(id,root,parent,url,name,downloader,replaceHost,mirrorHost,filter){
         // 设置类不做兼容
         let type = 0;
 
@@ -103,9 +108,10 @@ export default {
             "parentIndex": parent,
             url,
             name,
-            downloadId,
+            downloader,
             replaceHost,
             mirrorHost,
+            filter
         }
 
         return axois[type]({

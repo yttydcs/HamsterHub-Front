@@ -104,6 +104,10 @@
           <n-input v-model:value="uploadModel.mirrorHost" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.rssList.filter" >
+          <n-input v-model:value="uploadModel.filter" type="text" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
       </n-form>
 
       <n-space class="=control-btn" align="stretch" justify="end">
@@ -157,6 +161,10 @@
           <n-input v-model:value="uploadModel.mirrorHost" type="text" :placeholder="curLang.lang.plsInput"/>
         </n-form-item-row>
 
+        <n-form-item-row :label="curLang.lang.rssList.filter" >
+          <n-input v-model:value="uploadModel.filter" type="text" :placeholder="curLang.lang.plsInput"/>
+        </n-form-item-row>
+
       </n-form>
 
       <n-space class="=control-btn" align="stretch" justify="end">
@@ -207,7 +215,7 @@ const downloaderLoading = ref(false);
 const downloaderOption = reactive([])
 
 const uploadModel = reactive({id:"",name:"", root:"",parentId:"",
-  showPosition:"",url:"",replaceHost:"",mirrorHost:"",downloader:""});
+  showPosition:"",url:"",replaceHost:"",mirrorHost:"",downloader:"",filter:""});
 
 const folderSelect = ref(null);
 
@@ -228,8 +236,8 @@ async function flushData(){
 }
 
 async function confirmAddRSS(){
-  await rssList.addList(uploadModel.root,uploadModel.parentId,
-      uploadModel.url,uploadModel.name,1,uploadModel.replaceHost,uploadModel.mirrorHost);
+  await rssList.addList(uploadModel.root,uploadModel.parentId,uploadModel.url,uploadModel.name,
+      uploadModel.downloader,uploadModel.replaceHost,uploadModel.mirrorHost,uploadModel.filter);
   addBoxShow.value = false;
   await flushData()
 }
@@ -250,6 +258,7 @@ async function handleEdit(item){
   uploadModel.replaceHost = item.replaceHost;
   uploadModel.mirrorHost = item.mirrorHost;
   uploadModel.downloader = item.downloader;
+  uploadModel.filter = item.filter;
   uploadModel.showPosition = "root: " + uploadModel.root + " parentId: " + uploadModel.parentId;
 
 }
@@ -258,7 +267,7 @@ async function confirmEditRSS(){
   editBoxShow.value = false;
 
   await rssList.updateList(uploadModel.id ,uploadModel.root,uploadModel.parentId,uploadModel.url,
-      uploadModel.name,1,uploadModel.replaceHost,uploadModel.mirrorHost);
+      uploadModel.name,uploadModel.downloader,uploadModel.replaceHost,uploadModel.mirrorHost,uploadModel.filter);
 
   await flushData()
 }

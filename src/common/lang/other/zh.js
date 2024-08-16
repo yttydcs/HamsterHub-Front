@@ -29,6 +29,7 @@ const zhLangData = {
             downloadUrl: "订阅地址",
             replaceHost: "替换域名",
             mirrorHost:"镜像代理",
+            filter:"过滤器",
         },
         shareList:{
             code:"密码",

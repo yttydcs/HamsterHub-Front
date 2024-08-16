@@ -26,7 +26,8 @@ const enLangData = {
             downloadPosition: "Storage Location",
             downloadUrl: "Subscription URL",
             replaceHost: "Replace Domain",
-            mirrorHost: "Mirror Proxy"
+            mirrorHost: "Mirror Proxy",
+            filter: "Filter"
         },
         shareList:{
             code:"Code",
