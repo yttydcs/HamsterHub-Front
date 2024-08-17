@@ -8,6 +8,10 @@ async function set(key,value){
     await config.set(key,value);
 }
 
+async function get(key,value){
+    return (await config.getValue(key,value)).data;
+}
+
 async function query(){
     let res = {}
 
@@ -90,6 +94,7 @@ async function getObj(){
 
 export default {
     set,
+    get,
     query,
     getObj
 }

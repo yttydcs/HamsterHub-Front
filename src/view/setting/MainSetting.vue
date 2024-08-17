@@ -7,6 +7,8 @@
 
     <SystemFunctionSetting />
 
+    <NotifySetting />
+
     <StoreSetting :curd-handle="curdHandle" v-if="hasPermission('0')"/>
 
     <UserSetting v-if="loginData.loginState"/>
@@ -36,6 +38,7 @@ import UserManageSetting from "@/components/setting/UserManageSetting.vue";
 import StoreSetting from "@/components/setting/StoreSetting.vue";
 import localSetting from "@/components/setting/LocalSetting.vue";
 import SystemFunctionSetting from "@/components/setting/SystemFunctionSetting.vue";
+import NotifySetting from "@/components/setting/NotifySetting.vue"
 import loginData, {hasPermission} from "@/common/loginData";
 
 const curdData = reactive({

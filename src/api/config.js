@@ -44,6 +44,25 @@ export default {
 
     },
 
+    getValue(key){
+        // 设置类不做兼容
+        let type = 0;
+
+        // 设置网址
+        let u = "/api/getSysConfig"
+
+        // 构造提交数据
+        let d = {
+            "key":key,
+        }
+
+        return axois[type]({
+            method:"get",
+            url:u,
+            params:d,
+        })
+    }
+
 
 
 

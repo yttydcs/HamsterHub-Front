@@ -6,6 +6,7 @@ const enLangData = {
         searchBoxPlaceholder : "Search",
         plsInput:"Please input",
         settingBtn:"Setting",
+        editBox:"Edit",
         validateError: "Input data contains errors",
         validateMissing: "Missing required data",
         processing:"Processing, please wait",
@@ -197,6 +198,13 @@ const enLangData = {
             proxyBilibiliDanma: {
                 title: "Bilibili Danmaku Proxy",
                 description: "When enabled, backend will allow Bilibili danmaku requests to be sent from the backend"
+            }
+        },
+        notifySetting: {
+            title:"Notify",
+            gocqUrl: {
+                title: "GoCq URL",
+                description: "GoCq notification URL"
             }
         },
         video: {

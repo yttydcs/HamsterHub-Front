@@ -8,6 +8,7 @@ const zhLangData = {
         searchBoxPlaceholder : "搜索",
         plsInput:"请输入",
         settingBtn:"设置",
+        editBox:"编辑",
         validateError:"输入数据存在异常",
         validateMissing:"缺少必要数据",
         processing:"正在处理请稍后",
@@ -200,6 +201,13 @@ const zhLangData = {
                 title: "Bilibili弹幕请求中转",
                 description: "启用之后，后端将允许Bilibili的弹幕请求由后端发送",
             },
+        },
+        notifySetting: {
+            title:"通知管理",
+            gocqUrl: {
+                title:"GoCq地址",
+                description:"GoCq的通知地址"
+            }
         },
         video: {
             autoGo:"自动跳转至上次观看位置",
