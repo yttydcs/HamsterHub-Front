@@ -49,10 +49,6 @@ export default {
 
         let u = "/api/share"
 
-        if(!expiry){
-            expiry = 10000
-        }
-
         // 构造提交数据
         let d = {
             root,
