@@ -30,6 +30,7 @@ const iconTypeIndex = {
     zip: "zip",
     rar: "zip",
     "7z": "zip",
+    mkv:"video",
 }
 
 // 预览方式的索引
@@ -57,6 +58,7 @@ const openTypeIndex = {
     java: "text",
     c: "text",
     'c++': "text",
+    mkv:"video",
 }
 
 export default {

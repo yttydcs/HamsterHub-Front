@@ -2,19 +2,24 @@
 
   <div class="mainDetail">
     <div class="version">
-      <n-select v-model:value="version" :options="versionOptions" />
+      <n-select
+          v-model:value="optionIndex"
+          :options="fileOptions"
+          @update-value="handleSelect"
+          v-show="fileOptions.length>1"
+      />
     </div>
     <div class="mainBox">
       <div class="detailPanel">
         <OpenBox
-            :title="detailData[version].title"
-            :msg="detailData[version].msg"
-            :url="detailData[version].url"
-            :is-folder = "detailData[version].isFolder"
+            :title="curFile.title"
+            :msg="curFile.msg"
+            :url="curFile.url"
+            :is-folder = "curFile.isFolder"
         />
       </div>
       <div class="otherPanel">
-        <div class="item" v-for="(item,index) in detailData[version].other" :key="index">
+        <div class="item" v-for="(item,index) in detailData[optionIndex].other" :key="index">
           <div class="key">
             {{ curLang.lang.explorerDetail[item.key] }}
           </div>
@@ -46,49 +51,86 @@ const props = defineProps({
 const theme = useThemeVars();
 const borderColor = computed(() => theme.value.borderColor);
 const opacity2 = computed(() => theme.value.opacity2);
-const version = ref(0);
+const optionIndex = ref(0);
 const detailData = reactive([{
+  id:"",
   title:"",
   msg:"",
   url:"",
+  size:"",
   isFolder:false,
   other:[{key:"key",value:"value"}],
 }]);
-const versionOptions = reactive([]);
+const fileOptions = reactive([]);
+const curFile = reactive({
+  id:"",
+  title:"",
+  msg:"",
+  url:"",
+  size:"",
+  isFolder:false,
+})
 
 
-async function flushData(fileObj){
+async function flushData(fileObj,index){
+  if (!index){
+    index = 0
+  }
   let data = fileObj;
 
   for (let i = 0; i < data.length; i++) {
     detailData[i]={};
+    detailData[i].id = data[i].id||data[i].other.id;
     detailData[i]["title"] = data[i].name;
+    // detailData[i].version = data[i].version;
+    detailData[i].url = "";
 
-    data[i].created = calc.formatTimestampWithUserTimeZone(data[i].created);
-    data[i].modified =  calc.formatTimestampWithUserTimeZone(data[i].modified);
-
-    detailData[i].version = data[i].version;
+    let created = data[i].created||data[i].other.created
 
     if(data[i].type === 0){
       detailData[i].isFolder = true;
-      detailData[i].url = "";
-      detailData[i].msg = data[i].created;
+      detailData[i].msg = calc.formatTimestampWithUserTimeZone(created);
     }else{
-      detailData[i].url = await handleUrl(data[i].id);
-      data[i].size = calc.toSizeString(data[i].size);
-      detailData[i].msg = data[i].size + ` · ` + data[i].created;
+      detailData[i].size = calc.toSizeString(data[i].size);
+      detailData[i].msg = data[i].size + ` · ` +
+          calc.formatTimestampWithUserTimeZone(created);
     }
 
     await handleItem(data[i],i);
   }
+  optionIndex.value = index;
+  await setCurFile(optionIndex.value)
   createOption();
 }
 
+async function handleSelect(value){
+  await setCurFile(value)
+}
+
+async function setCurFile(index){
+  let pos = index
+  if (!pos){
+    pos = 0;
+  }
+  curFile.title = detailData[pos].title;
+  curFile.msg = detailData[pos].msg;
+  curFile.url = await handleUrl(detailData[pos].id);
+}
+
 function createOption(){
-  versionOptions.length = 0;
+  fileOptions.length = 0;
+  let arr = curFile.title.split(".");
+  if(arr.length <= 1){
+    return
+  }
+  let suffix = arr.pop()
   for (let i = 0; i <detailData.length; i++) {
-    versionOptions.push({
-      label: "version:"+detailData[i].version,
+    // 只取后缀一样的
+    if (!detailData[i].title.endsWith(suffix)){
+      continue;
+    }
+    fileOptions.push({
+      label: detailData[i].title,
       value: i,
     })
   }
@@ -107,24 +149,27 @@ async function handleItem(data,p){
     value:data.size
   })
 
+  let type =data.type || data.other.type
+
   detailData[p].other.push({
     key:"type",
-    value: data.type===1?"file":"folder"
+    value: type===1?"file":"folder"
   })
 
-  detailData[p].other.push({
-    key:"version",
-    value: data.version
-  })
+  // detailData[p].other.push({
+  //   key:"version",
+  //   value: data.version
+  // })
 
+  let created = data.created||data.other.created
   detailData[p].other.push({
     key:"created",
-    value: data.created
+    value: calc.formatTimestampWithUserTimeZone(created)
   })
 
   detailData[p].other.push({
     key:"modified",
-    value: data.modified
+    value: calc.formatTimestampWithUserTimeZone(data.modified)
   })
 
 }

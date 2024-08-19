@@ -308,8 +308,12 @@ async function handleRoute(){
 async function getFileData(index){
   await props.fileService.getFileData();
   if(fileData.isFile){
-    let fileObj = await props.fileService.getNextFileDetail(index)
-    await detailBox.value.flushData(fileObj);
+    if (fileData.file.length > 0){
+      await detailBox.value.flushData(fileData.file,index);
+    }else {
+      let fileObj = await props.fileService.getNextFileDetail(index)
+      await detailBox.value.flushData(fileObj);
+    }
   }
 }
 
@@ -331,13 +335,7 @@ async function handleDrop(event){// 文件拖拽上传
   let parentUrl = (await props.fileService.getPathString()).slice(0, -1)
 
   addTasks(files,items,root,parentUrl,parent)
-
   setTimeout(handleFlush, 300);
-
-  // for (let i = 0; i < files.length; i++) {
-  //   let data = await hash.fileToHash(files[i])
-  //   await props.fileService.uploadFile(files[i],data)
-  // }
 }
 
 function handleContextMenuShow(event){

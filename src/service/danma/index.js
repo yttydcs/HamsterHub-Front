@@ -137,7 +137,7 @@ export async function loadDanmakuForBiliByUrl(value,addFunc,proxy){
     await parseXmlForBili(res,addFunc)
 }
 
-export async function loadDanmakuForDanDanByUrl(value,addFunc){
+export async function loadDanmakuForDanDanByUrl(value,addFunc,proxy){
     // "https://api.dandanplay.net/api/v2/comment/12270001?withRelated=true"
     let res = await getXmlByUrl(value,proxy)
     await parseJsonForDanDan(res,addFunc)
