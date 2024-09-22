@@ -8,7 +8,7 @@ export default {
      // 设置网址
      let u
      if(type === 0){
-         u = url||"/api/loginAccount"
+         u = url||"/api/login"
      }else if(type === 1){
          u = url||"/api/auth/login"
      }else{
